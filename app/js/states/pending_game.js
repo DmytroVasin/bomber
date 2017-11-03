@@ -20,6 +20,9 @@ var minPlayerMessageOffsetY = 425;
 var characterOffsetX = 4.5;
 var characterOffsetY = 4.5;
 
+var profileBoxes = []
+var profileImages = [];
+
 PendingGameState.prototype = {
   init: function (game_id) {
     this.game_id = game_id;
@@ -32,33 +35,29 @@ PendingGameState.prototype = {
     Game.add.image(xOffset, yOffset, 'pending_game_backdrop');
 
     this.startGameButton = Game.add.button(buttonXOffset, startGameButtonYOffset, 'start_game_button', this.startGameAction, this, 2, 2);
-    this.startGameButton.inputEnabled = false;
+    // this.startGameButton.inputEnabled = false;
 
-    Game.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, null, 1, 0);
+    Game.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, this, 1, 0);
 
-    this.characterSquares = this.drawCharacterSquares();
-    console.log('this.characterSquares')
-    console.log(this.characterSquares)
+    this.drawCharacterSquares();
 
     this.minPlayerMessage = Game.add.text(minPlayerMessageOffsetX, minPlayerMessageOffsetY, 'Cannot start game without\nat least 2 players.', { font: 'Carter One', fill: 'red', fontSize: 17, visible: false });
 
-    // socket.on("player joined", this.playerJoined.bind(this));
-    // socket.on("player left", this.playerLeft.bind(this));
-    // socket.on("start game on client", this.startGame);
+    // DEBUGGG:
+    Game.add.text(330, 100, this.game_id, { font: 'Carter One', fill: 'red', fontSize: 17});
 
     clientSocket.emit('enter pending game', { game_id: this.game_id });
   },
 
   drawCharacterSquares: function() {
-    var squares = [];
-
     var xOffset = characterSquareStartingX;
     var yOffset = characterSquareStartingY;
 
     for(var i = 0; i < 4; i++) {
       var frame = i < 4 ? 0 : 1;
 
-      squares[i] = Game.add.sprite(xOffset, yOffset, 'character_square', frame);
+      var profileBox = Game.add.sprite(xOffset, yOffset, 'character_square', frame);
+      profileBoxes.push(profileBox)
 
       if(i % 2 == 0) {
         xOffset += characterSquareXDistance;
@@ -67,16 +66,18 @@ PendingGameState.prototype = {
         yOffset += characterSquareYDistance;
       }
     }
-
-    return squares;
   },
 
   populateCharacterSquares: function(data) {
-    var numPlayersInGame = 0;
+    for (let image of profileImages) {
+      image.destroy();
+    }
 
     data.players.forEach( (player, i) => {
-      var playerSquare = this.characterSquares[i]
+      var playerSquare = profileBoxes[i]
       var playerImage = Game.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + player.color);
+
+      profileImages.push(playerImage);
 
       playerSquare.addChild(playerImage)
     })

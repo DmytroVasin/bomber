@@ -28,7 +28,15 @@ SelectState.prototype = {
   },
 
   confirmStageSelection: function() {
-    Game.state.start('pending_game', true, false, 'First');
+    var newGameName = this.randomGameName();
+
+    clientSocket.emit('new game created', { game_id: newGameName });
+
+    Game.state.start('pending_game', true, false, newGameName);
+  },
+
+  randomGameName: function(){
+    return (new Date()).valueOf().toString();
   }
 };
 

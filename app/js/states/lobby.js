@@ -32,10 +32,7 @@ LobbyState.prototype = {
 
     create_game.addChild(text)
 
-
     clientSocket.emit('enter lobby', { message: 'Hello World' });
-    // clientSocket.on('add slots', this.addSlots.bind(this));
-    // clientSocket.on('update slot', this.updateSlot.bind(this));
   },
 
   hostGameAction: function() {
@@ -50,7 +47,7 @@ LobbyState.prototype = {
 
     pendingGames.forEach( (game, i) => {
       var slot = Game.add.button(xOffset, yOffset, 'game_number', this.joinGameAction.bind(this, game), null, 0, 1); // overFrame = 0, outFrame = 1
-      var text = Game.add.text(textXOffset, textYOffset, 'ENTER TO GAME 1', { font: 'Carter One', fill: 'white', fontSize: 18 });
+      var text = Game.add.text(textXOffset, textYOffset, "ENTER TO GAME " + game, { font: 'Carter One', fill: 'white', fontSize: 18 });
       text.anchor.setTo(0.5);
 
       slot.addChild(text)

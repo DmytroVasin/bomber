@@ -1,7 +1,7 @@
 var PendingGame = require('./entity/pending_game');
 var lobbyId = 'lobby_room';
 
-var allPendingGames = ['room 1', 'room 2', 'room 3']
+var allPendingGames = []
 
 var Lobby = {
   initialize: function () {
@@ -10,45 +10,43 @@ var Lobby = {
 
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
-
     this.join(lobbyId);
+    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+  },
+
+  onGameCreation: function(data) {
+    console.log('>>>> ON NEW GAME CREATED')
+    allPendingGames.push(data.game_id)
+
     serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
   },
 
   onEnterPendingGame: function (data) {
     console.log('>>>> ON ENTER PENDING GAME')
+    console.log(data)
+    console.log('>>>> ON ENTER PENDING GAME')
 
     this.leave(lobbyId);
     this.join(data.game_id);
 
-
     theGame.addPlayer(this.id);
 
-    console.log('.........................')
-    console.log(theGame)
-    console.log('.........................')
-
-
-    // this.gameId = data.game_id;
-    this.emit('update players', { players: theGame.players });
-    // this.broadcast.to(data.game_id).emit("player joined", {id: this.id, color: pendingGame.players[this.id].color});
-    // if (pendingGame.getNumPlayers() >= MapInfo['First'].spawnLocations.length) {
-    //   pendingGame.state = "full";
-    //   broadcastSlotStateUpdate(data.game_id, "full");
-    // }
+    serverSocket.sockets.emit('update players', { players: theGame.players });
   },
 
   onLeavePendingGame: function(data) {
-    console.log('>>>>>>>>>>>>>>>')
-    console.log(data)
-    console.log('>>>>>>>>>>>>>>>')
-    this.leave(data.game_id);
-    this.join(lobbyId);
-    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+    console.log('>>>> ON LEAVE PENDING GAME')
+    console.log('>>>>' + this.id)
+    console.log('>>>>' + this.id)
 
     theGame.removePlayer(this.id);
 
-    serverSocket.sockets.in(this.game_id).emit('update players', { players: theGame.players });
+    console.log('>>>?????' + theGame.players)
+    console.log('>>>?????' + theGame.colors)
+
+    serverSocket.sockets.emit('update players', { players: theGame.players });
+
+    this.leave(data.game_id);
   }
 }
 
