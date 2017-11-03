@@ -1,3 +1,14 @@
+https://www.youtube.com/watch?v=A3TUXGI_iuM
+
+
+https://github.com/mmukhin/psitsmike_example_2
+
+yarn run webpack && yarn start
+
+
+
+
+
 Game:
 # => yarn run webpack && yarn start
 

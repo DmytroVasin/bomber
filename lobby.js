@@ -1,97 +1,55 @@
 var PendingGame = require('./entity/pending_game');
-var lobbySlots = {};
 var lobbyId = 'lobby_room';
 
-var allPendingGames = [
-  1,2,3
-]
+var allPendingGames = ['room 1', 'room 2', 'room 3']
 
 var Lobby = {
   initialize: function () {
-    lobbySlots = new PendingGame();
+    theGame = new PendingGame();
   },
 
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
 
     this.join(lobbyId);
-
-    serverSocket.sockets.in(lobbyId).emit('add slots', lobbySlots);
-
     serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
   },
-
-  onStageSelect: function (data) {
-    console.log('>>>> ON STAGE SELECT')
-    console.log('?????????????????????????????????????????????????????????????????????????????????????')
-    console.log(lobbyId)
-    console.log('?????????????????????????????????????????????????????????????????????????????????????')
-
-    // lobbySlots.state   = 'joinable';
-    // lobbySlots.mapName = data.mapName;
-    // serverSocket.sockets.in(lobbyId).emit('update slot', { newState: 'joinable' });
-    // serverSocket.sockets.emit('update slot', { newState: 'joinable' });
-  },
-
-
-
-
-
-
-
-
 
   onEnterPendingGame: function (data) {
     console.log('>>>> ON ENTER PENDING GAME')
 
+    this.leave(lobbyId);
+    this.join(data.game_id);
 
 
-    var pendingGame = lobbySlots;
-
-    // // Leave lobby
-    // this.leave(lobbyId);
-    // // Join Game
-    // this.join(data.gameId);
-
-
-    pendingGame.addPlayer(this.id);
+    theGame.addPlayer(this.id);
 
     console.log('.........................')
-    console.log(pendingGame)
+    console.log(theGame)
     console.log('.........................')
 
 
-    // this.gameId = data.gameId;
-    this.emit('show current players', { players: pendingGame.players });
-    // this.broadcast.to(data.gameId).emit("player joined", {id: this.id, color: pendingGame.players[this.id].color});
+    // this.gameId = data.game_id;
+    this.emit('update players', { players: theGame.players });
+    // this.broadcast.to(data.game_id).emit("player joined", {id: this.id, color: pendingGame.players[this.id].color});
     // if (pendingGame.getNumPlayers() >= MapInfo['First'].spawnLocations.length) {
     //   pendingGame.state = "full";
-    //   broadcastSlotStateUpdate(data.gameId, "full");
+    //   broadcastSlotStateUpdate(data.game_id, "full");
     // }
   },
 
-  onLeavePendingGame: function() {
-    var lobbySlot = lobbySlots;
+  onLeavePendingGame: function(data) {
+    console.log('>>>>>>>>>>>>>>>')
+    console.log(data)
+    console.log('>>>>>>>>>>>>>>>')
+    this.leave(data.game_id);
+    this.join(lobbyId);
+    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
 
-    this.leave(this.gameId);
+    theGame.removePlayer(this.id);
 
-    lobbySlot.removePlayer(this.id);
-
-    // socket.sockets.in(this.gameId).emit("player left", {players: lobbySlot.players});
-
-    // if (lobbySlot.getNumPlayers() == 0) {
-    //   lobbySlot.state = "empty";
-    //   socket.sockets.in(lobbyId).emit("update slot", {gameId: this.gameId, newState: "empty"});
-    // }
-    // if (lobbySlot.state == "full") {
-    //   lobbySlot.state = "joinable";
-    //   socket.sockets.in(lobbyId).emit("update slot", {gameId: this.gameId, newState: "joinable"});
-    // }
+    serverSocket.sockets.in(this.game_id).emit('update players', { players: theGame.players });
   }
-
-
-
-
 }
 
 

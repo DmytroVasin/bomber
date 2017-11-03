@@ -4,15 +4,11 @@ var SelectState = function () {
 
 module.exports = SelectState;
 
-
 var xOffset = 180;
 var yOffset = 25;
 var thumbnailXOffset = 396;
 var thumbnailYOffset = 125;
 var stageNameYOffset = 320;
-
-
-// var stages = {name: "Comeback", thumbnailKey: "first_", tilemapName: "First", maxPlayers: 4, size: "medium"};
 
 SelectState.prototype = {
   init: function () {

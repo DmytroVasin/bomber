@@ -1,14 +1,6 @@
-var colorIndices = {
-  "white": 0,
-  "black": 1,
-  "blue":  2,
-  "green": 3
-};
-
 var PendingGame = function() {
-  this.players = {};
-  this.state = "empty";
-  this.mapName = "";
+  this.players = [];
+
   this.colors = [{
     colorName: "white",
     available: true
@@ -27,29 +19,25 @@ var PendingGame = function() {
 
 PendingGame.prototype = {
 
-  removePlayer: function(id) {
-    this.colors[colorIndices[this.players[id].color]].available = true;
-    delete this.players[id];
+  removePlayer: function(player_id) {
+    // Update color ( Set to available )
+    var player = this.players.find(item => item.id === player_id);
+    var color = this.colors.find(item => item.colorName === player.color);
+    color.available = true;
+
+    // Remove user from game
+    this.players = this.players.filter(item => item.id !== player_id);
   },
 
-  addPlayer: function(id) {
-    this.players[id] = { color: this.claimFirstAvailableColor() };
+  addPlayer: function(player_id) {
+    this.players.push({ id: player_id, color: this.claimFirstAvailableColor() });
   },
 
   claimFirstAvailableColor: function() {
-    // Refactor!
-
-    for(var i = 0; i < this.colors.length; i++) {
-      var color = this.colors[i];
-      if(color.available) {
-        color.available = false;
-        return color.colorName;
-      }
-    }
+    var color = this.colors.find(item => item.available === true);
+    color.available = false;
+    return color.colorName;
   }
 }
-
-
-
 
 module.exports = PendingGame;
