@@ -31,12 +31,13 @@ var Lobby = {
 
     var current_game = allPendingGames.find(game => game.id === data.game_id);
 
+    // TODO: Should leave before redirect
     this.leave(lobbyId);
     this.join(current_game.id);
 
     current_game.addPlayer(this.id);
 
-    serverSocket.sockets.emit('update players', { players: current_game.players });
+    serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
   },
 
   onLeavePendingGame: function(data) {
@@ -46,7 +47,7 @@ var Lobby = {
 
     current_game.removePlayer(this.id);
 
-    serverSocket.sockets.emit('update players', { players: current_game.players });
+    serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
 
     this.leave(current_game.game_id);
   }
