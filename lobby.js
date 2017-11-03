@@ -5,7 +5,6 @@ var allPendingGames = []
 
 var Lobby = {
   initialize: function () {
-    theGame = new PendingGame();
   },
 
   onEnterLobby: function (data) {
@@ -14,41 +13,43 @@ var Lobby = {
     serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
   },
 
+  onLeaveLobby: function (data) {
+    console.log('>>>> ON LEAVE LOBBY')
+    this.leave(lobbyId);
+  },
+
   onGameCreation: function(data) {
     console.log('>>>> ON NEW GAME CREATED')
-    allPendingGames.push(data.game_id)
+    var newGame = new PendingGame(data.game_id);
+    allPendingGames.push(newGame)
 
     serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
   },
 
   onEnterPendingGame: function (data) {
     console.log('>>>> ON ENTER PENDING GAME')
-    console.log(data)
-    console.log('>>>> ON ENTER PENDING GAME')
+
+    var current_game = allPendingGames.find(game => game.id === data.game_id);
 
     this.leave(lobbyId);
-    this.join(data.game_id);
+    this.join(current_game.id);
 
-    theGame.addPlayer(this.id);
+    current_game.addPlayer(this.id);
 
-    serverSocket.sockets.emit('update players', { players: theGame.players });
+    serverSocket.sockets.emit('update players', { players: current_game.players });
   },
 
   onLeavePendingGame: function(data) {
     console.log('>>>> ON LEAVE PENDING GAME')
-    console.log('>>>>' + this.id)
-    console.log('>>>>' + this.id)
 
-    theGame.removePlayer(this.id);
+    var current_game = allPendingGames.find(game => game.id === data.game_id);
 
-    console.log('>>>?????' + theGame.players)
-    console.log('>>>?????' + theGame.colors)
+    current_game.removePlayer(this.id);
 
-    serverSocket.sockets.emit('update players', { players: theGame.players });
+    serverSocket.sockets.emit('update players', { players: current_game.players });
 
-    this.leave(data.game_id);
+    this.leave(current_game.game_id);
   }
 }
-
 
 module.exports = Lobby;

@@ -1,4 +1,6 @@
-var PendingGame = function() {
+var PendingGame = function(game_id) {
+  this.id = game_id;
+
   this.players = [];
 
   this.colors = [{

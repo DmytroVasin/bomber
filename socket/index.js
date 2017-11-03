@@ -9,6 +9,7 @@ module.exports = function(server){
     console.log('New player has connected: ' + client.id);
 
     client.on('enter lobby', Lobby.onEnterLobby);
+    client.on('leave lobby', Lobby.onLeaveLobby);
     client.on('new game created', Lobby.onGameCreation);
 
     client.on('enter pending game', Lobby.onEnterPendingGame);

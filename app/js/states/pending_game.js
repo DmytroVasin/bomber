@@ -25,6 +25,9 @@ var profileImages = [];
 
 PendingGameState.prototype = {
   init: function (game_id) {
+    console.log('------------------------------')
+    console.log(game_id)
+    console.log('------------------------------')
     this.game_id = game_id;
 
     clientSocket.on('update players', this.populateCharacterSquares.bind(this));
@@ -57,7 +60,7 @@ PendingGameState.prototype = {
       var frame = i < 4 ? 0 : 1;
 
       var profileBox = Game.add.sprite(xOffset, yOffset, 'character_square', frame);
-      profileBoxes.push(profileBox)
+      profileBoxes[i] = profileBox
 
       if(i % 2 == 0) {
         xOffset += characterSquareXDistance;
@@ -70,6 +73,8 @@ PendingGameState.prototype = {
 
   populateCharacterSquares: function(data) {
     for (let image of profileImages) {
+      // NOTE: 1. Not optimal way to rerender, we should implement AddPlayer, RemovePlayer
+      // NOTE: 2. You did not destroy object, it still in memory. Just marked as destroyed.
       image.destroy();
     }
 
@@ -77,7 +82,7 @@ PendingGameState.prototype = {
       var playerSquare = profileBoxes[i]
       var playerImage = Game.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + player.color);
 
-      profileImages.push(playerImage);
+      profileImages[i] = playerImage
 
       playerSquare.addChild(playerImage)
     })

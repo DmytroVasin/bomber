@@ -36,8 +36,7 @@ LobbyState.prototype = {
   },
 
   hostGameAction: function() {
-    // WTF ?????????
-    // clientSocket.removeAllListeners();
+    clientSocket.emit('leave lobby');
     Game.state.start('select', true, false);
   },
 
@@ -45,15 +44,15 @@ LobbyState.prototype = {
     var xOffset = 155;
     var yOffset = 50;
 
-    pendingGames.forEach( (game, i) => {
-      var slot = Game.add.button(xOffset, yOffset, 'game_number', this.joinGameAction.bind(this, game), null, 0, 1); // overFrame = 0, outFrame = 1
-      var text = Game.add.text(textXOffset, textYOffset, "ENTER TO GAME " + game, { font: 'Carter One', fill: 'white', fontSize: 18 });
+    for (let game of pendingGames) {
+      var slot = Game.add.button(xOffset, yOffset, 'game_number', this.joinGameAction.bind(this, game.id), null, 0, 1); // overFrame = 0, outFrame = 1
+      var text = Game.add.text(textXOffset, textYOffset, "ENTER TO GAME " + game.id, { font: 'Carter One', fill: 'white', fontSize: 18 });
       text.anchor.setTo(0.5);
 
       slot.addChild(text)
 
       yOffset += 50;
-    })
+    }
   },
 
   joinGameAction: function(game_id) {
