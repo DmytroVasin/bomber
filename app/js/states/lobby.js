@@ -8,6 +8,8 @@ var slotYOffset = 410;
 var textXOffset = 260;
 var textYOffset = 25;
 
+var lobbyGames = []
+
 module.exports = LobbyState;
 
 LobbyState.prototype = {
@@ -41,6 +43,15 @@ LobbyState.prototype = {
   },
 
   displayPendingGames: function(pendingGames) {
+    // TODO: Refactro that S...
+    for (let image of lobbyGames) {
+      // NOTE: 1. Not optimal way to rerender, we should implement AddPlayer, RemovePlayer
+      // NOTE: 2. You did not destroy object, it still in memory. Just marked as destroyed.
+      image.destroy();
+    }
+
+    lobbyGames = [];
+
     var xOffset = 155;
     var yOffset = 50;
 
@@ -52,6 +63,8 @@ LobbyState.prototype = {
       slot.addChild(text)
 
       yOffset += 50;
+
+      lobbyGames.push(slot)
     }
   },
 

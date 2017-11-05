@@ -39,6 +39,10 @@ PendingGame.prototype = {
     var color = this.colors.find(item => item.available === true);
     color.available = false;
     return color.colorName;
+  },
+
+  isEmpty: function() {
+    return this.players.length === 0
   }
 }
 

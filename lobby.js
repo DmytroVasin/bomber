@@ -45,11 +45,18 @@ var Lobby = {
 
     var current_game = allPendingGames.find(game => game.id === data.game_id);
 
+    this.leave(current_game.game_id);
+
     current_game.removePlayer(this.id);
 
-    serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
+    if( current_game.isEmpty() ){
+      console.log(' CURRENT GAME IS EMPTY!!!')
+      allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
 
-    this.leave(current_game.game_id);
+      serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+    } else {
+      serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
+    }
   }
 }
 
