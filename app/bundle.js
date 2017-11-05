@@ -349,10 +349,8 @@ PendingGameState.prototype = {
     var xOffset = characterSquareStartingX;
     var yOffset = characterSquareStartingY;
 
-    for(var i = 0; i < 4; i++) {
-      var frame = i < 4 ? 0 : 1;
-
-      var profileBox = Game.add.sprite(xOffset, yOffset, 'character_square', frame);
+    for(var i = 0; i < 2; i++) {
+      var profileBox = Game.add.sprite(xOffset, yOffset, 'character_square', 0);
       profileBoxes[i] = profileBox
 
       if(i % 2 == 0) {
@@ -413,11 +411,7 @@ PendingGameState.prototype = {
     clientSocket.emit('create game', { game_id: this.game_id });
   },
 
-
-
-
   startGame: function(data) {
-    // socket.removeAllListeners();
     Game.state.start('game_level', true, false, data.game.id);
   }
 }

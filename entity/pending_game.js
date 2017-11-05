@@ -4,20 +4,13 @@ var PendingGame = function(game_id) {
   this.players = [];
 
   this.colors = [{
-    colorName: "white",
+    colorName: "white", // blue
     available: true
   }, {
-    colorName: "black",
-    available: true
-  }, {
-    colorName: "blue",
-    available: true
-  }, {
-    colorName: "green",
+    colorName: "black", // green
     available: true
   }];
 };
-
 
 PendingGame.prototype = {
 
@@ -44,6 +37,10 @@ PendingGame.prototype = {
 
   isEmpty: function() {
     return this.players.length === 0
+  },
+
+  isFull: function() {
+    return this.players.length === 2
   }
 }
 

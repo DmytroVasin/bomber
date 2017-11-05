@@ -10,7 +10,7 @@ var Lobby = {
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
     this.join(lobbyId);
-    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
   },
 
   onLeaveLobby: function (data) {
@@ -23,7 +23,7 @@ var Lobby = {
     var newGame = new PendingGame(data.game_id);
     allPendingGames.push(newGame)
 
-    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
   },
 
   onEnterPendingGame: function (data) {
@@ -38,6 +38,14 @@ var Lobby = {
     current_game.addPlayer(this.id);
 
     serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
+
+    if ( current_game.isFull() ){
+      console.log('FUUUUUUUULLLLLLL');
+      console.log(Lobby.availablePendingGames());
+      console.log('FULLLLLLLLLLLLLL');
+
+     serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
+    }
   },
 
   onLeavePendingGame: function(data) {
@@ -52,7 +60,7 @@ var Lobby = {
     if( current_game.isEmpty() ){
       allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
 
-      serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
     } else {
       serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
     }
@@ -64,9 +72,13 @@ var Lobby = {
 
     allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
 
-    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
 
     return current_game
+  },
+
+  availablePendingGames: function() {
+    return allPendingGames.filter(item => item.isFull() === false );
   }
 }
 
