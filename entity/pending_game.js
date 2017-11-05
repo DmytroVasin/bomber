@@ -32,6 +32,7 @@ PendingGame.prototype = {
   },
 
   addPlayer: function(player_id) {
+    // TODO: Implement Like a CLASS ???? PendingGmaePlayer
     this.players.push({ id: player_id, color: this.claimFirstAvailableColor() });
   },
 

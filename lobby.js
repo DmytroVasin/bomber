@@ -50,13 +50,23 @@ var Lobby = {
     current_game.removePlayer(this.id);
 
     if( current_game.isEmpty() ){
-      console.log(' CURRENT GAME IS EMPTY!!!')
       allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
 
       serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
     } else {
       serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
     }
+  },
+
+  startGame: function(game_id) {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>> START GAME >>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    var current_game = allPendingGames.find(game => game.id === game_id);
+
+    allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
+
+    serverSocket.sockets.in(lobbyId).emit('display pending games', allPendingGames);
+
+    return current_game
   }
 }
 

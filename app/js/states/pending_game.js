@@ -25,12 +25,10 @@ var profileImages = [];
 
 PendingGameState.prototype = {
   init: function (game_id) {
-    console.log('------------------------------')
-    console.log(game_id)
-    console.log('------------------------------')
     this.game_id = game_id;
 
     clientSocket.on('update players', this.populateCharacterSquares.bind(this));
+    clientSocket.on('launch game', this.startGame.bind(this));
   },
 
   create: function() {
@@ -118,6 +116,11 @@ PendingGameState.prototype = {
   },
 
   startGameAction: function() {
-    console.log('.............')
+    clientSocket.emit('create game', { game_id: this.game_id });
+  },
+
+  startGame: function(data) {
+    // socket.removeAllListeners();
+    Game.state.start('game_level', true, false, data.game.id);
   }
 }

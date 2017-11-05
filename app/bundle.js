@@ -76,11 +76,12 @@ start();
 function start() {
   clientSocket = io.connect();
 
-  Game.state.add('boot', __webpack_require__(1));
-  Game.state.add('load', __webpack_require__(2));
-  Game.state.add('lobby', __webpack_require__(3));
-  Game.state.add('select', __webpack_require__(4));
+  Game.state.add('boot',         __webpack_require__(1));
+  Game.state.add('load',         __webpack_require__(2));
+  Game.state.add('lobby',        __webpack_require__(3));
+  Game.state.add('select',       __webpack_require__(4));
   Game.state.add('pending_game', __webpack_require__(5));
+  Game.state.add('game_level',   __webpack_require__(6));
 
   Game.state.start('boot');
 };
@@ -125,24 +126,29 @@ LoadState.prototype = {
   preload: function () {
     console.log('LoadState')
 
-    // this.load.image('background', "images/background.png");
-    this.load.spritesheet("game_slot", "images/game_slot.png", 522, 48);
-    this.load.spritesheet("game_number", "images/game_number.png", 522, 48);
-    this.load.image('background_select', "images/Background_select.png");
-    this.load.image('select_stage', "images/select_stage.png");
-    this.load.spritesheet('ok_button', "images/ok_button.png", 60, 60);
-    this.load.image("danger_desert_thumbnail", "images/danger_desert_thumbnail.png");
+    // Game.load.image('background', "images/background.png");
+    Game.load.spritesheet("game_slot", 'images/game_slot.png', 522, 48);
+    Game.load.spritesheet("game_number", 'images/game_number.png', 522, 48);
+    Game.load.image('background_select', 'images/Background_select.png');
+    Game.load.image('select_stage', 'images/select_stage.png');
+    Game.load.spritesheet('ok_button', 'images/ok_button.png', 60, 60);
+    Game.load.image('danger_desert_thumbnail', 'images/danger_desert_thumbnail.png');
 
-    this.load.image('pending_game_backdrop', 'images/lobby_backdrop.png');
-    this.load.spritesheet('start_game_button', "images/start_game_button.png", 202, 43);
-    this.load.spritesheet('leave_game_button', "images/leave_game_button.png", 202, 43);
-    this.load.spritesheet("character_square", "images/character_square.png", 89, 89);
+    Game.load.image('pending_game_backdrop', 'images/lobby_backdrop.png');
+    Game.load.spritesheet('start_game_button', 'images/start_game_button.png', 202, 43);
+    Game.load.spritesheet('leave_game_button', 'images/leave_game_button.png', 202, 43);
+    Game.load.spritesheet('character_square', 'images/character_square.png', 89, 89);
 
 
-    this.load.image("bomberman_head_white", "images/icon_white.png");
-    this.load.image("bomberman_head_blue", "images/icon_blue.png");
-    this.load.image("bomberman_head_green", "images/icon_green.png");
-    this.load.image("bomberman_head_black", "images/icon_black.png");
+    Game.load.image('bomberman_head_white', 'images/icon_white.png');
+    Game.load.image('bomberman_head_blue', 'images/icon_blue.png');
+    Game.load.image('bomberman_head_green', 'images/icon_green.png');
+    Game.load.image('bomberman_head_black', 'images/icon_black.png');
+
+
+    Game.load.tilemap('FirstLevel', 'game_levels/first_level.json', null, Phaser.Tilemap.TILED_JSON);
+    Game.load.image('tiles', 'game_levels/tileset.png');
+
 
     Game.add.text(80, 150, 'Loading...', { font: '30px Courier', fill: '#FFFFFF' });
   },
@@ -313,12 +319,10 @@ var profileImages = [];
 
 PendingGameState.prototype = {
   init: function (game_id) {
-    console.log('------------------------------')
-    console.log(game_id)
-    console.log('------------------------------')
     this.game_id = game_id;
 
     clientSocket.on('update players', this.populateCharacterSquares.bind(this));
+    clientSocket.on('launch game', this.startGame.bind(this));
   },
 
   create: function() {
@@ -406,9 +410,84 @@ PendingGameState.prototype = {
   },
 
   startGameAction: function() {
-    console.log('.............')
+    clientSocket.emit('create game', { game_id: this.game_id });
+  },
+
+
+
+
+  startGame: function(data) {
+    // socket.removeAllListeners();
+    Game.state.start('game_level', true, false, data.game.id);
   }
 }
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var BLACK_HEX_CODE = "#000000";
+var TILE_SIZE = 35;
+
+var MapInfo = __webpack_require__(7);
+
+var GameLevelState = function () {
+};
+
+module.exports = GameLevelState;
+
+GameLevelState.prototype = {
+  remotePlayers: {},
+
+  gameFrozen: true,
+  // INIT, PRELOAD, INITIALIZE - What difference ????
+  init: function (id) {
+  },
+
+  create: function () {
+    this.initializeMap();
+  },
+
+
+  initializeMap: function () {
+    this.map = Game.add.tilemap('FirstLevel');
+
+    var mapInfo = MapInfo['FirstLevel'];
+
+    this.map.addTilesetImage(mapInfo.tilesetName, mapInfo.tilesetImage, 35, 35);
+
+    this.groundLayer = new Phaser.TilemapLayer(Game, this.map, this.map.getLayerIndex(mapInfo.groundLayer), Game.width, Game.height);
+    Game.world.addAt(this.groundLayer, 0);
+    this.groundLayer.resizeWorld();
+
+    this.blockLayer = new Phaser.TilemapLayer(Game, this.map, this.map.getLayerIndex(mapInfo.blockLayer), Game.width, Game.height);
+    Game.world.addAt(this.blockLayer, 1);
+    this.blockLayer.resizeWorld();
+
+
+    this.map.setCollision(mapInfo.collisionTiles, true, mapInfo.blockLayer);
+  }
+}
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+var MapInfo = {
+  FirstLevel: {
+    spawnLocations: [{x: 8, y: 1}, {x: 23, y: 1}, {x: 3, y: 1}, {x: 12, y: 6}],
+    collisionTiles: [3, 4],
+    groundLayer: "Ground",
+    blockLayer: "Blocks",
+    tilesetName: "tiles",
+    tilesetImage: "tiles",
+    destructibleTileId: 4
+  }
+};
+
+module.exports = MapInfo;
 
 
 /***/ })
