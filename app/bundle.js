@@ -202,6 +202,7 @@ LobbyState.prototype = {
   },
 
   displayPendingGames: function(pendingGames) {
+    // TODO: Refactro that S...
     for (let image of lobbyGames) {
       // NOTE: 1. Not optimal way to rerender, we should implement AddPlayer, RemovePlayer
       // NOTE: 2. You did not destroy object, it still in memory. Just marked as destroyed.
@@ -325,7 +326,8 @@ PendingGameState.prototype = {
     Game.add.image(xOffset, yOffset, 'pending_game_backdrop');
 
     this.startGameButton = Game.add.button(buttonXOffset, startGameButtonYOffset, 'start_game_button', this.startGameAction, this, 2, 2);
-    // this.startGameButton.inputEnabled = false;
+    this.startGameButton.input.enabled = false
+    this.startGameButton.input.useHandCursor = false
 
     Game.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, this, 1, 0);
 
@@ -375,16 +377,26 @@ PendingGameState.prototype = {
     })
 
     if(data.players.length > 1) {
-      this.activateStartGameButton();
+      this.enableStartGame();
     } else {
-      this.minPlayerMessage.visible = true;
+      this.disableStartGame();
     }
   },
 
-  activateStartGameButton: function() {
+  enableStartGame: function() {
     this.minPlayerMessage.visible = false;
+
     this.startGameButton.setFrames(1, 0);
     this.startGameButton.inputEnabled = true;
+    this.startGameButton.input.useHandCursor = true
+  },
+
+  disableStartGame: function (){
+    this.minPlayerMessage.visible = true;
+
+    this.startGameButton.setFrames(2, 2);
+    this.startGameButton.inputEnabled = false;
+    this.startGameButton.input.useHandCursor = false
   },
 
   leaveGameAction: function() {
