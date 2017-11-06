@@ -134,7 +134,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
-
 var Game = function (_Phaser$Game) {
   _inherits(Game, _Phaser$Game);
 
@@ -157,7 +156,7 @@ var Game = function (_Phaser$Game) {
   return Game;
 }(Phaser.Game);
 
-window.game = new Game();
+new Game();
 window.clientSocket = io.connect();
 
 /***/ }),
@@ -536,6 +535,7 @@ var SelectMap = function (_Phaser$State) {
 
       clientSocket.on('update players', this.populateCharacterSquares.bind(this));
       clientSocket.on('launch game', this.startGame.bind(this));
+      // clientSocket.on('disconnect', this.onSocketDisconnect);
     }
   }, {
     key: 'create',
@@ -553,7 +553,6 @@ var SelectMap = function (_Phaser$State) {
 
       this.minPlayerMessage = this.add.text(_constants.minPlayerMessageOffsetX, _constants.minPlayerMessageOffsetY, 'Cannot start game without\nat least 2 players.', { font: 'Carter One', fill: 'red', fontSize: 17, visible: false });
 
-      // DEBUGGG:
       this.add.text(330, 100, this.game_id, { font: 'Carter One', fill: 'red', fontSize: 17 });
 
       clientSocket.emit('enter pending game', { game_id: this.game_id });
@@ -658,6 +657,11 @@ var SelectMap = function (_Phaser$State) {
     value: function startGame(data) {
       this.state.start('GameLevel', true, false, data.game.id);
     }
+
+    // onSocketDisconnect() {
+    //   clientSocket.broadcast.emit('remove player', {id: this.id});
+    // }
+
   }]);
 
   return SelectMap;

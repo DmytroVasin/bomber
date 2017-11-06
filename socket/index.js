@@ -21,6 +21,9 @@ module.exports = function(server){
     client.on('leave pending game', Lobby.onLeavePendingGame);
 
     client.on('create game', onStartGame);
+
+
+    client.on('disconnect', onClientDisconnect);
   });
 
 
@@ -46,4 +49,15 @@ module.exports = function(server){
 
     serverSocket.sockets.in(game.id).emit('launch game', { game: game });
   };
+
+  function onClientDisconnect() {
+    if (this.socket_game_id == null) {
+      console.log('Player was not be inside any game...');
+      return
+    }
+
+    console.log('Player was inside game...');
+    Lobby.onLeavePendingGame.call(this, { game_id: this.socket_game_id })
+
+  }
 };

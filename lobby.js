@@ -10,6 +10,7 @@ var Lobby = {
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
     this.join(lobbyId);
+    console.log('......................................................................................................................')
     serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
   },
 
@@ -35,35 +36,40 @@ var Lobby = {
     this.leave(lobbyId);
     this.join(current_game.id);
 
+    // place game_id inside Socket connection.... to know when he disconnect
+    this.socket_game_id = current_game.id;
+
     current_game.addPlayer(this.id);
 
     serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
 
     if ( current_game.isFull() ){
-      console.log('FUUUUUUUULLLLLLL');
-      console.log(Lobby.availablePendingGames());
-      console.log('FULLLLLLLLLLLLLL');
-
      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
     }
   },
 
   onLeavePendingGame: function(data) {
     console.log('>>>> ON LEAVE PENDING GAME')
-
     var current_game = allPendingGames.find(game => game.id === data.game_id);
 
     this.leave(current_game.game_id);
+
+    // place game_id inside Socket connection.... to know when he disconnect
+    this.socket_game_id = null;
 
     current_game.removePlayer(this.id);
 
     if( current_game.isEmpty() ){
       allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
-
       serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
-    } else {
-      serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
+      return
     }
+
+    if ( !current_game.isFull() ){ // Availbable ( User Quit! )
+      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
+    }
+
+    serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
   },
 
   startGame: function(game_id) {
