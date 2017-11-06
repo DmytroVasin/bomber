@@ -1,4 +1,5 @@
-var PendingGame = require('./entity/pending_game');
+var { PendingGame } = require('./entity/pending_game');
+
 var lobbyId = 'lobby_room';
 
 var allPendingGames = []
@@ -9,9 +10,9 @@ var Lobby = {
 
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
+
     this.join(lobbyId);
-    // WE NEED TO UPDATE ONLY USERS LOBBY
-    // SENT TO YOURSELF!
+    // WE NEED TO UPDATE ONLY USERS LOBBY - SENT TO YOURSELF!
     serverSocket.sockets.in(this.id).emit('display pending games', Lobby.availablePendingGames());
   },
 

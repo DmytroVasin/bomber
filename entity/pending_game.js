@@ -1,47 +1,36 @@
-var PendingGame = function(game_id) {
-  this.id = game_id;
+class PendingGame {
 
-  this.players = [];
+  constructor(game_id) {
+    this.id = game_id;
+    this.players = [];
+    this.availableColors = ['white', 'blue', 'black', 'green']
+  }
 
-  this.colors = [{
-    colorName: "white", // blue
-    available: true
-  }, {
-    colorName: "black", // green
-    available: true
-  }];
-};
-
-PendingGame.prototype = {
-
-  removePlayer: function(player_id) {
-    // Update color ( Set to available )
+  removePlayer(player_id) {
+    // Find player
     var player = this.players.find(item => item.id === player_id);
-    var color = this.colors.find(item => item.colorName === player.color);
-    color.available = true;
 
+    this.availableColors.push(player.color)
     // Remove user from game
     this.players = this.players.filter(item => item.id !== player_id);
-  },
+  }
 
-  addPlayer: function(player_id) {
+  addPlayer(player_id) {
     // TODO: Implement Like a CLASS ???? PendingGmaePlayer
-    this.players.push({ id: player_id, color: this.claimFirstAvailableColor() });
-  },
+    this.players.push({ id: player_id, color: this.getAvailableColor() });
+  }
 
-  claimFirstAvailableColor: function() {
-    var color = this.colors.find(item => item.available === true);
-    color.available = false;
-    return color.colorName;
-  },
+  getAvailableColor() {
+    return this.availableColors.pop();
+  }
 
-  isEmpty: function() {
+  isEmpty() {
     return this.players.length === 0
-  },
+  }
 
-  isFull: function() {
+  isFull() {
     return this.players.length === 2
   }
 }
 
-module.exports = PendingGame;
+exports.PendingGame = PendingGame;
