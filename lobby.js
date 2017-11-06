@@ -10,8 +10,9 @@ var Lobby = {
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
     this.join(lobbyId);
-    console.log('......................................................................................................................')
-    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
+    // WE NEED TO UPDATE ONLY USERS LOBBY
+    // SENT TO YOURSELF!
+    serverSocket.sockets.in(this.id).emit('display pending games', Lobby.availablePendingGames());
   },
 
   onLeaveLobby: function (data) {

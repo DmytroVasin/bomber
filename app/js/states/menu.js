@@ -35,6 +35,7 @@ class Menu extends Phaser.State {
   }
 
   displayPendingGames(pendingGames) {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>???????????????')
     // TODO: Refactro that S...
     for (let image of lobbyGames) {
       // NOTE: 1. Not optimal way to rerender, we should implement AddPlayer, RemovePlayer

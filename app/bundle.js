@@ -344,6 +344,7 @@ var Menu = function (_Phaser$State) {
   }, {
     key: 'displayPendingGames',
     value: function displayPendingGames(pendingGames) {
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>???????????????');
       // TODO: Refactro that S...
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -535,7 +536,6 @@ var SelectMap = function (_Phaser$State) {
 
       clientSocket.on('update players', this.populateCharacterSquares.bind(this));
       clientSocket.on('launch game', this.startGame.bind(this));
-      // clientSocket.on('disconnect', this.onSocketDisconnect);
     }
   }, {
     key: 'create',
@@ -657,11 +657,6 @@ var SelectMap = function (_Phaser$State) {
     value: function startGame(data) {
       this.state.start('GameLevel', true, false, data.game.id);
     }
-
-    // onSocketDisconnect() {
-    //   clientSocket.broadcast.emit('remove player', {id: this.id});
-    // }
-
   }]);
 
   return SelectMap;
