@@ -1,42 +1,27 @@
-var BLACK_HEX_CODE = "#000000";
-var TILE_SIZE = 35;
-
 var MapInfo = require("../../../entity/common/map_info");
 
-var GameLevelState = function () {
-};
-
-module.exports = GameLevelState;
-
-GameLevelState.prototype = {
-  remotePlayers: {},
-
-  gameFrozen: true,
-  // INIT, PRELOAD, INITIALIZE - What difference ????
-  init: function (id) {
-  },
-
-  create: function () {
+class GameLevel extends Phaser.State {
+  create() {
     this.initializeMap();
-  },
+  }
 
-
-  initializeMap: function () {
-    this.map = Game.add.tilemap('FirstLevel');
-
+  initializeMap() {
+    var map = this.add.tilemap('FirstLevel');
     var mapInfo = MapInfo['FirstLevel'];
 
-    this.map.addTilesetImage(mapInfo.tilesetName, mapInfo.tilesetImage, 35, 35);
+    map.addTilesetImage(mapInfo.tilesetName, mapInfo.tilesetImage, 35, 35);
 
-    this.groundLayer = new Phaser.TilemapLayer(Game, this.map, this.map.getLayerIndex(mapInfo.groundLayer), Game.width, Game.height);
-    Game.world.addAt(this.groundLayer, 0);
-    this.groundLayer.resizeWorld();
+    var groundLayer = new Phaser.TilemapLayer(this.game, map, map.getLayerIndex(mapInfo.groundLayer), this.game.width, this.game.height);
+    this.game.world.addAt(groundLayer, 0);
+    groundLayer.resizeWorld();
 
-    this.blockLayer = new Phaser.TilemapLayer(Game, this.map, this.map.getLayerIndex(mapInfo.blockLayer), Game.width, Game.height);
-    Game.world.addAt(this.blockLayer, 1);
-    this.blockLayer.resizeWorld();
+    var blockLayer = new Phaser.TilemapLayer(this.game, map, map.getLayerIndex(mapInfo.blockLayer), this.game.width, this.game.height);
+    this.game.world.addAt(blockLayer, 1);
+    blockLayer.resizeWorld();
 
 
-    this.map.setCollision(mapInfo.collisionTiles, true, mapInfo.blockLayer);
+    map.setCollision(mapInfo.collisionTiles, true, mapInfo.blockLayer);
   }
 }
+
+export default GameLevel;

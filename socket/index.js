@@ -6,7 +6,7 @@ module.exports = function(server){
   var Player  = require('../entity/player');
   var MapInfo = require('../entity/common/map_info');
 
-  TILE_SIZE = 35;
+  const TILE_SIZE = 35;
 
   Lobby.initialize();
 

@@ -1,19 +1,17 @@
-var BootState = function () {
+class Boot extends Phaser.State {
 
-};
-
-module.exports = BootState;
-
-BootState.prototype = {
-
-  create: function () {
+  preload() {
     console.log('BootState')
-
-    // This is not mandatory, but useful, as it will make the game keep reacting to messages from the server even when the game window doesn’t have focus (which is a desired behavior for most games).
-    Game.stage.disableVisibilityChange = true;
-
-    Game.physics.startSystem(Phaser.Physics.ARCADE);
-    Game.state.start('load');
   }
 
-};
+  create() {
+    // This is not mandatory, but useful, as it will make the game keep reacting to messages from the server even when the game window doesn’t have focus (which is a desired behavior for most games).
+    this.stage.disableVisibilityChange = true;
+
+    this.physics.startSystem(Phaser.Physics.ARCADE);
+
+    this.state.start('Preload');
+  }
+}
+
+export default Boot;

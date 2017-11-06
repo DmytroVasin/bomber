@@ -1,63 +1,61 @@
-var PendingGameState = function() {};
+import {
+  xOffset,
+  yOffset,
 
-module.exports = PendingGameState;
+  buttonXOffset,
+  startGameButtonYOffset,
+  leaveButtonYOffset,
 
-var xOffset = 180;
-var yOffset = 25;
+  characterSquareStartingX,
+  characterSquareStartingY,
+  characterSquareXDistance,
+  characterSquareYDistance,
 
-var buttonXOffset = 345;
-var startGameButtonYOffset = 320;
-var leaveButtonYOffset = 370;
+  minPlayerMessageOffsetX,
+  minPlayerMessageOffsetY,
 
-var characterSquareStartingX = 345;
-var characterSquareStartingY = 80;
-var characterSquareXDistance = 105;
-var characterSquareYDistance = 100;
+  characterOffsetX,
+  characterOffsetY
+} from '../utils/constants';
 
-var minPlayerMessageOffsetX = 330;
-var minPlayerMessageOffsetY = 425;
+class SelectMap extends Phaser.State {
 
-var characterOffsetX = 4.5;
-var characterOffsetY = 4.5;
+  init(game_id) {
+    this.profileBoxes = [];
+    this.profileImages = [];
 
-var profileBoxes = []
-var profileImages = [];
-
-PendingGameState.prototype = {
-  init: function (game_id) {
     this.game_id = game_id;
 
     clientSocket.on('update players', this.populateCharacterSquares.bind(this));
     clientSocket.on('launch game', this.startGame.bind(this));
-  },
+  }
 
-  create: function() {
-    Game.add.sprite(0, 0, 'background_select');
-    Game.add.image(xOffset, yOffset, 'pending_game_backdrop');
+  create() {
+    this.add.sprite(0, 0, 'background_select');
+    this.add.image(xOffset, yOffset, 'pending_game_backdrop');
 
-    this.startGameButton = Game.add.button(buttonXOffset, startGameButtonYOffset, 'start_game_button', this.startGameAction, this, 2, 2);
+    this.startGameButton = this.add.button(buttonXOffset, startGameButtonYOffset, 'start_game_button', this.startGameAction, this, 2, 2);
     this.startGameButton.input.enabled = false
     this.startGameButton.input.useHandCursor = false
 
-    Game.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, this, 1, 0);
+    this.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, this, 1, 0);
 
     this.drawCharacterSquares();
 
-    this.minPlayerMessage = Game.add.text(minPlayerMessageOffsetX, minPlayerMessageOffsetY, 'Cannot start game without\nat least 2 players.', { font: 'Carter One', fill: 'red', fontSize: 17, visible: false });
+    this.minPlayerMessage = this.add.text(minPlayerMessageOffsetX, minPlayerMessageOffsetY, 'Cannot start game without\nat least 2 players.', { font: 'Carter One', fill: 'red', fontSize: 17, visible: false });
 
-    // DEBUGGG:
-    Game.add.text(330, 100, this.game_id, { font: 'Carter One', fill: 'red', fontSize: 17});
+    this.add.text(330, 100, this.game_id, { font: 'Carter One', fill: 'red', fontSize: 17});
 
     clientSocket.emit('enter pending game', { game_id: this.game_id });
-  },
+  }
 
-  drawCharacterSquares: function() {
-    var xOffset = characterSquareStartingX;
-    var yOffset = characterSquareStartingY;
+  drawCharacterSquares() {
+    let xOffset = characterSquareStartingX;
+    let yOffset = characterSquareStartingY;
 
-    for(var i = 0; i < 2; i++) {
-      var profileBox = Game.add.sprite(xOffset, yOffset, 'character_square', 0);
-      profileBoxes[i] = profileBox
+    for(let i = 0; i < 2; i++) {
+      let profileBox = this.add.sprite(xOffset, yOffset, 'character_square', 0);
+      this.profileBoxes[i] = profileBox
 
       if(i % 2 == 0) {
         xOffset += characterSquareXDistance;
@@ -66,20 +64,20 @@ PendingGameState.prototype = {
         yOffset += characterSquareYDistance;
       }
     }
-  },
+  }
 
-  populateCharacterSquares: function(data) {
-    for (let image of profileImages) {
+  populateCharacterSquares(data) {
+    for (let image of this.profileImages) {
       // NOTE: 1. Not optimal way to rerender, we should implement AddPlayer, RemovePlayer
       // NOTE: 2. You did not destroy object, it still in memory. Just marked as destroyed.
       image.destroy();
     }
 
     data.players.forEach( (player, i) => {
-      var playerSquare = profileBoxes[i]
-      var playerImage = Game.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + player.color);
+      let playerSquare = this.profileBoxes[i]
+      let playerImage = this.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + player.color);
 
-      profileImages[i] = playerImage
+      this.profileImages[i] = playerImage
 
       playerSquare.addChild(playerImage)
     })
@@ -89,35 +87,37 @@ PendingGameState.prototype = {
     } else {
       this.disableStartGame();
     }
-  },
+  }
 
-  enableStartGame: function() {
+  enableStartGame() {
     this.minPlayerMessage.visible = false;
 
     this.startGameButton.setFrames(1, 0);
     this.startGameButton.inputEnabled = true;
     this.startGameButton.input.useHandCursor = true
-  },
+  }
 
-  disableStartGame: function (){
+  disableStartGame(){
     this.minPlayerMessage.visible = true;
 
     this.startGameButton.setFrames(2, 2);
     this.startGameButton.inputEnabled = false;
     this.startGameButton.input.useHandCursor = false
-  },
+  }
 
-  leaveGameAction: function() {
+  leaveGameAction() {
     clientSocket.emit('leave pending game', { game_id: this.game_id });
 
-    Game.state.start('lobby');
-  },
+    this.state.start('Menu');
+  }
 
-  startGameAction: function() {
+  startGameAction() {
     clientSocket.emit('create game', { game_id: this.game_id });
-  },
+  }
 
-  startGame: function(data) {
-    Game.state.start('game_level', true, false, data.game.id);
+  startGame(data) {
+    this.state.start('GameLevel', true, false, data.game.id);
   }
 }
+
+export default SelectMap;

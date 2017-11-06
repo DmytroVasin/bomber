@@ -1,18 +1,26 @@
-// http://perplexingtech.weebly.com/game-dev-blog/using-states-in-phaserjs-javascript-game-developement
+// https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
-window.Game = new Phaser.Game(875, 525, Phaser.AUTO, 'bombattack');
+import Boot from './states/boot';
+import Preload from './states/preload';
+import Menu from './states/menu';
+import SelectMap from './states/select_map';
+import PendingGame from './states/pending_game';
+import GameLevel from './states/game_level';
 
-start();
+class Game extends Phaser.Game {
+  constructor() {
+    super(875, 525, Phaser.AUTO);
 
-function start() {
-  clientSocket = io.connect();
+    this.state.add('Boot',         Boot);
+    this.state.add('Preload',      Preload);
+    this.state.add('Menu',         Menu);
+    this.state.add('SelectMap',    SelectMap);
+    this.state.add('PendingGame',  PendingGame);
+    this.state.add('GameLevel',    GameLevel);
 
-  Game.state.add('boot',         require('./states/boot'));
-  Game.state.add('load',         require('./states/load'));
-  Game.state.add('lobby',        require('./states/lobby'));
-  Game.state.add('select',       require('./states/select'));
-  Game.state.add('pending_game', require('./states/pending_game'));
-  Game.state.add('game_level',   require('./states/game_level'));
+    this.state.start('Boot');
+  }
+}
 
-  Game.state.start('boot');
-};
+new Game();
+window.clientSocket = io.connect();
