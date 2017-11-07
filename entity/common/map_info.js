@@ -1,5 +1,6 @@
 var MapInfo = {
   FirstLevel: {
+    tileSize: 35,
     spawnLocations: [{x: 8, y: 1}, {x: 23, y: 1}, {x: 3, y: 1}, {x: 12, y: 6}],
     collisionTiles: [3, 4],
     groundLayer: "Ground",

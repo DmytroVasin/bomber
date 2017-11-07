@@ -1,12 +1,8 @@
 module.exports = function(server){
   serverSocket = require('socket.io')(server);
 
-  var Lobby   = require('../lobby');
-  var Game    = require('../entity/game');
-  var Player  = require('../entity/player');
-  var MapInfo = require('../entity/common/map_info');
-
-  const TILE_SIZE = 35;
+  var Lobby    = require('../lobby');
+  var { Game } = require('../entity/game');
 
   Lobby.initialize();
 
@@ -26,26 +22,14 @@ module.exports = function(server){
     client.on('disconnect', onClientDisconnect);
   });
 
-
-
   function onStartGame(data) {
     var pending_game = Lobby.startGame(data.game_id);
 
-    var game = new Game(pending_game.id);
-
-    // This is part of the Game Init.
-    // --------------------------
-    pending_game.players.forEach( (player, i) => {
-      var spawnPoint = MapInfo['FirstLevel'].spawnLocations[i];
-
-      var newPlayer = new Player(spawnPoint.x * TILE_SIZE, spawnPoint.y * TILE_SIZE, "down", player.id, player.color);
-      newPlayer.spawnPoint = spawnPoint;
-
-      game.players[newPlayer.id] = newPlayer;
-    })
-
-    game.numPlayersAlive = pending_game.players.length;
-    // --------------------------
+    var game = new Game({
+      id: pending_game.id,
+      playersInfo: pending_game.players,
+      numPlayersAlive: pending_game.players.length
+    });
 
     serverSocket.sockets.in(game.id).emit('launch game', { game: game });
   };

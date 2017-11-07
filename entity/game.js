@@ -1,18 +1,29 @@
-var DEFAULT_NUM_ROUNDS = 3;
+var MapInfo = require('../entity/common/map_info');
+var { Player }  = require('../entity/player');
 
-var Game = function (id) {
-  this.id = id;
-  this.players = {};
-  this.map = {};
-  this.bombs = {};
-  this.numPlayersAlive = 0;
-  this.readyRound = [];
-  this.awaiting = false;
-  this.numRounds = DEFAULT_NUM_ROUNDS;
-  this.currentRound = 1;
-};
+class Game {
+  constructor(json) {
+    this.spawnPoints = MapInfo['FirstLevel'].spawnLocations;
+    this.tile_size = MapInfo['FirstLevel'].tileSize;
 
-Game.prototype = {
-};
+    this.id = json.id;
+    this.players = this.createPlayers(json.playersInfo);
+    this.numPlayersAlive = json.numPlayersAlive;
+  }
 
-module.exports = Game;
+  createPlayers(playersInfo) {
+    let gamePlayers = []
+
+    for (let info of playersInfo) {
+      let spawn = this.spawnPoints.pop();
+
+      let player = new Player(spawn.x * this.tile_size, spawn.y * this.tile_size, 'down', info.id, info.color)
+
+      gamePlayers.push(player);
+    }
+
+    return gamePlayers;
+  }
+}
+
+exports.Game = Game;
