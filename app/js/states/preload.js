@@ -8,7 +8,6 @@ class Preload extends Phaser.State {
     this.load.spritesheet("game_number", 'images/game_number.png', 522, 48);
     this.load.image('background_select', 'images/Background_select.png');
     this.load.image('select_stage', 'images/select_stage.png');
-    this.load.spritesheet('ok_button', 'images/ok_button.png', 60, 60);
     this.load.image('danger_desert_thumbnail', 'images/danger_desert_thumbnail.png');
 
     this.load.image('pending_game_backdrop', 'images/lobby_backdrop.png');
