@@ -1,7 +1,8 @@
 class PendingGame {
 
-  constructor(game_id) {
-    this.id = game_id;
+  constructor(map_id) {
+    this.id = this.randomGameName();
+    this.map_id = map_id;
     this.players = [];
     this.availableColors = ['white', 'blue', 'black', 'green']
   }
@@ -30,6 +31,10 @@ class PendingGame {
 
   isFull() {
     return this.players.length === 2
+  }
+
+  randomGameName(){
+    return (new Date()).valueOf().toString();
   }
 }
 

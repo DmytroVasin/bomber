@@ -2,6 +2,8 @@ class Preload extends Phaser.State {
 
   preload() {
     console.log('LoadState')
+// DIFFERENCE between spritsheet and image
+
 
     // this.load.image('background', "images/background.png");
     this.load.spritesheet("game_slot", 'images/game_slot.png', 522, 48);
