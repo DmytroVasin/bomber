@@ -28,7 +28,8 @@ module.exports = function(server){
     var game = new Game({
       id: pending_game.id,
       playersInfo: pending_game.players,
-      numPlayersAlive: pending_game.players.length
+      numPlayersAlive: pending_game.players.length,
+      map_id: pending_game.map_id
     });
 
     serverSocket.sockets.in(game.id).emit('launch game', { game: game });

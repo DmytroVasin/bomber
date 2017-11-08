@@ -24,8 +24,9 @@ class Preload extends Phaser.State {
     this.load.image('bomberman_head_black', 'images/icon_black.png');
 
 
-    this.load.tilemap('FirstLevel', 'game_levels/first_level.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tiles', 'game_levels/tileset.png');
+    this.load.tilemap('level_1', 'game_levels/level_1.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level_2', 'game_levels/level_2.json', null, Phaser.Tilemap.TILED_JSON);
 
 
     this.add.text(80, 150, 'Loading...', { font: '30px Courier', fill: '#FFFFFF' });

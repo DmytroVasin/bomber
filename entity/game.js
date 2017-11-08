@@ -2,11 +2,12 @@ var MapInfo = require('../entity/common/map_info');
 var { Player }  = require('../entity/player');
 
 class Game {
-  constructor(json) {
-    this.spawnPoints = MapInfo['FirstLevel'].spawnLocations;
-    this.tile_size = MapInfo['FirstLevel'].tileSize;
 
+  constructor(json) {
     this.id = json.id;
+    this.map_id = json.map_id;
+    this.spawnPoints = MapInfo[json.map_id].spawnLocations;
+    this.tile_size = MapInfo[json.map_id].tileSize;
     this.players = this.createPlayers(json.playersInfo);
     this.numPlayersAlive = json.numPlayersAlive;
   }

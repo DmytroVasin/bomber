@@ -2,6 +2,7 @@ class PendingGame {
 
   constructor(map_id) {
     this.id = this.randomGameName();
+
     this.map_id = map_id;
     this.players = [];
     this.availableColors = ['white', 'blue', 'black', 'green']

@@ -18,7 +18,7 @@ import {
   characterOffsetY
 } from '../utils/constants';
 
-class SelectMap extends Phaser.State {
+class PendingGame extends Phaser.State {
 
   init(game_id) {
     this.profileBoxes = [];
@@ -116,8 +116,8 @@ class SelectMap extends Phaser.State {
   }
 
   startGame(data) {
-    this.state.start('GameLevel', true, false, data.game.id);
+    this.state.start('GameLevel', true, false, data.game);
   }
 }
 
-export default SelectMap;
+export default PendingGame;

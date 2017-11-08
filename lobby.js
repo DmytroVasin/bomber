@@ -24,11 +24,12 @@ var Lobby = {
   onGameCreation: function(data, callback) {
     console.log('>>>> ON NEW GAME CREATED');
     var newGame = new PendingGame(data.map_id);
+
     allPendingGames.push(newGame)
 
     serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
 
-    callback(newGame.id);
+    callback({ game_id: newGame.id });
   },
 
   onEnterPendingGame: function (data) {

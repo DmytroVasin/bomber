@@ -45,10 +45,8 @@ class SelectMap extends Phaser.State {
   confirmStageSelection(){
     var map_id = this.slider.getCurrentIndex()
 
-    clientSocket.emit('new game created', { map_id: map_id }, function (data) {
-      debugger
-      console.log(data); // data will be 'woot'
-      this.state.start('PendingGame', true, false, xxx.game_id);
+    clientSocket.emit('new game created', { map_id: map_id }, (data) => {
+      this.state.start('PendingGame', true, false, data.game_id);
     });
 
   }
