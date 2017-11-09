@@ -5,7 +5,7 @@ class PendingGame {
 
     this.map_id = map_id;
     this.players = [];
-    this.availableColors = ['white', 'blue', 'black', 'green']
+    this.availableColors = ['white', 'blue', 'black', 'red']
   }
 
   removePlayer(player_id) {

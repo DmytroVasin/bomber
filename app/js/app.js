@@ -22,5 +22,5 @@ class Game extends Phaser.Game {
   }
 }
 
-new Game();
+window.gggggame = new Game();
 window.clientSocket = io.connect();
