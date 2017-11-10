@@ -1,5 +1,3 @@
-var webpack = require('webpack');
-
 const config = {
   entry: './app/js/app.js',
   resolve: {
@@ -15,10 +13,7 @@ const config = {
       {
         test: /.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
-        query: {
-          presets: ['es2015', 'stage-0']
-        }
+        exclude: /node_modules/
       }
     ]
   }

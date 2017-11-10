@@ -1,4 +1,5 @@
-// https://phaser.io/examples/v2/tilemaps/csv-map-collide
+// https://github.com/lean/phaser-es6-webpack/blob/master/src/sprites/Mushroom.js
+// https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
 var DEFAULT_PLAYER_SPEED = 250;
 
