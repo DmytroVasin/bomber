@@ -5,14 +5,13 @@ class GameLevel extends Phaser.State {
   init(game) {
     this.currentGame = game
     this.gameMap = MapInfo[this.currentGame.map_id];
-    this.currentPlayerId = clientSocket.id
+    this.currentPlayerId = clientSocket.id;
+
+    this.remotePlayers = {}
   }
 
   create() {
     this.initializeMap();
-
-    gggggame.physics.arcade.enable(this.blockLayer);
-
     this.initializePlayers();
   }
 
@@ -28,6 +27,8 @@ class GameLevel extends Phaser.State {
     this.blockLayer.resizeWorld();
 
     map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
+
+    this.game.physics.arcade.enable(this.blockLayer);
   }
 
 
@@ -35,23 +36,19 @@ class GameLevel extends Phaser.State {
     for (let player of this.currentGame.players) {
 
       if (player.id == this.currentPlayerId) {
-        this.player = new Player(player.id, player.xSpawn, player.ySpawn, player.color);
+        this.player = new Player(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
       } else {
-        // this.remotePlayers[data.id] = new RemotePlayer(data.x, data.y, data.id, data.color);
+        this.remotePlayers[player.id] = new Player(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
       }
     }
   }
 
   update() {
-    gggggame.physics.arcade.collide(this.player, this.blockLayer);
-    this.player.handleInput();
+    this.game.physics.arcade.collide(this.player, this.blockLayer);
   }
 
   render () {
-    gggggame.debug.body(this.player);
-
-    this.groundLayer.debug = true
-    this.blockLayer.debug = true
+    // this.game.debug.body(this.blockLayer);
   }
 }
 
