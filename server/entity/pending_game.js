@@ -4,22 +4,22 @@ class PendingGame {
     this.id = this.randomGameName();
 
     this.map_id = map_id;
-    this.players = [];
+    this.players_info = [];
     this.availableColors = ['white', 'blue', 'black', 'red']
   }
 
   removePlayer(player_id) {
     // Find player
-    var player = this.players.find(item => item.id === player_id);
+    var player = this.players_info.find(item => item.id === player_id);
 
     this.availableColors.push(player.color)
     // Remove user from game
-    this.players = this.players.filter(item => item.id !== player_id);
+    this.players_info = this.players_info.filter(item => item.id !== player_id);
   }
 
   addPlayer(player_id) {
     // TODO: Implement Like a CLASS ???? PendingGmaePlayer
-    this.players.push({ id: player_id, color: this.getAvailableColor() });
+    this.players_info.push({ id: player_id, color: this.getAvailableColor() });
   }
 
   getAvailableColor() {
@@ -27,11 +27,11 @@ class PendingGame {
   }
 
   isEmpty() {
-    return this.players.length === 0
+    return this.players_info.length === 0
   }
 
   isFull() {
-    return this.players.length === 2
+    return this.players_info.length === 2
   }
 
   randomGameName(){

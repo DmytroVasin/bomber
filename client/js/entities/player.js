@@ -2,16 +2,15 @@
 
 export default class Player extends Phaser.Sprite {
 
-  constructor(game, id, xSpawn, ySpawn, color) {
-    super(game, xSpawn, ySpawn, 'bomberman_' + color);
+  constructor(game, id, spawn, color) {
+    super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
     this.game = game
     this.id = id;
 
-    this.position = {x: xSpawn, y: ySpawn};
+    this.position = spawn;
 
-
-    this.spawnPoint = {xSpawn: xSpawn, ySpawn: ySpawn};
+    this.spawnPoint = {xSpawn: spawn.x, ySpawn: spawn.y};
     this.facing = 'down';
     this.speed = 250;
 

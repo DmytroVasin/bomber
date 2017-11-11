@@ -73,16 +73,16 @@ class PendingGame extends Phaser.State {
       image.destroy();
     }
 
-    data.players.forEach( (player, i) => {
+    data.players_info.forEach( (info, i) => {
       let playerSquare = this.profileBoxes[i]
-      let playerImage = this.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + player.color);
+      let playerImage = this.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + info.color);
 
       this.profileImages[i] = playerImage
 
       playerSquare.addChild(playerImage)
     })
 
-    if(data.players.length > 1) {
+    if(data.players_info.length > 1) {
       this.enableStartGame();
     } else {
       this.disableStartGame();

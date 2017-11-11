@@ -46,7 +46,7 @@ var Lobby = {
 
     current_game.addPlayer(this.id);
 
-    serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
+    serverSocket.sockets.in(current_game.id).emit('update players', { players_info: current_game.players_info });
 
     if ( current_game.isFull() ){
      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
@@ -74,7 +74,7 @@ var Lobby = {
       serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
     }
 
-    serverSocket.sockets.in(current_game.id).emit('update players', { players: current_game.players });
+    serverSocket.sockets.in(current_game.id).emit('update players', { players_info: current_game.players_info });
   },
 
   startGame: function(game_id) {

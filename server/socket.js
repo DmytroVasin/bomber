@@ -27,8 +27,7 @@ module.exports = function(server){
 
     var game = new Game({
       id: pending_game.id,
-      playersInfo: pending_game.players,
-      numPlayersAlive: pending_game.players.length,
+      playersInfo: pending_game.players_info,
       map_id: pending_game.map_id
     });
 

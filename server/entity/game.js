@@ -5,7 +5,7 @@ class Game {
   constructor(json) {
     this.id = json.id;
     this.map_id = json.map_id;
-    this.players = this.createPlayers(json.playersInfo);
+    this.players_info = this.createPlayers(json.playersInfo);
   }
 
   createPlayers(playersInfo) {

@@ -1,4 +1,4 @@
-var MapInfo = require('../../game_levels/map_info');
+import MapInfo from '../../game_levels/map_info';
 import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
 
@@ -72,15 +72,17 @@ class GameLevel extends Phaser.State {
 
 
   initializePlayers() {
-    for (let player of this.currentGame.players) {
+    for (let player_info of this.currentGame.players_info) {
 
-      if (player.id == this.currentPlayerId) {
-        this.player = new Player(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
+      if (player_info.id == this.currentPlayerId) {
+        this.player = new Player(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       } else {
-        this.enemyPlayers[player.id] = new EnemyPlayer(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
+        this.enemyPlayers[player_info.id] = new EnemyPlayer(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       }
     }
   }
+
+
 
   update() {
     this.game.physics.arcade.collide(this.player, this.blockLayer);
