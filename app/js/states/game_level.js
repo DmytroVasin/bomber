@@ -1,5 +1,6 @@
 var MapInfo = require('../../../entity/common/map_info');
 import Player from '../entities/player';
+import EnemyPlayer from '../entities/enemy_player';
 
 class GameLevel extends Phaser.State {
   init(game) {
@@ -7,7 +8,7 @@ class GameLevel extends Phaser.State {
     this.gameMap = MapInfo[this.currentGame.map_id];
     this.currentPlayerId = clientSocket.id;
 
-    this.remotePlayers = {}
+    this.enemyPlayers = {}
   }
 
   create() {
@@ -29,6 +30,44 @@ class GameLevel extends Phaser.State {
     map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
     this.game.physics.arcade.enable(this.blockLayer);
+
+
+
+    this.setEventHandlers();
+  }
+
+  setEventHandlers() {
+    // clientSocket.on('move player', this.onMovePlayer.bind(this));
+  }
+
+  onMovePlayer(data) {
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STOP HERE
+
+
+
+
+        // if (player && data.id == player.id || this.gameFrozen) {
+        //     return;
+        // }
+        // var movingPlayer = this.remotePlayers[data.id];
+        // if (movingPlayer.targetPosition) {
+        //     if (data.x == movingPlayer.targetPosition.x && data.y == movingPlayer.targetPosition.y) {
+        //         return;
+        //     }
+        //     movingPlayer.animations.play(data.facing);
+        //     movingPlayer.position.x = movingPlayer.targetPosition.x;
+        //     movingPlayer.position.y = movingPlayer.targetPosition.y;
+        //     movingPlayer.distanceToCover = {
+        //         x: data.x - movingPlayer.targetPosition.x,
+        //         y: data.y - movingPlayer.targetPosition.y
+        //     };
+        //     movingPlayer.distanceCovered = {x: 0, y: 0};
+        // }
+        // movingPlayer.targetPosition = {x: data.x, y: data.y};
+        // movingPlayer.lastMoveTime = game.time.now;
+
+
   }
 
 
@@ -38,7 +77,7 @@ class GameLevel extends Phaser.State {
       if (player.id == this.currentPlayerId) {
         this.player = new Player(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
       } else {
-        this.remotePlayers[player.id] = new Player(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
+        this.enemyPlayers[player.id] = new EnemyPlayer(this.game, player.id, player.xSpawn, player.ySpawn, player.color);
       }
     }
   }

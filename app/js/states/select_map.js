@@ -1,9 +1,3 @@
-// import Player from '../prefabs/player';
-// import Enemy from '../prefabs/enemy';
-// import HUD from '../prefabs/hud';
-//
-// TODO: Slider: https://github.com/netgfx/PhaseSlider/blob/15c748f5ba7ff3eb9c17bd6a55f3aa9540183915/examples/core_example1.js
-
 import {
   xOffset,
   yOffset,

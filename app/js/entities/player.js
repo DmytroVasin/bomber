@@ -7,6 +7,10 @@ export default class Player extends Phaser.Sprite {
 
     this.game = game
     this.id = id;
+
+    this.position = {x: xSpawn, y: ySpawn};
+
+
     this.spawnPoint = {xSpawn: xSpawn, ySpawn: ySpawn};
     this.facing = 'down';
     this.speed = 250;
