@@ -8,7 +8,9 @@ export default class EnemyPlayer extends Phaser.Sprite {
 
     this.position = spawn;
 
-    this.spawnPoint = {xSpawn: spawn.x, ySpawn: spawn.y};
+    this.x = spawn.x
+    this.y = spawn.y
+
     this.facing = 'down';
     this.speed = 250;
 

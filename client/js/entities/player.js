@@ -10,8 +10,6 @@ export default class Player extends Phaser.Sprite {
 
     this.position = spawn;
 
-    this.spawnPoint = {xSpawn: spawn.x, ySpawn: spawn.y};
-    this.facing = 'down';
     this.speed = 250;
 
     this.game.physics.arcade.enable(this);
@@ -25,6 +23,8 @@ export default class Player extends Phaser.Sprite {
     this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
 
     this.game.add.existing(this);
+
+    this.loop = game.time.events.loop(1000 , this.positionUpdaterLoop, this);
   }
 
   update () {
@@ -32,22 +32,25 @@ export default class Player extends Phaser.Sprite {
 
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
       this.body.velocity.x = -this.speed;
-      this.play('left');
+      this.animations.play('left');
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
       this.body.velocity.x = this.speed;
-      this.play('right');
+      this.animations.play('right');
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
       this.body.velocity.y = -this.speed;
-      this.play('up');
+      this.animations.play('up');
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
       this.body.velocity.y = this.speed;
-      this.play('down')
+      this.animations.play('down')
     } else {
       this.animations.stop();
     }
 
-
-    console.log('--------------')
     this.game.debug.body(this);
+  }
+
+  positionUpdaterLoop() {
+    // Trottled function:
+    clientSocket.emit('update player position', { x: this.position.x, y: this.position.y });
   }
 }

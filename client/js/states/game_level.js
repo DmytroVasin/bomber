@@ -13,7 +13,10 @@ class GameLevel extends Phaser.State {
 
   create() {
     this.initializeMap();
+
     this.initializePlayers();
+
+    this.setEventHandlers();
   }
 
   initializeMap() {
@@ -30,46 +33,42 @@ class GameLevel extends Phaser.State {
     map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
     this.game.physics.arcade.enable(this.blockLayer);
-
-
-
-    this.setEventHandlers();
   }
 
   setEventHandlers() {
-    // clientSocket.on('move player', this.onMovePlayer.bind(this));
+    clientSocket.on('move player', this.onMovePlayer.bind(this));
   }
 
   onMovePlayer(data) {
+    console.log('-------------------------------------------')
+    console.log(data);
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STOP HERE
+    var playerId = data.id;
+    var x = data.x;
+    var y = data.y;
 
+    var movingPlayer = this.enemyPlayers[data.id];
 
+    if (!movingPlayer) {
+      return;
+    }
 
+    // console.log('-----------------------------')
+    // console.log("Player ID: " + playerId + " #=> " + x + ":" + y )
+    // console.log(movingPlayer)
+    // console.log('-----------------------------')
 
-        // if (player && data.id == player.id || this.gameFrozen) {
-        //     return;
-        // }
-        // var movingPlayer = this.remotePlayers[data.id];
-        // if (movingPlayer.targetPosition) {
-        //     if (data.x == movingPlayer.targetPosition.x && data.y == movingPlayer.targetPosition.y) {
-        //         return;
-        //     }
-        //     movingPlayer.animations.play(data.facing);
-        //     movingPlayer.position.x = movingPlayer.targetPosition.x;
-        //     movingPlayer.position.y = movingPlayer.targetPosition.y;
-        //     movingPlayer.distanceToCover = {
-        //         x: data.x - movingPlayer.targetPosition.x,
-        //         y: data.y - movingPlayer.targetPosition.y
-        //     };
-        //     movingPlayer.distanceCovered = {x: 0, y: 0};
-        // }
-        // movingPlayer.targetPosition = {x: data.x, y: data.y};
-        // movingPlayer.lastMoveTime = game.time.now;
+    if (movingPlayer.targetPosition) {
+      // if (x == movingPlayer.targetPosition.x && y == movingPlayer.targetPosition.y) {
+      //   return;
+      // }
 
+      movingPlayer.position.x = movingPlayer.targetPosition.x;
+      movingPlayer.position.y = movingPlayer.targetPosition.y;
+    }
 
+    movingPlayer.targetPosition = { x: x, y: y };
   }
-
 
   initializePlayers() {
     for (let player_info of this.currentGame.players_info) {
@@ -81,8 +80,6 @@ class GameLevel extends Phaser.State {
       }
     }
   }
-
-
 
   update() {
     this.game.physics.arcade.collide(this.player, this.blockLayer);
