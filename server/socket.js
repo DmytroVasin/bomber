@@ -1,8 +1,8 @@
 module.exports = function(server){
   serverSocket = require('socket.io')(server);
 
-  var Lobby    = require('../lobby');
-  var { Game } = require('../entity/game');
+  var Lobby    = require('./lobby');
+  var { Game } = require('./entity/game');
 
   Lobby.initialize();
 

@@ -1,4 +1,4 @@
-var MapInfo = require('../../../entity/common/map_info');
+var MapInfo = require('../../game_levels/map_info');
 import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
 

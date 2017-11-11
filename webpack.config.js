@@ -1,10 +1,10 @@
 const config = {
-  entry: './app/js/app.js',
+  entry: './client/js/app.js',
   resolve: {
     extensions: ['.js']
   },
   output: {
-    path: __dirname + '/app',
+    path: __dirname + '/client',
     filename: 'bundle.js'
   },
   devtool: 'source-map',

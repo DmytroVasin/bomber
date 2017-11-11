@@ -1,4 +1,4 @@
-var MapInfo = [
+module.exports = [
   {
     tilemap: 'level_1',
     tileset: 'tiles',
@@ -19,5 +19,3 @@ var MapInfo = [
     destructibleTileId: 4
   }
 ]
-
-module.exports = MapInfo;

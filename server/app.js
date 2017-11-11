@@ -1,12 +1,12 @@
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-// var path = require('path');
+var path = require('path');
 
-app.use(express.static(__dirname + '/app'));
+app.use(express.static(path.join(__dirname, '..', 'client')));
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(path.join(__dirname, 'index'));
 });
 
 server.listen(3000, function(){
