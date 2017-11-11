@@ -1,4 +1,4 @@
 .DS_Store
 node_modules
-app/bundle.js
-app/bundle.js.map
+client/bundle.js
+client/bundle.js.map
