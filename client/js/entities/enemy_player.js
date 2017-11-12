@@ -28,7 +28,10 @@ export default class EnemyPlayer extends Phaser.Sprite {
   }
 
   update () {
-    // console.log('--------------')
     this.game.debug.body(this);
+  }
+
+  goTo(position) {
+    this.game.add.tween(this).to(position, 100, Phaser.Easing.Linear.None, true);
   }
 }

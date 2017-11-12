@@ -50,13 +50,8 @@ class GameLevel extends Phaser.State {
       return;
     }
 
-    // console.log('-----------------------------')
-    // console.log("Player ID: " + playerId + " #=> " + x + ":" + y )
-    // console.log('-----------------------------')
-
     if (movingPlayer.targetPosition) {
-      movingPlayer.position.x = movingPlayer.targetPosition.x;
-      movingPlayer.position.y = movingPlayer.targetPosition.y;
+      movingPlayer.goTo(movingPlayer.targetPosition)
     }
 
     movingPlayer.targetPosition = { x: x, y: y };
