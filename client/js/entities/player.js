@@ -12,6 +12,7 @@ export default class Player extends Phaser.Sprite {
     this.prevPosition = {x: 0, y: 0}; // new Phaser.Point
 
     this.speed = 250;
+    this.faceDirection = 'down';
 
     this.game.physics.arcade.enable(this);
 
@@ -34,15 +35,19 @@ export default class Player extends Phaser.Sprite {
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
       this.body.velocity.x = -this.speed;
       this.animations.play('left');
+      this.faceDirection = 'left';
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
       this.body.velocity.x = this.speed;
       this.animations.play('right');
+      this.faceDirection = 'right';
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
       this.body.velocity.y = -this.speed;
       this.animations.play('up');
+      this.faceDirection = 'up';
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
       this.body.velocity.y = this.speed;
       this.animations.play('down')
+      this.faceDirection = 'down';
     } else {
       this.animations.stop();
     }
@@ -52,7 +57,7 @@ export default class Player extends Phaser.Sprite {
 
   positionUpdaterLoop() {
     // If position changed - we should send notification.
-    let newPosition = { x: this.position.x, y: this.position.y }
+    let newPosition = { x: this.position.x, y: this.position.y, faceDirection: this.faceDirection }
 
     if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
       clientSocket.emit('update player position', newPosition);

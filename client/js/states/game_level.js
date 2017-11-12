@@ -40,21 +40,19 @@ class GameLevel extends Phaser.State {
   }
 
   onMovePlayer(data) {
-    var playerId = data.id;
-    var x = data.x;
-    var y = data.y;
-
     var movingPlayer = this.enemyPlayers[data.id];
 
     if (!movingPlayer) {
       return;
     }
 
-    if (movingPlayer.targetPosition) {
-      movingPlayer.goTo(movingPlayer.targetPosition)
-    }
+    movingPlayer.animations.play(data.faceDirection);
+    movingPlayer.goTo({ x: data.x, y: data.y })
 
-    movingPlayer.targetPosition = { x: x, y: y };
+    movingPlayer.lastMoveAt = this.game.time.now;
+
+    // Should be callback after some delay...
+    // this.stopAnimationForMotionlessPlayers();
   }
 
   initializePlayers() {
@@ -74,6 +72,17 @@ class GameLevel extends Phaser.State {
 
   render () {
     // this.game.debug.body(this.blockLayer);
+  }
+
+  stopAnimationForMotionlessPlayers() {
+    console.log('stop animation');
+
+    for (var uuid in this.enemyPlayers) {
+      var enemy = this.enemyPlayers[uuid];
+      if (enemy.lastMoveAt < this.game.time.now - 200) {
+        enemy.animations.stop();
+      }
+    }
   }
 }
 

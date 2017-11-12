@@ -64,6 +64,7 @@ console.log('?????????????????????')
 
     movingPlayer.x = data.x;
     movingPlayer.y = data.y;
+    movingPlayer.faceDirection = data.faceDirection;
 
     // NOTE: BROADCAST ONLY FOR OPPONENTS
     // TODO: Broadcast all player position beacuse we can have several opponents.
@@ -72,6 +73,7 @@ console.log('?????????????????????')
       id: movingPlayer.id,
       x: movingPlayer.x,
       y: movingPlayer.y,
+      faceDirection: movingPlayer.faceDirection
     });
   };
 };
