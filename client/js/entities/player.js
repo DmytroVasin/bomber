@@ -9,6 +9,7 @@ export default class Player extends Phaser.Sprite {
     this.id = id;
 
     this.position = spawn;
+    this.prevPosition = {x: 0, y: 0}; // new Phaser.Point
 
     this.speed = 250;
 
@@ -24,7 +25,7 @@ export default class Player extends Phaser.Sprite {
 
     this.game.add.existing(this);
 
-    this.loop = game.time.events.loop(1000 , this.positionUpdaterLoop, this);
+    this.loop = game.time.events.loop(100 , this.positionUpdaterLoop, this);
   }
 
   update () {
@@ -50,7 +51,12 @@ export default class Player extends Phaser.Sprite {
   }
 
   positionUpdaterLoop() {
-    // Trottled function:
-    clientSocket.emit('update player position', { x: this.position.x, y: this.position.y });
+    // If position changed - we should send notification.
+    let newPosition = { x: this.position.x, y: this.position.y }
+
+    if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
+      clientSocket.emit('update player position', newPosition);
+      this.prevPosition = newPosition;
+    }
   }
 }

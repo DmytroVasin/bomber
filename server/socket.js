@@ -65,7 +65,9 @@ console.log('?????????????????????')
     movingPlayer.x = data.x;
     movingPlayer.y = data.y;
 
-    // BROADCAST ONLY FOR OPPONENTS
+    // NOTE: BROADCAST ONLY FOR OPPONENTS
+    // TODO: Broadcast all player position beacuse we can have several opponents.
+    //       All players position for current game.
     this.broadcast.to(xxxx.id).emit('move player', {
       id: movingPlayer.id,
       x: movingPlayer.x,

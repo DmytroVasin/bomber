@@ -29,6 +29,6 @@ export default class EnemyPlayer extends Phaser.Sprite {
 
   update () {
     // console.log('--------------')
-    // this.game.debug.body(this);
+    this.game.debug.body(this);
   }
 }

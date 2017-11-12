@@ -23,3 +23,16 @@ io.sockets.in('game').emit('eventClient', 'cool game');
 
 # отправить конкретному сокету, по socketid
 io.sockets.socket(socketid).emit('eventClient', 'for your eyes only');
+
+
+
+
+
+
+
+https://www.pubnub.com/tutorials/javascript/multiplayer-game/
+
+https://learn.javascript.ru/set-map
+
+
+uuid

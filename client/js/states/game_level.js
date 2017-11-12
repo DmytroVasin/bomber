@@ -40,9 +40,6 @@ class GameLevel extends Phaser.State {
   }
 
   onMovePlayer(data) {
-    console.log('-------------------------------------------')
-    console.log(data);
-
     var playerId = data.id;
     var x = data.x;
     var y = data.y;
@@ -55,14 +52,9 @@ class GameLevel extends Phaser.State {
 
     // console.log('-----------------------------')
     // console.log("Player ID: " + playerId + " #=> " + x + ":" + y )
-    // console.log(movingPlayer)
     // console.log('-----------------------------')
 
     if (movingPlayer.targetPosition) {
-      // if (x == movingPlayer.targetPosition.x && y == movingPlayer.targetPosition.y) {
-      //   return;
-      // }
-
       movingPlayer.position.x = movingPlayer.targetPosition.x;
       movingPlayer.position.y = movingPlayer.targetPosition.y;
     }
