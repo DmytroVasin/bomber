@@ -31,7 +31,19 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.game.debug.body(this);
   }
 
-  goTo(position) {
-    this.game.add.tween(this).to(position, 100, Phaser.Easing.Linear.None, true);
+  goTo(data) {
+
+    var time = 100// - нужно прочитывать время движения!!
+
+    var tween = this.game.add.tween(this).to({x: data.x, y: data.y}, time, Phaser.Easing.Linear.None, true);
+
+    tween.onStart.add(function(){
+      this.animations.play(data.faceDirection)
+    }, this)
+
+    tween.onComplete.add(function () {
+      this.animations.stop();
+    }, this);
+
   }
 }
