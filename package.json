@@ -4,7 +4,7 @@
   "description": "Bomberman like game",
   "main": "server.js",
   "scripts": {
-    "start": "node server/app.js"
+    "start": "node --inspect server/app.js"
   },
   "author": "Dmytro Vasin",
   "repository": "github.com/DmytroVasin/bomber",

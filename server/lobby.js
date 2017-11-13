@@ -57,24 +57,27 @@ var Lobby = {
     console.log('>>>> ON LEAVE PENDING GAME')
     var current_game = allPendingGames.find(game => game.id === data.game_id);
 
-    this.leave(current_game.game_id);
+    // Trick to live pending game
+    if (current_game) {
+      this.leave(current_game.game_id);
 
-    // place game_id inside Socket connection.... to know when he disconnect
-    this.socket_game_id = null;
+      // place game_id inside Socket connection.... to know when he disconnect
+      this.socket_game_id = null;
 
-    current_game.removePlayer(this.id);
+      current_game.removePlayer(this.id);
 
-    if( current_game.isEmpty() ){
-      allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
-      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
-      return
+      if( current_game.isEmpty() ){
+        allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
+        serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
+        return
+      }
+
+      if ( !current_game.isFull() ){ // Availbable ( User Quit! )
+        serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
+      }
+
+      serverSocket.sockets.in(current_game.id).emit('update players', { players_info: current_game.players_info });
     }
-
-    if ( !current_game.isFull() ){ // Availbable ( User Quit! )
-      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
-    }
-
-    serverSocket.sockets.in(current_game.id).emit('update players', { players_info: current_game.players_info });
   },
 
   startGame: function(game_id) {

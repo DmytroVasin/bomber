@@ -2,7 +2,7 @@ module.exports = function(server){
   serverSocket = require('socket.io')(server);
 
   var Lobby    = require('./lobby');
-  var { Game } = require('./entity/game');
+  var Play    = require('./play');
 
 // FOR NOW;
 var xxxx = null;
@@ -22,29 +22,13 @@ var xxxx = null;
       client.on('enter pending game', Lobby.onEnterPendingGame);
       client.on('leave pending game', Lobby.onLeavePendingGame);
 
-      client.on('create game', onStartGame);
+      client.on('create game', Play.onStartGame);
 
-      client.on('update player position', updatePlayerPosition);
+      client.on('update player position', Play.updatePlayerPosition);
 
       client.on('disconnect', onClientDisconnect);
     });
   }
-
-
-
-  function onStartGame(data) {
-    var pending_game = Lobby.startGame(data.game_id);
-
-    var game = new Game({
-      id: pending_game.id,
-      playersInfo: pending_game.players_info,
-      map_id: pending_game.map_id
-    });
-console.log('?????????????????????')
-    xxxx = game
-
-    serverSocket.sockets.in(game.id).emit('launch game', { game: game });
-  };
 
   function onClientDisconnect() {
     if (this.socket_game_id == null) {
@@ -55,25 +39,7 @@ console.log('?????????????????????')
     console.log('Player was inside game...');
     Lobby.onLeavePendingGame.call(this, { game_id: this.socket_game_id })
 
+    Play.onLeaveGame.call(this, { game_id: this.socket_game_id })
   }
 
-  function updatePlayerPosition(data) {
-    console.log("Player ID: " + this.id + "# => " + data.x + ":" + data.y );
-
-    var movingPlayer = xxxx.players_info.find(item => item.id == this.id);
-
-    movingPlayer.x = data.x;
-    movingPlayer.y = data.y;
-    movingPlayer.faceDirection = data.faceDirection;
-
-    // NOTE: BROADCAST ONLY FOR OPPONENTS
-    // TODO: Broadcast all player position beacuse we can have several opponents.
-    //       All players position for current game.
-    this.broadcast.to(xxxx.id).emit('move player', {
-      id: movingPlayer.id,
-      x: movingPlayer.x,
-      y: movingPlayer.y,
-      faceDirection: movingPlayer.faceDirection
-    });
-  };
 };
