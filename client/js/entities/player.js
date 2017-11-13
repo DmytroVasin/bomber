@@ -26,7 +26,7 @@ export default class Player extends Phaser.Sprite {
 
     this.game.add.existing(this);
 
-    this.loop = game.time.events.loop(100 , this.positionUpdaterLoop, this);
+    game.time.events.loop(100 , this.positionUpdaterLoop, this);
   }
 
   update () {

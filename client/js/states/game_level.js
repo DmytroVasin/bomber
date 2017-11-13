@@ -17,6 +17,8 @@ class GameLevel extends Phaser.State {
     this.initializePlayers();
 
     this.setEventHandlers();
+
+    this.game.time.events.loop(100 , this.stopAnimationLoop, this);
   }
 
   initializeMap() {
@@ -45,8 +47,9 @@ class GameLevel extends Phaser.State {
     if (!movingPlayer) {
       return;
     }
-;
-    movingPlayer.goTo({ x: data.x, y: data.y, faceDirection: data.faceDirection })
+
+    movingPlayer.animations.play(data.faceDirection)
+    movingPlayer.goTo({ x: data.x, y: data.y })
 
     movingPlayer.lastMoveAt = this.game.time.now;
   }
@@ -68,6 +71,18 @@ class GameLevel extends Phaser.State {
 
   render () {
     // this.game.debug.body(this.blockLayer);
+  }
+
+  stopAnimationLoop() {
+    for (let id in this.enemyPlayers) {
+      let enemy = this.enemyPlayers[id];
+
+      if (enemy.lastMoveAt) {
+        if (enemy.lastMoveAt < this.game.time.now - 200) {
+          enemy.animations.stop();
+        }
+      }
+    }
   }
 }
 
