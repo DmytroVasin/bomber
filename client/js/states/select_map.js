@@ -12,9 +12,9 @@ class SelectMap extends Phaser.State {
   preload(){
     this.load.image('pinkBlock', 'images/assets/pinkBlock.png');
     this.load.image('blueBlock', 'images/assets/blueBlock.png');
-    this.load.spritesheet('accept', 'images/assets/ok_but.png', 80, 80);
-    this.load.image('prev', 'images/assets/arrow1.png');
-    this.load.image('next', 'images/assets/arrow2.png');
+    this.load.spritesheet('accept', 'images/assets/accept.png', 80, 80);
+    this.load.image('prev', 'images/assets/prev.png');
+    this.load.image('next', 'images/assets/next.png');
 
     this.slider = new phaseSlider(this);
   }

@@ -18,7 +18,7 @@ class GameLevel extends Phaser.State {
 
     this.setEventHandlers();
 
-    this.game.time.events.loop(100 , this.stopAnimationLoop, this);
+    this.game.time.events.loop(400 , this.stopAnimationLoop, this);
   }
 
   initializeMap() {
