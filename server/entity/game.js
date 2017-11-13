@@ -19,6 +19,16 @@ class Game {
 
     return gamePlayers;
   }
+
+
+  removePlayer(player_id) {
+    // Find player
+    var player = this.players_info.find(item => item.id === player_id);
+
+    // Remove user from game
+    this.players_info = this.players_info.filter(item => item.id !== player_id);
+  }
+
 }
 
 exports.Game = Game;

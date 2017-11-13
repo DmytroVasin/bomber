@@ -31,14 +31,19 @@ var xxxx = null;
   }
 
   function onClientDisconnect() {
+    // debugger;
+
     if (this.socket_game_id == null) {
       console.log('Player was not be inside any game...');
       return
+    } else {
+      console.log('Player was inside game...');
     }
 
-    console.log('Player was inside game...');
+    // If game is pending then use Lobby.
     Lobby.onLeavePendingGame.call(this, { game_id: this.socket_game_id })
 
+    // If game is non-pending then use Play.
     Play.onLeaveGame.call(this, { game_id: this.socket_game_id })
   }
 

@@ -39,6 +39,7 @@ class GameLevel extends Phaser.State {
 
   setEventHandlers() {
     clientSocket.on('move player', this.onMovePlayer.bind(this));
+    clientSocket.on('no opponents', this.onNoOpponents.bind(this));
   }
 
   onMovePlayer(data) {
@@ -83,6 +84,11 @@ class GameLevel extends Phaser.State {
         }
       }
     }
+  }
+
+
+  onNoOpponents() {
+    this.state.start('Win');
   }
 }
 

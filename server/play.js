@@ -50,7 +50,24 @@ var Play = {
     // console.log(this.socket_game_id)
     var current_game = allGames.find(game => game.id === data.game_id);
 
-    debugger
+    // if (current_game) {
+      // WTF WHY IT CALL THIS FUNCTION TWICE!!!!!!
+      current_game.removePlayer(this.id);
+      if (current_game.players_info.length < 2) {
+        if (current_game.players_info.length == 1) {
+          serverSocket.sockets.in(current_game.id).emit('no opponents');
+        }
+
+        Play.terminateExistingGame(current_game.id);
+      }
+    // }
+
+  },
+
+
+  terminateExistingGame: function(game_id) {
+    // Remove user from game
+    allGames = allGames.filter(game => game.id !== game_id);
   }
 }
 

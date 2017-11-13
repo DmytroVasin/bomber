@@ -6,6 +6,7 @@ import Menu from './states/menu';
 import SelectMap from './states/select_map';
 import PendingGame from './states/pending_game';
 import GameLevel from './states/game_level';
+import Win from './states/win';
 
 class Game extends Phaser.Game {
   constructor() {
@@ -17,6 +18,7 @@ class Game extends Phaser.Game {
     this.state.add('SelectMap',    SelectMap);
     this.state.add('PendingGame',  PendingGame);
     this.state.add('GameLevel',    GameLevel);
+    this.state.add('Win',          Win);
 
     this.state.start('Boot');
   }
