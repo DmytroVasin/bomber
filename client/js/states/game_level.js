@@ -1,6 +1,7 @@
 import MapInfo from '../../game_levels/map_info';
 import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
+import Bomb from '../entities/bomb';
 
 class GameLevel extends Phaser.State {
   init(game) {
@@ -13,6 +14,8 @@ class GameLevel extends Phaser.State {
 
   create() {
     this.initializeMap();
+
+    this.bombs = this.game.add.group();
 
     this.initializePlayers();
 
@@ -40,6 +43,8 @@ class GameLevel extends Phaser.State {
   setEventHandlers() {
     clientSocket.on('move player', this.onMovePlayer.bind(this));
     clientSocket.on('no opponents', this.onNoOpponents.bind(this));
+    clientSocket.on('show bomb', this.onShowBomb.bind(this));
+    clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
   }
 
   onMovePlayer(data) {
@@ -89,6 +94,16 @@ class GameLevel extends Phaser.State {
 
   onNoOpponents() {
     this.state.start('Win');
+  }
+
+  onShowBomb(data) {
+    console.log('Bomb was placed...')
+    this.bombs.add(new Bomb(this.game, data.id, data.x, data.y));
+  }
+
+  onDetonateBomb(bomb_id) {
+    // STOP HERE
+    console.log('Bomb detonated... BOOOOM....')
   }
 }
 

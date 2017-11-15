@@ -25,7 +25,7 @@ var Play = {
   updatePlayerPosition: function (data) {
     console.log("Player ID: " + this.id + "# => " + data.x + ":" + data.y );
 
-// >>>>>>>>>>>>>>>>>> this.socket_game_id ??????????????????????? WTF????
+    // >>>>>>>>>>>>>>>>>> this.socket_game_id ??????????????????????? WTF????
 
     var current_game = allGames.find(game => game.id === this.socket_game_id);
 
@@ -68,6 +68,28 @@ var Play = {
   terminateExistingGame: function(game_id) {
     // Remove user from game
     allGames = allGames.filter(game => game.id !== game_id);
+  },
+
+
+  createBomb: function(coordinates) {
+    var game_id = this.socket_game_id;
+
+
+    var current_game = allGames.find(game => game.id === this.socket_game_id);
+
+    var bomb = current_game.addBomb(coordinates)
+
+    if ( bomb ){
+
+      setTimeout(function() {
+        current_game.removeBomb(bomb.col, bomb.row)
+
+        serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id });
+      }, 2000);
+
+      serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, x: bomb.x, y: bomb.y });
+    }
+
   }
 }
 

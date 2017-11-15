@@ -31,6 +31,8 @@ class Preload extends Phaser.State {
     this.load.spritesheet('bomberman_red', 'images/bomberman_red.png', 32, 64);
 
 
+    this.load.spritesheet('bomb', 'images/bomb.png', 35, 35);
+
     this.add.text(80, 150, 'Loading...', { font: '30px Courier', fill: '#FFFFFF' });
   }
 

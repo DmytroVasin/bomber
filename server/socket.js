@@ -25,6 +25,7 @@ var xxxx = null;
       client.on('create game', Play.onStartGame);
 
       client.on('update player position', Play.updatePlayerPosition);
+      client.on('create bomb', Play.createBomb);
 
       client.on('disconnect', onClientDisconnect);
     });

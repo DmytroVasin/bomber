@@ -1,4 +1,5 @@
 var { Player } = require('./player');
+var { Bomb } = require('./bomb.js');
 
 class Game {
 
@@ -6,6 +7,8 @@ class Game {
     this.id = json.id;
     this.map_id = json.map_id;
     this.players_info = this.createPlayers(json.playersInfo);
+
+    this.bombsMatrix = Array(25).fill(Array(15).fill(0))
   }
 
   createPlayers(playersInfo) {
@@ -27,6 +30,26 @@ class Game {
 
     // Remove user from game
     this.players_info = this.players_info.filter(item => item.id !== player_id);
+  }
+
+  addBomb(coordinates) {
+    var bomb = new Bomb(coordinates);
+
+    if ( this.bombsMatrix[bomb.col][bomb.row] == 1) {
+      return false;
+    }
+
+    this.bombsMatrix[bomb.col][bomb.row] = 1
+
+    console.log('----------------------')
+    console.table(this.bombsMatrix)
+    console.log('----------------------')
+
+    return bomb
+  }
+
+  removeBomb(col, row) {
+    this.bombsMatrix[col][row] = 0
   }
 
 }

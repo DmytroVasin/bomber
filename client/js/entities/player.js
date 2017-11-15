@@ -13,6 +13,7 @@ export default class Player extends Phaser.Sprite {
 
     this.speed = 250;
     this.faceDirection = 'down';
+    this.lastBombTime = 0;
 
     this.game.physics.arcade.enable(this);
 
@@ -30,6 +31,11 @@ export default class Player extends Phaser.Sprite {
   }
 
   update () {
+    this.handleMoves()
+    this.handleBombs()
+  }
+
+  handleMoves () {
     this.body.velocity.set(0);
 
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -53,6 +59,16 @@ export default class Player extends Phaser.Sprite {
     }
 
     this.game.debug.body(this);
+  }
+
+  handleBombs() {
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+      if (this.game.time.now > this.lastBombTime) {
+        this.bulletTime = this.game.time.now + 1000;
+
+        clientSocket.emit('create bomb', { x: this.body.position.x, y: this.body.position.y });
+      }
+    }
   }
 
   positionUpdaterLoop() {
