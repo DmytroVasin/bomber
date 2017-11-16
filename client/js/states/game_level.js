@@ -102,9 +102,16 @@ class GameLevel extends Phaser.State {
     this.bombs.add(new Bomb(this.game, data.id, data.x, data.y));
   }
 
-  onDetonateBomb(bomb_id) {
-    // STOP HERE
+  onDetonateBomb(data) {
     console.log('Bomb detonated... BOOOOM....')
+
+    for (let bomb of this.bombs.children) {
+      if (bomb.id === data.id) {
+        bomb.destroy()
+      }
+    }
+
+    bomb
   }
 }
 

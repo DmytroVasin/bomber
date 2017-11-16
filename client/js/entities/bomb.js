@@ -2,6 +2,7 @@ export default class Bomb extends Phaser.Sprite {
 
   constructor(game, id, x, y) {
     super(game, x, y, 'bomb');
+    this.scale.setTo(0.7);
 
     this.game = game
     this.id = id;
@@ -12,7 +13,7 @@ export default class Bomb extends Phaser.Sprite {
 
     this.body.immovable = true;
 
-    this.tween = this.game.add.tween(this.scale).to({x: 1.5, y: 1.5}, 2000, Phaser.Easing.Linear.None, true);
+    this.tween = this.game.add.tween(this.scale).to({x: 1.2, y: 1.2}, 2000, Phaser.Easing.Linear.None, true);
 
     this.animations.add('bomb', [0, 1, 2], 3, true);
     this.animations.play('bomb');
