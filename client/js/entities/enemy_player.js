@@ -6,7 +6,7 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.game = game
     this.id = id;
 
-    this.position = spawn;
+    // this.position = spawn;
 
     this.x = spawn.x
     this.y = spawn.y

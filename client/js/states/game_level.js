@@ -77,6 +77,7 @@ class GameLevel extends Phaser.State {
 
   render () {
     // this.game.debug.body(this.blockLayer);
+    this.bombs.forEachAlive(function (member) { this.game.debug.body(member);}, this);
   }
 
   stopAnimationLoop() {

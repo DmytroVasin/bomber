@@ -1,4 +1,4 @@
-export default class EnemyPlayer extends Phaser.Sprite {
+export default class Bomb extends Phaser.Sprite {
 
   constructor(game, id, x, y) {
     super(game, x, y, 'bomb');
@@ -12,9 +12,9 @@ export default class EnemyPlayer extends Phaser.Sprite {
 
     this.body.immovable = true;
 
-    // WTF???????
-    this.sizeTween = this.game.add.tween(this.scale).to({x: 1.2, y: 1.2}, 700, Phaser.Easing.Default, true, 0, true, true);
-    this.animations.add('bomb',[0,1,2],1.5,true);
+    this.tween = this.game.add.tween(this.scale).to({x: 1.5, y: 1.5}, 2000, Phaser.Easing.Linear.None, true);
+
+    this.animations.add('bomb', [0, 1, 2], 3, true);
     this.animations.play('bomb');
 
     this.game.add.existing(this);

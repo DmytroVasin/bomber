@@ -85,7 +85,7 @@ var Play = {
         current_game.removeBomb(bomb.col, bomb.row)
 
         serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id });
-      }, 2000);
+      }, bomb.explosion_time );
 
       serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, x: bomb.x, y: bomb.y });
     }

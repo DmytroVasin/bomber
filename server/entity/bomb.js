@@ -1,3 +1,5 @@
+const explosion_time = 2000
+
 class Bomb {
 
   constructor(coordinates) {
@@ -8,6 +10,8 @@ class Bomb {
 
     this.x   = this.centerCell(coordinates.x)
     this.y   = this.centerCell(coordinates.y)
+
+    this.explosion_time = explosion_time
   }
 
   cellNumber(coordinate) {
