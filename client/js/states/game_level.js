@@ -111,7 +111,7 @@ class GameLevel extends Phaser.State {
       }
     }
 
-    bomb
+    // bomb
   }
 }
 

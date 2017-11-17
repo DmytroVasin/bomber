@@ -1,9 +1,11 @@
+var uuidv4 = require('uuid/v4');
+
 const explosion_time = 2000
 
 class Bomb {
 
   constructor(coordinates) {
-    this.id = '1111111'
+    this.id = uuidv4();
 
     this.col = this.cellNumber(coordinates.x)
     this.row = this.cellNumber(coordinates.y)

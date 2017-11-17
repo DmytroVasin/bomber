@@ -74,13 +74,11 @@ var Play = {
   createBomb: function(coordinates) {
     var game_id = this.socket_game_id;
 
-
     var current_game = allGames.find(game => game.id === this.socket_game_id);
 
     var bomb = current_game.addBomb(coordinates)
 
     if ( bomb ){
-
       setTimeout(function() {
         current_game.removeBomb(bomb.col, bomb.row)
 
