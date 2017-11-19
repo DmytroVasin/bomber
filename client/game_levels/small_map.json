@@ -56,7 +56,10 @@
       ],
       "opacity": 1,
       "type": "tilelayer",
-      "visible": true
+      "visible": true,
+      "properties": {
+        "destructible": 4
+      }
     }
   ],
   "renderorder": "right-down",

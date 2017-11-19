@@ -23,7 +23,7 @@ var Lobby = {
 
   onGameCreation: function(data, callback) {
     console.log('>>>> ON NEW GAME CREATED');
-    var newGame = new PendingGame(data.map_id);
+    var newGame = new PendingGame(data.map_name);
 
     allPendingGames.push(newGame)
 

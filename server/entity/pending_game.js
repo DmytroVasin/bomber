@@ -1,9 +1,12 @@
+// PENDING GAME AND GAME - IS SAME GAME! with different status...
+var uuidv4 = require('uuid/v4');
+
 class PendingGame {
 
-  constructor(map_id) {
-    this.id = this.randomGameName();
-
-    this.map_id = map_id;
+  constructor(map_name) {
+    this.id = uuidv4();
+    // this.name = RANDOME GAME NAME///
+    this.map_name = map_name;
     this.players_info = [];
     this.availableColors = ['white', 'blue', 'black', 'red']
   }
@@ -32,10 +35,6 @@ class PendingGame {
 
   isFull() {
     return this.players_info.length === 2
-  }
-
-  randomGameName(){
-    return (new Date()).valueOf().toString();
   }
 }
 

@@ -22,8 +22,8 @@ class Preload extends Phaser.State {
 
 
     this.load.image('tiles', 'game_levels/tileset.png');
-    this.load.tilemap('level_1', 'game_levels/level_1.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.tilemap('level_2', 'game_levels/level_2.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('small_map', 'game_levels/small_map.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('big_map', 'game_levels/big_map.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.load.spritesheet('bomberman_white', 'images/bomberman_white.png', 32, 64);
     this.load.spritesheet('bomberman_black', 'images/bomberman_black.png', 32, 64);
@@ -32,6 +32,14 @@ class Preload extends Phaser.State {
 
 
     this.load.spritesheet('bomb', 'images/bomb.png', 35, 35);
+
+    this.load.spritesheet('explosion_center',     'images/explosion_center.png',     30, 30);
+    this.load.spritesheet('explosion_horizontal', 'images/explosion_horizontal.png', 30, 30);
+    this.load.spritesheet('explosion_vertical',   'images/explosion_vertical.png',   30, 30);
+    this.load.spritesheet('explosion_up',         'images/explosion_up.png',         30, 30);
+    this.load.spritesheet('explosion_right',      'images/explosion_right.png',      30, 30);
+    this.load.spritesheet('explosion_down',       'images/explosion_down.png',       30, 30);
+    this.load.spritesheet('explosion_left',       'images/explosion_left.png',       30, 30);
 
     this.add.text(80, 150, 'Loading...', { font: '30px Courier', fill: '#FFFFFF' });
   }

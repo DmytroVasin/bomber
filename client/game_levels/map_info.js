@@ -1,6 +1,6 @@
-const mapInfo = [
-  {
-    tilemap: 'level_1',
+const mapInfo = {
+  small_map: {
+    tilemap: 'small_map',
     tileset: 'tiles',
     spawn: [
       { x: 8  * 35, y: 2 * 35 },
@@ -12,8 +12,9 @@ const mapInfo = [
     groundLayer: 'Ground',
     blockLayer: 'Blocks',
     destructibleTileId: 4
-  }, {
-    tilemap: 'level_2',
+  },
+  big_map: {
+    tilemap: 'big_map',
     tileset: 'tiles',
     spawn: [
       { x: 3  * 35, y: 2 * 35 },
@@ -26,6 +27,6 @@ const mapInfo = [
     blockLayer: 'Blocks',
     destructibleTileId: 4
   }
-]
+}
 
 export default mapInfo;

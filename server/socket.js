@@ -1,11 +1,8 @@
-module.exports = function(server){
+module.exports = function(server) {
   serverSocket = require('socket.io')(server);
 
   var Lobby    = require('./lobby');
-  var Play    = require('./play');
-
-// FOR NOW;
-var xxxx = null;
+  var Play     = require('./play');
 
   init();
 
@@ -32,8 +29,6 @@ var xxxx = null;
   }
 
   function onClientDisconnect() {
-    // debugger;
-
     if (this.socket_game_id == null) {
       console.log('Player was not be inside any game...');
       return

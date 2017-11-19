@@ -7,14 +7,13 @@ var Play = {
   initialize: function () {
   },
 
-
   onStartGame: function(data) {
     var pending_game = Lobby.startGame(data.game_id);
 
     var game = new Game({
       id: pending_game.id,
       playersInfo: pending_game.players_info,
-      map_id: pending_game.map_id
+      map_name: pending_game.map_name
     });
 
     allGames.push(game)
@@ -61,14 +60,13 @@ var Play = {
         Play.terminateExistingGame(current_game.id);
       }
     // }
-
   },
-
 
   terminateExistingGame: function(game_id) {
     // Remove user from game
     allGames = allGames.filter(game => game.id !== game_id);
   },
+
 
 
   createBomb: function(coordinates) {
@@ -80,14 +78,14 @@ var Play = {
 
     if ( bomb ){
       setTimeout(function() {
-        current_game.removeBomb(bomb.col, bomb.row)
+        var explosions = bomb.detonate()
 
-        serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id });
-      }, bomb.explosion_time );
+        serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id, explosions: explosions });
+
+      }, bomb.explosion_time);
 
       serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, x: bomb.x, y: bomb.y });
     }
-
   }
 }
 

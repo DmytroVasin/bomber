@@ -63,8 +63,10 @@ export default class Player extends Phaser.Sprite {
 
   handleBombs() {
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-      if (this.game.time.now > this.lastBombTime) {
-        this.bulletTime = this.game.time.now + 1000;
+      let now = this.game.time.now;
+
+      if (now > this.lastBombTime) {
+        this.lastBombTime = now + 1000;
 
         clientSocket.emit('create bomb', { x: this.body.position.x, y: this.body.position.y });
       }

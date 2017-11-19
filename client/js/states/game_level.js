@@ -6,7 +6,7 @@ import Bomb from '../entities/bomb';
 class GameLevel extends Phaser.State {
   init(game) {
     this.currentGame = game
-    this.gameMap = MapInfo[this.currentGame.map_id];
+    this.gameMap = MapInfo[this.currentGame.map_name];
     this.currentPlayerId = clientSocket.id;
 
     this.enemyPlayers = {}
@@ -25,17 +25,18 @@ class GameLevel extends Phaser.State {
   }
 
   initializeMap() {
-    var map = this.add.tilemap(this.gameMap.tilemap);
+    this.map = this.add.tilemap(this.gameMap.tilemap);
 
-    map.addTilesetImage(this.gameMap.tileset);
+    this.map.addTilesetImage(this.gameMap.tileset);
 
-    this.groundLayer = map.createLayer(this.gameMap.groundLayer);
-    this.blockLayer = map.createLayer(this.gameMap.blockLayer);
+    // DO WE NEED GROUD Layer>?????
+    this.groundLayer = this.map.createLayer(this.gameMap.groundLayer);
+    this.blockLayer = this.map.createLayer(this.gameMap.blockLayer);
 
     this.groundLayer.resizeWorld();
     this.blockLayer.resizeWorld();
 
-    map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
+    this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
     this.game.physics.arcade.enable(this.blockLayer);
   }
@@ -102,16 +103,34 @@ class GameLevel extends Phaser.State {
     this.bombs.add(new Bomb(this.game, data.id, data.x, data.y));
   }
 
+  // SHOULD BE INSIDE BOMB????
   onDetonateBomb(data) {
     console.log('Bomb detonated... BOOOOM....')
 
+    // Remove Bomb:
     for (let bomb of this.bombs.children) {
       if (bomb.id === data.id) {
         bomb.destroy()
       }
     }
 
-    // bomb
+    // Render Explosion:
+    for (let explosion of data.explosions) {
+      let explosionSprite = new Phaser.Sprite(this.game, (explosion.col * 35), (explosion.row * 35), explosion.type, 0);
+
+      explosionSprite.animations.add('explode', [0, 1, 2, 3, 4]);
+      this.game.add.existing(explosionSprite);
+      explosionSprite.play('explode', 15, false, true); // 15 - framerate, loop, kill_on_complete
+    };
+
+
+    // Destroy Tiles:
+    for (let explosion of data.explosions) {
+      if (!explosion.replace) { continue }
+
+      this.map.putTile(5, explosion.col, explosion.row, this.blockLayer); // 5 - Numer of tile from 'tiles.png' ( starts from 1 )
+    };
+
   }
 }
 

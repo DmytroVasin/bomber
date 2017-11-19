@@ -4,11 +4,19 @@ var { Bomb } = require('./bomb.js');
 class Game {
 
   constructor(json) {
-    this.id = json.id;
-    this.map_id = json.map_id;
+    this.id           = json.id;
+    this.map_name     = json.map_name;
+    this.shadow_map   = this.createMapData(json.map_name);
     this.players_info = this.createPlayers(json.playersInfo);
 
-    this.bombsMatrix = Array(25).fill(Array(15).fill(0))
+    // WTF!!!!
+    this.bombsMatrix = []
+    for(var i=0; i<15; i++) {
+      this.bombsMatrix[i] = [];
+      for(var j=0; j<25; j++) {
+        this.bombsMatrix[i][j] = 0;
+      }
+    }
   }
 
   createPlayers(playersInfo) {
@@ -23,6 +31,35 @@ class Game {
     return gamePlayers;
   }
 
+  createMapData(map_name) {
+    var game_level_info = require('../../client/game_levels/' + map_name + '.json')
+    var tiles           = game_level_info.layers[1].data
+    var width           = game_level_info.layers[1].width
+    var height          = game_level_info.layers[1].height
+    var destructible    = game_level_info.layers[1].properties.destructible
+
+    // TODO: Ask for improvments:
+    var mapMatrix = [];
+    var num = 0;
+
+    for(var row = 0; row < height; row++) {
+      mapMatrix.push([]);
+
+      for(var col = 0; col < width; col++) {
+        mapMatrix[row][col] = 1; // Wall
+
+        if(tiles[num] == 0) {
+          mapMatrix[row][col] = 0; // Nothing
+        } else if(tiles[num] == destructible) {
+          mapMatrix[row][col] = 2; // Destructable
+        }
+
+        num++;
+      }
+    }
+
+    return mapMatrix;
+  }
 
   removePlayer(player_id) {
     // Find player
@@ -33,25 +70,33 @@ class Game {
   }
 
   addBomb(coordinates) {
-    var bomb = new Bomb(coordinates);
+    var bomb = new Bomb(this, coordinates);
 
-    if ( this.bombsMatrix[bomb.col][bomb.row] == 1) {
+    if ( this.bombsMatrix[bomb.row][bomb.col] == 1) {
       return false;
     }
 
-    this.bombsMatrix[bomb.col][bomb.row] = 1
+    this.bombsMatrix[bomb.row][bomb.col] = 1
 
     console.log('----------------------')
-    console.table(this.bombsMatrix)
+    console.log(this.bombsMatrix)
     console.log('----------------------')
 
     return bomb
   }
 
-  removeBomb(col, row) {
-    this.bombsMatrix[col][row] = 0
+  removeBomb(row, col) {
+    // bombMatrix && shadow_map  - should be same table!
+    this.bombsMatrix[row][col] = 0
   }
 
+  getMapCell(row, col) {
+    return this.shadow_map[row][col]
+  }
+
+  nullifyMapCell(row, col) {
+    this.shadow_map[row][col] = 0
+  }
 }
 
 exports.Game = Game;
