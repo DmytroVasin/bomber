@@ -69,8 +69,8 @@ class Game {
     this.players_info = this.players_info.filter(item => item.id !== player_id);
   }
 
-  addBomb(coordinates) {
-    var bomb = new Bomb(this, coordinates);
+  addBomb(power, coordinates) {
+    var bomb = new Bomb(this, power, coordinates);
 
     if ( this.bombsMatrix[bomb.row][bomb.col] == 1) {
       return false;

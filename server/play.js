@@ -74,7 +74,9 @@ var Play = {
 
     var current_game = allGames.find(game => game.id === this.socket_game_id);
 
-    var bomb = current_game.addBomb(coordinates)
+    var current_player = current_game.players_info.find(item => item.id == this.id);
+
+    var bomb = current_game.addBomb(current_player.power, coordinates)
 
     if ( bomb ){
       setTimeout(function() {

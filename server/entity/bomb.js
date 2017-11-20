@@ -4,11 +4,12 @@ const explosion_time = 2000
 
 class Bomb {
 
-  constructor(game, coordinates) {
+  constructor(game, power, coordinates) {
     this.id = uuidv4();
 
     this.game = game;
     this.explosion_time = explosion_time
+    this.power = power
 
     this.col = this.cellNumber(coordinates.x)
     this.row = this.cellNumber(coordinates.y)
@@ -26,14 +27,11 @@ class Bomb {
   }
 
   detonate() {
-    // Should  be taken from user!
-    let power = 3;
+    let row   = this.row;
+    let col   = this.col;
+    let power = this.power;
 
-    return this.generateExplosions(this.row, this.col, power)
-  }
-
-  generateExplosions(row, col, power) {
-    let explosions = []
+    let explosions = [];
 
     this.game.removeBomb(row, col)
     explosions.push({ row: row, col: col, type: 'explosion_center', replace: false });

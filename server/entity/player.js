@@ -4,6 +4,8 @@ class Player {
     this.spawnPosition = spawnPosition;
     this.id = id;
     this.color = color;
+
+    this.power = 3;
   }
 }
 
