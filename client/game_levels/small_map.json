@@ -58,7 +58,8 @@
       "type": "tilelayer",
       "visible": true,
       "properties": {
-        "destructible": 4
+        "balk": 4,
+        "wall": 3
       }
     }
   ],

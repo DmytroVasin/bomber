@@ -8,15 +8,6 @@ class Game {
     this.map_name     = json.map_name;
     this.shadow_map   = this.createMapData(json.map_name);
     this.players_info = this.createPlayers(json.playersInfo);
-
-    // WTF!!!!
-    this.bombsMatrix = []
-    for(var i=0; i<15; i++) {
-      this.bombsMatrix[i] = [];
-      for(var j=0; j<25; j++) {
-        this.bombsMatrix[i][j] = 0;
-      }
-    }
   }
 
   createPlayers(playersInfo) {
@@ -36,25 +27,26 @@ class Game {
     var tiles           = game_level_info.layers[1].data
     var width           = game_level_info.layers[1].width
     var height          = game_level_info.layers[1].height
-    var destructible    = game_level_info.layers[1].properties.destructible
+    var wall            = game_level_info.layers[1].properties.wall
+    var balk            = game_level_info.layers[1].properties.balk
 
-    // TODO: Ask for improvments:
+    // TODO: Ask Valera for improvments:
     var mapMatrix = [];
-    var num = 0;
+    var i = 0;
 
     for(var row = 0; row < height; row++) {
       mapMatrix.push([]);
 
       for(var col = 0; col < width; col++) {
-        mapMatrix[row][col] = 1; // Wall
+        mapMatrix[row][col] = 0;
 
-        if(tiles[num] == 0) {
-          mapMatrix[row][col] = 0; // Nothing
-        } else if(tiles[num] == destructible) {
+        if(tiles[i] == wall) {
+          mapMatrix[row][col] = 1; // Non-Destructable
+        } else if(tiles[i] == balk) {
           mapMatrix[row][col] = 2; // Destructable
         }
 
-        num++;
+        i++;
       }
     }
 
@@ -72,22 +64,17 @@ class Game {
   addBomb(power, coordinates) {
     var bomb = new Bomb(this, power, coordinates);
 
-    if ( this.bombsMatrix[bomb.row][bomb.col] == 1) {
+    if ( this.shadow_map[bomb.row][bomb.col] == 'X') {
       return false;
     }
 
-    this.bombsMatrix[bomb.row][bomb.col] = 1
+    this.shadow_map[bomb.row][bomb.col] = 'X'
 
     console.log('----------------------')
-    console.log(this.bombsMatrix)
+    console.log(this.shadow_map)
     console.log('----------------------')
 
     return bomb
-  }
-
-  removeBomb(row, col) {
-    // bombMatrix && shadow_map  - should be same table!
-    this.bombsMatrix[row][col] = 0
   }
 
   getMapCell(row, col) {

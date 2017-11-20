@@ -33,7 +33,7 @@ class Bomb {
 
     let explosions = [];
 
-    this.game.removeBomb(row, col)
+    this.game.nullifyMapCell(row, col);
     explosions.push({ row: row, col: col, type: 'explosion_center', replace: false });
 
     let explosionDirections = [
@@ -49,7 +49,7 @@ class Bomb {
         let currentCol = col + (direction.x * i);
 
         let cell   = this.game.getMapCell(currentRow, currentCol);
-        let isWall = cell == 1
+        let isWall = cell == 1 // Non-Destructable
         let isBalk = cell == 2 // Destructable
         let isLast = (i == power);
 
