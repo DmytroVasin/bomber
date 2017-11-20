@@ -80,9 +80,9 @@ var Play = {
 
     if ( bomb ){
       setTimeout(function() {
-        var explosions = bomb.detonate()
+        var blastedCells = bomb.detonate()
 
-        serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id, explosions: explosions });
+        serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id, blastedCells: blastedCells });
 
       }, bomb.explosion_time);
 

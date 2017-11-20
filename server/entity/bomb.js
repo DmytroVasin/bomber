@@ -16,6 +16,8 @@ class Bomb {
 
     this.x   = this.centerCell(coordinates.x)
     this.y   = this.centerCell(coordinates.y)
+
+    this.blastedCells = [];
   }
 
   cellNumber(coordinate) {
@@ -31,10 +33,8 @@ class Bomb {
     let col   = this.col;
     let power = this.power;
 
-    let explosions = [];
-
     this.game.nullifyMapCell(row, col);
-    explosions.push({ row: row, col: col, type: 'explosion_center', replace: false });
+    this.addToBlasted(row, col, 'center', false)
 
     let explosionDirections = [
       { x:  0, y: -1, end: 'up',    plumb: 'vertical'   },
@@ -58,16 +58,38 @@ class Bomb {
         }
 
         if (isBalk || isWall || isLast) {
-          explosions.push({ row: currentRow, col: currentCol, type: 'explosion_' + direction.end, replace: isBalk });
+          this.addToBlasted(currentRow, currentCol, direction.end, isBalk)
 
           break;
         }
 
-        explosions.push({ row: currentRow, col: currentCol, type: 'explosion_' + direction.plumb, replace: isBalk });
+        this.addToBlasted(currentRow, currentCol, direction.plumb, isBalk)
       }
     }
 
-    return explosions;
+    return this.blastedCells;
+  }
+
+  addToBlasted(row, col, direction, destroyed) {
+    let spoil = this.craftSpoil();
+
+    this.blastedCells.push({
+      row: row,
+      col: col,
+      type: 'explosion_'+direction,
+      destroyed: destroyed,
+      spoil: spoil
+    })
+  }
+
+  craftSpoil() {
+    var randomNumber = Math.floor(Math.random() * 2)
+
+    if (randomNumber === 0) {
+      return 'speed'
+    }
+
+    return null;
   }
 }
 

@@ -38,7 +38,25 @@ class GameLevel extends Phaser.State {
 
     this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
+    this.mygroup = this.game.add.group();
+
+
+    let ssssssprite = new Phaser.Sprite(this.game, (8 * 35), (8 * 35), 'veggies', 17);
+    this.game.physics.arcade.enable(ssssssprite);
+
+    this.mygroup.add(ssssssprite);
+
+
+
+
+
     this.game.physics.arcade.enable(this.blockLayer);
+  }
+
+  hitCoin(sprite, item) {
+    console.log('hitCoin....')
+    //  If the player collides with a item it gets eaten :)
+    item.kill();
   }
 
   setEventHandlers() {
@@ -74,6 +92,8 @@ class GameLevel extends Phaser.State {
 
   update() {
     this.game.physics.arcade.collide(this.player, this.blockLayer);
+
+    this.game.physics.arcade.overlap(this.player, this.mygroup, this.hitCoin, null, this);
   }
 
   render () {
@@ -114,21 +134,30 @@ class GameLevel extends Phaser.State {
       }
     }
 
-    // Render Explosion:
-    for (let explosion of data.explosions) {
-      let explosionSprite = new Phaser.Sprite(this.game, (explosion.col * 35), (explosion.row * 35), explosion.type, 0);
+    // Render Blast:
+    for (let cell of data.blastedCells) {
+      let blastedSprite = new Phaser.Sprite(this.game, (cell.col * 35), (cell.row * 35), cell.type, 0);
 
-      explosionSprite.animations.add('explode', [0, 1, 2, 3, 4]);
-      this.game.add.existing(explosionSprite);
-      explosionSprite.play('explode', 15, false, true); // 15 - framerate, loop, kill_on_complete
+      blastedSprite.animations.add('blast', [0, 1, 2, 3, 4]);
+      this.game.add.existing(blastedSprite);
+      blastedSprite.play('blast', 15, false, true); // 15 - framerate, loop, kill_on_complete
     };
 
 
     // Destroy Tiles:
-    for (let explosion of data.explosions) {
-      if (!explosion.replace) { continue }
+    for (let cell of data.blastedCells) {
+      if (!cell.destroyed) { continue }
 
-      this.map.putTile(5, explosion.col, explosion.row, this.blockLayer); // 5 - Numer of tile from 'tiles.png' ( starts from 1 )
+      this.map.putTile(5, cell.col, cell.row, this.blockLayer); // 5 - Numer of tile from 'tileset.png' ( starts from 1 )
+    };
+
+
+    // Add Spoils:
+    for (let cell of data.blastedCells) {
+      if (!cell.destroyed) { continue }
+      if (!cell.spoil) { continue }
+
+      this.map.putTile(1, cell.col, cell.row, this.blockLayer); // 5 - Numer of tile from 'tileset.png' ( starts from 1 )
     };
 
   }

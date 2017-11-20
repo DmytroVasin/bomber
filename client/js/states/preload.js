@@ -42,6 +42,9 @@ class Preload extends Phaser.State {
     this.load.spritesheet('explosion_left',       'images/explosion_left.png',       30, 30);
 
     this.add.text(80, 150, 'Loading...', { font: '30px Courier', fill: '#FFFFFF' });
+
+
+    this.load.spritesheet('veggies', 'images/fruitnveg32wh37.png', 32, 32);
   }
 
   create() {
