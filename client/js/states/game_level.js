@@ -46,7 +46,7 @@ class GameLevel extends Phaser.State {
   getSpoil(sprite, spoil) {
     console.log('getSpoil....')
     //  If the player collides with a spoil it gets eaten :)
->>>>>>>>> STOP HERE
+// >>>>>>>>> STOP HERE
     spoil.kill();
   }
 

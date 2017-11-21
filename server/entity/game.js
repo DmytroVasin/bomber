@@ -32,7 +32,6 @@ class Game {
     var wall            = game_level_info.layers[1].properties.wall
     var balk            = game_level_info.layers[1].properties.balk
 
-    // TODO: Ask Valera for improvments:
     var mapMatrix = [];
     var i = 0;
 

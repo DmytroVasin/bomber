@@ -1,4 +1,7 @@
-const { EXPLOSION_TIME, TILE_SIZE, SPEED, POWER, FORCE, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL } = require('../constants');
+const {
+  EXPLOSION_TIME, TILE_SIZE, SPEED, POWER, FORCE,
+  DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SPOIL_CHANCE
+} = require('../constants');
 
 var uuidv4 = require('uuid/v4');
 
@@ -83,16 +86,10 @@ class Bomb {
   }
 
   craftSpoil() {
-    var randomNumber = Math.floor(Math.random() * 10)
+    var randomNumber = Math.floor(Math.random() * 100)
 
-    if (randomNumber === SPEED) {
-      return SPEED;
-    }
-    if (randomNumber === POWER) {
-      return POWER;
-    }
-    if (randomNumber === FORCE) {
-      return FORCE;
+    if (randomNumber < SPOIL_CHANCE) {
+      return [SPEED, POWER, FORCE][Math.floor(Math.random() * 3)]
     }
 
     return null;
