@@ -38,23 +38,13 @@ class GameLevel extends Phaser.State {
 
     this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
-    this.mygroup = this.game.add.group();
-
-
-    let ssssssprite = new Phaser.Sprite(this.game, (8 * 35), (8 * 35), 'veggies', 17);
-    this.game.physics.arcade.enable(ssssssprite);
-
-    this.mygroup.add(ssssssprite);
-
-
-
-
+    this.spoils = this.game.add.group();
 
     this.game.physics.arcade.enable(this.blockLayer);
   }
 
-  hitCoin(sprite, item) {
-    console.log('hitCoin....')
+  getSpoil(sprite, item) {
+    console.log('getSpoil....')
     //  If the player collides with a item it gets eaten :)
     item.kill();
   }
@@ -93,7 +83,7 @@ class GameLevel extends Phaser.State {
   update() {
     this.game.physics.arcade.collide(this.player, this.blockLayer);
 
-    this.game.physics.arcade.overlap(this.player, this.mygroup, this.hitCoin, null, this);
+    this.game.physics.arcade.overlap(this.player, this.spoils, this.getSpoil, null, this);
   }
 
   render () {
@@ -157,7 +147,11 @@ class GameLevel extends Phaser.State {
       if (!cell.destroyed) { continue }
       if (!cell.spoil) { continue }
 
-      this.map.putTile(1, cell.col, cell.row, this.blockLayer); // 5 - Numer of tile from 'tileset.png' ( starts from 1 )
+      // WTF? - should be separate class ???
+      let spoilSprite = new Phaser.Sprite(this.game, (cell.col * 35), (cell.row * 35), 'spoil_tiles', cell.spoil);
+      this.game.physics.arcade.enable(spoilSprite);
+
+      this.spoils.add(spoilSprite);
     };
 
   }

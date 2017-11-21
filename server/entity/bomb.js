@@ -83,10 +83,19 @@ class Bomb {
   }
 
   craftSpoil() {
-    var randomNumber = Math.floor(Math.random() * 2)
+    var randomNumber = Math.floor(Math.random() * 10)
 
     if (randomNumber === 0) {
-      return 'speed'
+      // SHOULD be constant!
+      return 0 // speed
+    }
+    if (randomNumber === 1) {
+      // SHOULD be constant!
+      return 1 // power
+    }
+    if (randomNumber === 2) {
+      // SHOULD be constant!
+      return 2 // force
     }
 
     return null;
