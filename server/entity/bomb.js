@@ -1,6 +1,6 @@
-var uuidv4 = require('uuid/v4');
+const { EXPLOSION_TIME, TILE_SIZE, SPEED, POWER, FORCE, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL } = require('../constants');
 
-const explosion_time = 2000
+var uuidv4 = require('uuid/v4');
 
 class Bomb {
 
@@ -8,7 +8,7 @@ class Bomb {
     this.id = uuidv4();
 
     this.game = game;
-    this.explosion_time = explosion_time
+    this.explosion_time = EXPLOSION_TIME
     this.power = power
 
     this.col = this.cellNumber(coordinates.x)
@@ -21,11 +21,11 @@ class Bomb {
   }
 
   cellNumber(coordinate) {
-    return Math.floor(coordinate / 35)
+    return Math.floor(coordinate / TILE_SIZE)
   }
 
   centerCell(coordinate) {
-    return (Math.floor(coordinate / 35) * 35 + 35 / 2)
+    return (Math.floor(coordinate / TILE_SIZE) * TILE_SIZE + TILE_SIZE / 2)
   }
 
   detonate() {
@@ -49,11 +49,11 @@ class Bomb {
         let currentCol = col + (direction.x * i);
 
         let cell   = this.game.getMapCell(currentRow, currentCol);
-        let isWall = cell == 1 // Non-Destructable
-        let isBalk = cell == 2 // Destructable
+        let isWall = cell == NON_DESTRUCTIBLE_CELL
+        let isBalk = cell == DESTRUCTIBLE_CELL
         let isLast = (i == power);
 
-        if (cell == 2) {
+        if (cell == DESTRUCTIBLE_CELL) {
           this.game.nullifyMapCell(currentRow, currentCol);
         }
 
@@ -85,17 +85,14 @@ class Bomb {
   craftSpoil() {
     var randomNumber = Math.floor(Math.random() * 10)
 
-    if (randomNumber === 0) {
-      // SHOULD be constant!
-      return 0 // speed
+    if (randomNumber === SPEED) {
+      return SPEED;
     }
-    if (randomNumber === 1) {
-      // SHOULD be constant!
-      return 1 // power
+    if (randomNumber === POWER) {
+      return POWER;
     }
-    if (randomNumber === 2) {
-      // SHOULD be constant!
-      return 2 // force
+    if (randomNumber === FORCE) {
+      return FORCE;
     }
 
     return null;

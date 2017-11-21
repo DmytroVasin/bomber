@@ -43,10 +43,11 @@ class GameLevel extends Phaser.State {
     this.game.physics.arcade.enable(this.blockLayer);
   }
 
-  getSpoil(sprite, item) {
+  getSpoil(sprite, spoil) {
     console.log('getSpoil....')
-    //  If the player collides with a item it gets eaten :)
-    item.kill();
+    //  If the player collides with a spoil it gets eaten :)
+>>>>>>>>> STOP HERE
+    spoil.kill();
   }
 
   setEventHandlers() {

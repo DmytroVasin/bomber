@@ -1,0 +1,27 @@
+const TILE_SIZE = 35;
+
+const EXPLOSION_TIME = 2000;
+
+const SPEED = 1;
+const POWER = 2;
+const FORCE = 3;
+
+
+const EMPTY_CELL = 0;
+const BOMB_CELL = 'X';
+const DESTRUCTIBLE_CELL = 2;
+const NON_DESTRUCTIBLE_CELL = 1;
+
+
+
+module.exports = {
+  TILE_SIZE,
+  EXPLOSION_TIME,
+  SPEED,
+  POWER,
+  FORCE,
+  EMPTY_CELL,
+  BOMB_CELL,
+  DESTRUCTIBLE_CELL,
+  NON_DESTRUCTIBLE_CELL
+}

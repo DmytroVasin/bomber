@@ -1,3 +1,5 @@
+const { EMPTY_CELL, BOMB_CELL, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL } = require('../constants');
+
 var { Player } = require('./player');
 var { Bomb } = require('./bomb.js');
 
@@ -38,12 +40,12 @@ class Game {
       mapMatrix.push([]);
 
       for(var col = 0; col < width; col++) {
-        mapMatrix[row][col] = 0;
+        mapMatrix[row][col] = EMPTY_CELL;
 
-        if(tiles[i] == wall) {
-          mapMatrix[row][col] = 1; // Non-Destructable
-        } else if(tiles[i] == balk) {
-          mapMatrix[row][col] = 2; // Destructable
+        if(tiles[i] == balk) {
+          mapMatrix[row][col] = DESTRUCTIBLE_CELL;
+        } else if(tiles[i] == wall) {
+          mapMatrix[row][col] = NON_DESTRUCTIBLE_CELL;
         }
 
         i++;
@@ -64,11 +66,11 @@ class Game {
   addBomb(power, coordinates) {
     var bomb = new Bomb(this, power, coordinates);
 
-    if ( this.shadow_map[bomb.row][bomb.col] == 'X') {
+    if ( this.shadow_map[bomb.row][bomb.col] == BOMB_CELL) {
       return false;
     }
 
-    this.shadow_map[bomb.row][bomb.col] = 'X'
+    this.shadow_map[bomb.row][bomb.col] = BOMB_CELL
 
     console.log('----------------------')
     console.log(this.shadow_map)
@@ -82,7 +84,7 @@ class Game {
   }
 
   nullifyMapCell(row, col) {
-    this.shadow_map[row][col] = 0
+    this.shadow_map[row][col] = EMPTY_CELL
   }
 }
 
