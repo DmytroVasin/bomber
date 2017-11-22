@@ -40,7 +40,7 @@ class SelectMap extends Phaser.State {
     var map_name = ['small_map', 'big_map'][this.slider.getCurrentIndex()]
 
     clientSocket.emit('new game created', { map_name: map_name }, (data) => {
-      this.state.start('PendingGame', true, false, data.game_id);
+      this.state.start('PendingGame', true, false, data);
     });
 
   }

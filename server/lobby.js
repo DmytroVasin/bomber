@@ -29,7 +29,7 @@ var Lobby = {
 
     serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
 
-    callback({ game_id: newGame.id });
+    callback({ game_id: newGame.id, game_name: newGame.name });
   },
 
   onEnterPendingGame: function (data) {

@@ -48,8 +48,8 @@ class Menu extends Phaser.State {
     var yOffset = 50;
 
     for (let game of pendingGames) {
-      var slot = this.add.button(xOffset, yOffset, 'game_number', this.joinGameAction.bind(this, game.id), null, 0, 1); // overFrame = 0, outFrame = 1
-      var text = this.add.text(textXOffset, textYOffset, "ENTER TO GAME " + game.id, { font: 'Carter One', fill: 'white', fontSize: 18 });
+      var slot = this.add.button(xOffset, yOffset, 'game_number', this.joinGameAction.bind(this, { game_id: game.id, game_name: game.name }), null, 0, 1); // overFrame = 0, outFrame = 1
+      var text = this.add.text(textXOffset, textYOffset, 'ENTER TO GAME ' + game.name, { font: 'Carter One', fill: 'white', fontSize: 18 });
       text.anchor.setTo(0.5);
 
       slot.addChild(text)
@@ -60,8 +60,8 @@ class Menu extends Phaser.State {
     }
   }
 
-  joinGameAction(game_id) {
-    this.state.start('PendingGame', true, false, game_id);
+  joinGameAction(data) {
+    this.state.start('PendingGame', true, false, data);
   }
 }
 

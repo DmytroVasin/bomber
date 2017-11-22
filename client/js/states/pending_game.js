@@ -20,11 +20,12 @@ import {
 
 class PendingGame extends Phaser.State {
 
-  init(game_id) {
+  init(data) {
     this.profileBoxes = [];
     this.profileImages = [];
 
-    this.game_id = game_id;
+    this.game_id = data.game_id;
+    this.game_name = data.game_name;
 
     clientSocket.on('update players', this.populateCharacterSquares.bind(this));
     clientSocket.on('launch game', this.startGame.bind(this));
@@ -44,7 +45,7 @@ class PendingGame extends Phaser.State {
 
     this.minPlayerMessage = this.add.text(minPlayerMessageOffsetX, minPlayerMessageOffsetY, 'Cannot start game without\nat least 2 players.', { font: 'Carter One', fill: 'red', fontSize: 17, visible: false });
 
-    this.add.text(330, 100, this.game_id, { font: 'Carter One', fill: 'red', fontSize: 17});
+    this.add.text(400, 50, this.game_name, { font: 'Carter One', fill: 'red', fontSize: 17});
 
     clientSocket.emit('enter pending game', { game_id: this.game_id });
   }

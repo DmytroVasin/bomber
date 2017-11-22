@@ -1,11 +1,12 @@
 // PENDING GAME AND GAME - IS SAME GAME! with different status...
 var uuidv4 = require('uuid/v4');
+var faker = require('faker');
 
 class PendingGame {
 
   constructor(map_name) {
     this.id = uuidv4();
-    // this.name = RANDOME GAME NAME///
+    this.name = faker.commerce.color()
     this.map_name = map_name;
     this.players_info = [];
     this.availableColors = ['white', 'blue', 'black', 'red']
