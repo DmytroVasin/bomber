@@ -2,6 +2,7 @@ import MapInfo from '../../game_levels/map_info';
 import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
 import Bomb from '../entities/bomb';
+import Spoil from '../entities/spoil';
 
 class GameLevel extends Phaser.State {
   init(game) {
@@ -44,9 +45,7 @@ class GameLevel extends Phaser.State {
   }
 
   getSpoil(sprite, spoil) {
-    console.log('getSpoil....')
-    //  If the player collides with a spoil it gets eaten :)
-// >>>>>>>>> STOP HERE
+    clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
     spoil.kill();
   }
 
@@ -55,6 +54,7 @@ class GameLevel extends Phaser.State {
     clientSocket.on('no opponents', this.onNoOpponents.bind(this));
     clientSocket.on('show bomb', this.onShowBomb.bind(this));
     clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
+    clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
   }
 
   onMovePlayer(data) {
@@ -73,7 +73,7 @@ class GameLevel extends Phaser.State {
   initializePlayers() {
     for (let player_info of this.currentGame.players_info) {
 
-      if (player_info.id == this.currentPlayerId) {
+      if (player_info.id === this.currentPlayerId) {
         this.player = new Player(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       } else {
         // SAME AS ENEMY PLAYER
@@ -150,13 +150,22 @@ class GameLevel extends Phaser.State {
       if (!cell.destroyed) { continue }
       if (!cell.spoil) { continue }
 
-      // WTF? - should be separate class ???
-      let spoilSprite = new Phaser.Sprite(this.game, (cell.col * 35), (cell.row * 35), 'spoil_tiles', cell.spoil);
-      this.game.physics.arcade.enable(spoilSprite);
-
-      this.spoils.add(spoilSprite);
+      let spoiledItem = new Spoil(this.game, cell.spoil);
+      this.spoils.add(spoiledItem);
     };
 
+  }
+
+  onSpoilWasPicked(){
+    debugger
+
+    console.log(this.spoils)
+    console.log(data)
+    // onPowerupAcquired
+
+    // REMOVE TILE FOR ALL USER
+    // FOR CRRENT USER INCREASE SPEED
+    // DRAW something
   }
 }
 

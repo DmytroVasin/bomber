@@ -23,6 +23,7 @@ module.exports = function(server) {
 
       client.on('update player position', Play.updatePlayerPosition);
       client.on('create bomb', Play.createBomb);
+      client.on('pick up spoil', Play.onPickUpSpoil);
 
       client.on('disconnect', onClientDisconnect);
     });

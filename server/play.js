@@ -88,21 +88,21 @@ var Play = {
     }
   },
 
-  pickUpSpoil: function(spoil_id) {
+  onPickUpSpoil: function(data) {
     var game_id = this.socket_game_id;
     var current_game = allGames.find(game => game.id === game_id);
     var current_player = current_game.players_info.find(item => item.id == this.id);
 
 
 
-    let spoil = this.game.findSpoil(spoil_id)
+    let spoil = current_game.findSpoil(data.spoil_id)
 
     if (spoil) {
       this.game.deleteSpoil(spoil_id)
 
       current_player.pickSpoil(spoil.type)
 
-      // serverSocket.sockets.to(game_id).emit('spoil was picked', { id: bomb.id, blastedCells: blastedCells });
+      serverSocket.sockets.to(game_id).emit('spoil was picked', { spoil_id: spoil.id });
     }
   }
 }

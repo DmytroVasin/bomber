@@ -8,8 +8,10 @@ class Game {
   constructor(json) {
     this.id           = json.id;
     this.map_name     = json.map_name;
+    // TODO: BOMBS should not be in shadow map!!!
     this.shadow_map   = this.createMapData(json.map_name);
     this.players_info = this.createPlayers(json.playersInfo);
+    this.spoils       = new Map();
   }
 
   createPlayers(playersInfo) {
@@ -84,6 +86,18 @@ class Game {
 
   nullifyMapCell(row, col) {
     this.shadow_map[row][col] = EMPTY_CELL
+  }
+
+  findSpoil(spoil_id){
+    return this.spoils.get(spoil_id)
+  }
+
+  addSpoil(spoil) {
+    this.spoils.set(spoil.id, spoil);
+  }
+
+  deleteSpoil(spoil_id){
+    this.spoils.delete(spoil_id)
   }
 }
 
