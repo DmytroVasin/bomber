@@ -9,7 +9,6 @@ const mapInfo = {
       { x: 12 * 35, y: 6 * 35 }
     ],
     collisionTiles: [3, 4],
-    groundLayer: 'Ground',
     blockLayer: 'Blocks',
     destructibleTileId: 4
   },
@@ -23,7 +22,6 @@ const mapInfo = {
       { x: 23 * 35, y: 2 * 35 }
     ],
     collisionTiles: [3, 4],
-    groundLayer: 'Ground',
     blockLayer: 'Blocks',
     destructibleTileId: 4
   }

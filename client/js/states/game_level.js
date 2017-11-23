@@ -30,11 +30,7 @@ class GameLevel extends Phaser.State {
 
     this.map.addTilesetImage(this.gameMap.tileset);
 
-    // DO WE NEED GROUD Layer>?????
-    this.groundLayer = this.map.createLayer(this.gameMap.groundLayer);
     this.blockLayer = this.map.createLayer(this.gameMap.blockLayer);
-
-    this.groundLayer.resizeWorld();
     this.blockLayer.resizeWorld();
 
     this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);

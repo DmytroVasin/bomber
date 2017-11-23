@@ -28,11 +28,11 @@ class Game {
 
   createMapData(map_name) {
     var game_level_info = require('../../client/game_levels/' + map_name + '.json')
-    var tiles           = game_level_info.layers[1].data
-    var width           = game_level_info.layers[1].width
-    var height          = game_level_info.layers[1].height
-    var wall            = game_level_info.layers[1].properties.wall
-    var balk            = game_level_info.layers[1].properties.balk
+    var tiles           = game_level_info.layers[0].data
+    var width           = game_level_info.layers[0].width
+    var height          = game_level_info.layers[0].height
+    var wall            = game_level_info.layers[0].properties.wall
+    var balk            = game_level_info.layers[0].properties.balk
 
     var mapMatrix = [];
     var i = 0;
