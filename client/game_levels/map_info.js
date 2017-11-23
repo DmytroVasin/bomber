@@ -10,7 +10,10 @@ const mapInfo = {
     ],
     collisionTiles: [3, 4],
     blockLayer: 'Blocks',
-    destructibleTileId: 4
+    destructibleTileId: 4,
+    emptyTileId: 5,
+    balkTileId: 4,
+    wallTileId: 3
   },
   big_map: {
     tilemap: 'big_map',

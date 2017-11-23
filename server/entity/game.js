@@ -31,8 +31,9 @@ class Game {
     var tiles           = game_level_info.layers[0].data
     var width           = game_level_info.layers[0].width
     var height          = game_level_info.layers[0].height
-    var wall            = game_level_info.layers[0].properties.wall
-    var balk            = game_level_info.layers[0].properties.balk
+    // PICK NUMBERS FOM MAP INFO!
+    var wall            = 3
+    var balk            = 4
 
     var mapMatrix = [];
     var i = 0;

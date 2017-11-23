@@ -136,8 +136,7 @@ class GameLevel extends Phaser.State {
     // Destroy Tiles:
     for (let cell of data.blastedCells) {
       if (!cell.destroyed) { continue }
-
-      this.map.putTile(5, cell.col, cell.row, this.blockLayer); // 5 - Numer of tile from 'tileset.png' ( starts from 1 )
+      this.map.putTile(this.gameMap.emptyTileId, cell.col, cell.row, this.blockLayer);
     };
 
 
