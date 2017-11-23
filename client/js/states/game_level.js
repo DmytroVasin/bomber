@@ -3,6 +3,7 @@ import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
 import Bomb from '../entities/bomb';
 import Spoil from '../entities/spoil';
+import FireBlast from '../entities/fire_blast';
 
 class GameLevel extends Phaser.State {
   init(game) {
@@ -124,12 +125,7 @@ class GameLevel extends Phaser.State {
 
     // Render Blast:
     for (let cell of data.blastedCells) {
-      // WTF? - should be separate class ???
-      let blastedSprite = new Phaser.Sprite(this.game, (cell.col * 35), (cell.row * 35), cell.type, 0);
-
-      blastedSprite.animations.add('blast', [0, 1, 2, 3, 4]);
-      this.game.add.existing(blastedSprite);
-      blastedSprite.play('blast', 15, false, true); // 15 - framerate, loop, kill_on_complete
+      new FireBlast(this.game, cell)
     };
 
 
