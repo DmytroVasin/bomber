@@ -153,19 +153,29 @@ class GameLevel extends Phaser.State {
       let spoiledItem = new Spoil(this.game, cell.spoil);
       this.spoils.add(spoiledItem);
     };
-
   }
 
-  onSpoilWasPicked(){
-    debugger
+  onSpoilWasPicked(data){
+    // find and remove current spoil
+    let currentSpoil;
+    this.spoils.forEach(function(item) {
+      if (item.id == data.spoil_id) {
+        currentSpoil = item
+      }
+    })
 
-    console.log(this.spoils)
-    console.log(data)
-    // onPowerupAcquired
+    if (data.player_id === this.player.id){
 
-    // REMOVE TILE FOR ALL USER
-    // FOR CRRENT USER INCREASE SPEED
-    // DRAW something
+      // increase SPEED
+      if (currentSpoil.spoil_type === 0){
+        // We should increate in percents and get new speed from server.!!!
+        this.player.speed += 100
+      }
+
+      // DRAW something or play something
+    }
+
+    this.spoils.remove(currentSpoil);
   }
 }
 

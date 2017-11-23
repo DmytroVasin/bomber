@@ -20,6 +20,8 @@ export default class Spoil extends Phaser.Sprite {
     this.row = spoil.row
     this.col = spoil.col
 
+    this.spoil_type = spoil.spoil_type
+
     this.game.physics.arcade.enable(this);
   }
 

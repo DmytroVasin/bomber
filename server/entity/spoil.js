@@ -16,8 +16,7 @@ class Spoil {
   }
 
   spoilType(){
-    return 0
-    // return [SPEED, POWER, CAPACITY][Math.floor(Math.random() * 3)]
+    return [SPEED, POWER, CAPACITY][Math.floor(Math.random() * 3)]
   }
 }
 

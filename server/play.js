@@ -93,16 +93,14 @@ var Play = {
     var current_game = allGames.find(game => game.id === game_id);
     var current_player = current_game.players_info.find(item => item.id == this.id);
 
-
-
     let spoil = current_game.findSpoil(data.spoil_id)
 
     if (spoil) {
-      this.game.deleteSpoil(spoil_id)
+      current_game.deleteSpoil(spoil.id)
 
-      current_player.pickSpoil(spoil.type)
+      current_player.pickSpoil(spoil.spoil_type)
 
-      serverSocket.sockets.to(game_id).emit('spoil was picked', { spoil_id: spoil.id });
+      serverSocket.sockets.to(game_id).emit('spoil was picked', { spoil_id: spoil.id, player_id: current_player.id });
     }
   }
 }
