@@ -76,6 +76,7 @@ class GameLevel extends Phaser.State {
       if (player_info.id == this.currentPlayerId) {
         this.player = new Player(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       } else {
+        // SAME AS ENEMY PLAYER
         this.enemyPlayers[player_info.id] = new EnemyPlayer(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       }
     }
@@ -127,6 +128,7 @@ class GameLevel extends Phaser.State {
 
     // Render Blast:
     for (let cell of data.blastedCells) {
+      // WTF? - should be separate class ???
       let blastedSprite = new Phaser.Sprite(this.game, (cell.col * 35), (cell.row * 35), cell.type, 0);
 
       blastedSprite.animations.add('blast', [0, 1, 2, 3, 4]);

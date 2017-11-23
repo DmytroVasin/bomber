@@ -11,7 +11,7 @@ export default class Player extends Phaser.Sprite {
     this.position = spawn;
     this.prevPosition = {x: 0, y: 0}; // new Phaser.Point
 
-    this.speed = 250;
+    this.speed = 150;
     this.faceDirection = 'down';
     this.lastBombTime = 0;
 

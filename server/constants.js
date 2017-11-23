@@ -2,18 +2,15 @@ const TILE_SIZE = 35;
 
 const EXPLOSION_TIME = 2000;
 
-const SPOIL_CHANCE = 15;
-const SPEED = 1;
-const POWER = 2;
-const FORCE = 3;
-
+const SPOIL_CHANCE = 100; // 15
+const SPEED = 0;
+const POWER = 1;
+const FORCE = 2;
 
 const EMPTY_CELL = 0;
 const BOMB_CELL = 'X';
 const DESTRUCTIBLE_CELL = 2;
 const NON_DESTRUCTIBLE_CELL = 1;
-
-
 
 module.exports = {
   TILE_SIZE,

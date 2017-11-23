@@ -12,7 +12,7 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.y = spawn.y
 
     this.facing = 'down';
-    this.speed = 250;
+    this.speed = 150;
 
     this.game.physics.arcade.enable(this);
 

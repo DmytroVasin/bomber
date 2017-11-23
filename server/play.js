@@ -71,9 +71,7 @@ var Play = {
 
   createBomb: function(coordinates) {
     var game_id = this.socket_game_id;
-
-    var current_game = allGames.find(game => game.id === this.socket_game_id);
-
+    var current_game = allGames.find(game => game.id === game_id);
     var current_player = current_game.players_info.find(item => item.id == this.id);
 
     var bomb = current_game.addBomb(current_player.power, coordinates)
@@ -87,6 +85,24 @@ var Play = {
       }, bomb.explosion_time);
 
       serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, x: bomb.x, y: bomb.y });
+    }
+  },
+
+  pickUpSpoil: function(spoil_id) {
+    var game_id = this.socket_game_id;
+    var current_game = allGames.find(game => game.id === game_id);
+    var current_player = current_game.players_info.find(item => item.id == this.id);
+
+
+
+    let spoil = this.game.findSpoil(spoil_id)
+
+    if (spoil) {
+      this.game.deleteSpoil(spoil_id)
+
+      current_player.pickSpoil(spoil.type)
+
+      // serverSocket.sockets.to(game_id).emit('spoil was picked', { id: bomb.id, blastedCells: blastedCells });
     }
   }
 }
