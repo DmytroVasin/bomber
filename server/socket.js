@@ -25,6 +25,8 @@ module.exports = function(server) {
       client.on('create bomb', Play.createBomb);
       client.on('pick up spoil', Play.onPickUpSpoil);
 
+      client.on('player died', Play.onPlayerDied);
+
       client.on('disconnect', onClientDisconnect);
     });
   }

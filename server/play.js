@@ -102,6 +102,14 @@ var Play = {
 
       serverSocket.sockets.to(game_id).emit('spoil was picked', { spoil_id: spoil.id, player_id: current_player.id });
     }
+  },
+
+  onPlayerDied: function(data) {
+    var game_id = this.socket_game_id;
+    var current_game = allGames.find(game => game.id === game_id);
+    var current_player = current_game.players_info.find(item => item.id == this.id);
+
+    serverSocket.sockets.to(game_id).emit('show bones', { id: current_player.id, col: current_player.currentCol(), row: current_player.currentRow() });
   }
 }
 

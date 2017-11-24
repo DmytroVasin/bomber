@@ -82,4 +82,10 @@ export default class Player extends Phaser.Sprite {
       this.prevPosition = newPosition;
     }
   }
+
+  increaseSpeed(){
+    if (this.speed < 300) {
+      this.speed = this.speed + 50
+    }
+  }
 }

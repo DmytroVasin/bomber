@@ -1,15 +1,19 @@
+const SPEED = 0
+const POWER = 1
+const CAPACITY = 2
+
 export default class Spoil extends Phaser.Sprite {
 
   constructor(game, spoil) {
 
     let spoil_type;
-    if (spoil.spoil_type === 0) { // SPEED
+    if (spoil.spoil_type === SPEED) {
       spoil_type = 0
     }
-    if (spoil.spoil_type === 1) { // POWER
+    if (spoil.spoil_type === POWER) {
       spoil_type =  1
     }
-    if (spoil.spoil_type === 2) { // CAPACITY
+    if (spoil.spoil_type === CAPACITY) {
       spoil_type = 2
     }
 

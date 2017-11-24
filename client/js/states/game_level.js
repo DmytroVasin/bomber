@@ -4,6 +4,7 @@ import EnemyPlayer from '../entities/enemy_player';
 import Bomb from '../entities/bomb';
 import Spoil from '../entities/spoil';
 import FireBlast from '../entities/fire_blast';
+import Bone from '../entities/bone';
 
 class GameLevel extends Phaser.State {
   init(game) {
@@ -37,13 +38,22 @@ class GameLevel extends Phaser.State {
     this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
     this.spoils = this.game.add.group();
+    this.blasts = this.game.add.group();
+    this.bones  = this.game.add.group();
 
     this.game.physics.arcade.enable(this.blockLayer);
   }
 
-  getSpoil(sprite, spoil) {
+  getSpoil(player, spoil) {
     clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
     spoil.kill();
+  }
+
+  getDied(player, blast) {
+    if (player.alive) {
+      clientSocket.emit('player died');
+      player.kill();
+    }
   }
 
   setEventHandlers() {
@@ -52,6 +62,8 @@ class GameLevel extends Phaser.State {
     clientSocket.on('show bomb', this.onShowBomb.bind(this));
     clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
     clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+
+    clientSocket.on('show bones', this.onShowBones.bind(this));
   }
 
   onMovePlayer(data) {
@@ -73,7 +85,8 @@ class GameLevel extends Phaser.State {
       if (player_info.id === this.currentPlayerId) {
         this.player = new Player(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       } else {
-        // SAME AS ENEMY PLAYER
+        // SAME AS ENEMY PLAYER ( should use same class )
+        // todo: new MAP()
         this.enemyPlayers[player_info.id] = new EnemyPlayer(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       }
     }
@@ -83,6 +96,7 @@ class GameLevel extends Phaser.State {
     this.game.physics.arcade.collide(this.player, this.blockLayer);
 
     this.game.physics.arcade.overlap(this.player, this.spoils, this.getSpoil, null, this);
+    this.game.physics.arcade.overlap(this.player, this.blasts, this.getDied, null, this);
   }
 
   render () {
@@ -125,7 +139,8 @@ class GameLevel extends Phaser.State {
 
     // Render Blast:
     for (let cell of data.blastedCells) {
-      new FireBlast(this.game, cell)
+      let blastedItem = new FireBlast(this.game, cell)
+      this.blasts.add(blastedItem);
     };
 
 
@@ -147,7 +162,6 @@ class GameLevel extends Phaser.State {
   }
 
   onSpoilWasPicked(data){
-    // find and remove current spoil
     let currentSpoil;
     this.spoils.forEach(function(item) {
       if (item.id == data.spoil_id) {
@@ -156,17 +170,25 @@ class GameLevel extends Phaser.State {
     })
 
     if (data.player_id === this.player.id){
-
       // increase SPEED
       if (currentSpoil.spoil_type === 0){
-        // We should increate in percents and get new speed from server.!!!
-        this.player.speed += 100
+        this.player.increaseSpeed()
       }
 
       // DRAW something or play something
     }
 
     this.spoils.remove(currentSpoil);
+  }
+
+  onShowBones(data) {
+    let boneItem = new Bone(this.game, data.col, data.row);
+    this.bones.add(boneItem);
+
+    var deadPlayer = this.enemyPlayers[data.id];
+    if (!deadPlayer) { return; }
+
+    deadPlayer.kill()
   }
 }
 

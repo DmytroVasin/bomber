@@ -1,7 +1,9 @@
-export default class Spoil extends Phaser.Sprite {
+const TILE_SIZE = 35
+
+export default class FireBlast extends Phaser.Sprite {
 
   constructor(game, cell) {
-    super(game, (cell.col * 35), (cell.row * 35), cell.type, 0);
+    super(game, (cell.col * TILE_SIZE), (cell.row * TILE_SIZE), cell.type, 0);
 
     this.game = game
 
@@ -10,7 +12,7 @@ export default class Spoil extends Phaser.Sprite {
     // 15 - framerate, loop, kill_on_complete
     this.play('blast', 15, false, true);
 
-    this.game.add.existing(this);
+    this.game.physics.arcade.enable(this);
   }
 
 }

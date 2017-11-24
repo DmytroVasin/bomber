@@ -1,4 +1,4 @@
-const { POWER, CAPACITY } = require('../constants');
+const { TILE_SIZE, POWER, CAPACITY } = require('../constants');
 
 class Player {
 
@@ -9,6 +9,9 @@ class Player {
 
     this.power = 1;
     this.capacity = 1;
+    // THIS ALL SET UP in "updatePlayerPosition"
+    // DO WE HAVVE this.x this.y???
+    // DOP WE NEED ? faceDirection
   }
 
   pickSpoil(spoil_type) {
@@ -20,6 +23,15 @@ class Player {
       this.capacity += 1
     }
   }
+
+  currentCol() {
+    return Math.floor(this.x / TILE_SIZE)
+  }
+
+  currentRow() {
+    return Math.floor(this.y / TILE_SIZE)
+  }
+
 }
 
 exports.Player = Player;
