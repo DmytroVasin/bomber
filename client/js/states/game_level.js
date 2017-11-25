@@ -102,6 +102,7 @@ class GameLevel extends Phaser.State {
   render () {
     // this.game.debug.body(this.blockLayer);
     this.bombs.forEachAlive(function (member) { this.game.debug.body(member);}, this);
+    this.game.debug.spriteInfo(this.player, 32, 32);
   }
 
   stopAnimationLoop() {
@@ -170,12 +171,7 @@ class GameLevel extends Phaser.State {
     })
 
     if (data.player_id === this.player.id){
-      // increase SPEED
-      if (currentSpoil.spoil_type === 0){
-        this.player.increaseSpeed()
-      }
-
-      // DRAW something or play something
+      this.player.pickSpoil(currentSpoil.spoil_type)
     }
 
     this.spoils.remove(currentSpoil);

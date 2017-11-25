@@ -14,8 +14,7 @@ export default class EnemyPlayer extends Phaser.Sprite {
 
     this.game.physics.arcade.enable(this);
 
-    this.anchor.setTo(0.1, 0.6);
-    this.body.setSize(20, 19, 5, 16);
+    this.body.setSize(20, 20, 0, 0);
 
     this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
     this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);

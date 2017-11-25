@@ -1,4 +1,4 @@
-const { TILE_SIZE, POWER, CAPACITY } = require('../constants');
+const { TILE_SIZE, POWER } = require('../constants');
 
 class Player {
 
@@ -8,7 +8,7 @@ class Player {
     this.color = color;
 
     this.power = 1;
-    this.capacity = 1;
+    // this.delay = 1;
     // THIS ALL SET UP in "updatePlayerPosition"
     // DO WE HAVVE this.x this.y???
     // DOP WE NEED ? faceDirection
@@ -18,13 +18,13 @@ class Player {
     if (spoil_type === POWER){
       this.power += 1
     }
-
-    if (spoil_type === CAPACITY){
-      this.capacity += 1
-    }
   }
 
   currentCol() {
+    console.log('--------------------------------------')
+    console.log(this.x)
+    console.log(this.y)
+    console.log('--------------------------------------')
     return Math.floor(this.x / TILE_SIZE)
   }
 

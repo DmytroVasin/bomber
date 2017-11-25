@@ -1,5 +1,5 @@
 const {
-  SPEED, POWER, CAPACITY
+  SPEED, POWER, DELAY
 } = require('../constants');
 
 var uuidv4 = require('uuid/v4');
@@ -16,7 +16,7 @@ class Spoil {
   }
 
   spoilType(){
-    return [SPEED, POWER, CAPACITY][Math.floor(Math.random() * 3)]
+    return [SPEED, POWER, DELAY][Math.floor(Math.random() * 3)]
   }
 }
 

@@ -1,6 +1,6 @@
 const SPEED = 0
 const POWER = 1
-const CAPACITY = 2
+const DELAY = 2
 
 export default class Spoil extends Phaser.Sprite {
 
@@ -13,7 +13,7 @@ export default class Spoil extends Phaser.Sprite {
     if (spoil.spoil_type === POWER) {
       spoil_type =  1
     }
-    if (spoil.spoil_type === CAPACITY) {
+    if (spoil.spoil_type === DELAY) {
       spoil_type = 2
     }
 
