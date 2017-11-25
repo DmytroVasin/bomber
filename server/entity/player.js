@@ -16,14 +16,6 @@ class Player {
     }
   }
 
-  currentCol() {
-    return Math.floor(this.x / TILE_SIZE)
-  }
-
-  currentRow() {
-    return Math.floor(this.y / TILE_SIZE)
-  }
-
 }
 
 exports.Player = Player;

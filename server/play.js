@@ -4,11 +4,8 @@ var { Game } = require('./entity/game');
 var allGames = []
 
 var Play = {
-  initialize: function () {
-  },
-
-  onStartGame: function(data) {
-    var pending_game = Lobby.startGame(data.game_id);
+  onStartGame: function({ game_id }) {
+    var pending_game = Lobby.startGame(game_id);
 
     var game = new Game({
       id: pending_game.id,
@@ -21,26 +18,9 @@ var Play = {
     serverSocket.sockets.in(game.id).emit('launch game', { game: game });
   },
 
-  updatePlayerPosition: function (data) {
-    console.log("Player ID: " + this.id + "# => " + data.x + ":" + data.y );
-
-    // >>>>>>>>>>>>>>>>>> this.socket_game_id ??????????????????????? WTF????
-
-    var current_game = allGames.find(game => game.id === this.socket_game_id);
-
-    var movingPlayer = current_game.players_info.find(item => item.id == this.id);
-
-    movingPlayer.x = data.x;
-    movingPlayer.y = data.y;
-
-    // NOTE: BROADCAST ONLY FOR OPPONENTS
-    // TODO: Broadcast all player position beacuse we can have several opponents.
-    //       All players position for current game.
-    this.broadcast.to(current_game.id).emit('move player', {
-      id: movingPlayer.id,
-      x: movingPlayer.x,
-      y: movingPlayer.y,
-    });
+  updatePlayerPosition: function (coordinates) {
+    // this == socket | We broadcast only for opponents.
+    this.broadcast.to(this.socket_game_id).emit('move player', Object.assign({}, { player_id: this.id }, coordinates));
   },
 
   onLeaveGame: function(data) {
@@ -67,31 +47,31 @@ var Play = {
 
 
 
-  createBomb: function({col, row}) {
-    var game_id = this.socket_game_id;
-    var current_game = allGames.find(game => game.id === game_id);
-    var current_player = current_game.players_info.find(item => item.id == this.id);
+  createBomb: function({ col, row }) {
+    let game_id = this.socket_game_id;
+    let current_game = allGames.find(game => game.id === game_id);
+    let current_player = current_game.players_info.find(item => item.id == this.id);
 
-    var bomb = current_game.addBomb({ col: col, row: row, power: current_player.power })
+    let bomb = current_game.addBomb({ col: col, row: row, power: current_player.power })
 
     if ( bomb ){
       setTimeout(function() {
-        var blastedCells = bomb.detonate()
+        let blastedCells = bomb.detonate()
 
         serverSocket.sockets.to(game_id).emit('detonate bomb', { bomb_id: bomb.id, blastedCells: blastedCells });
 
       }, bomb.explosion_time);
 
-      serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, col: bomb.col, row: bomb.row });
+      serverSocket.sockets.to(game_id).emit('show bomb', { bomb_id: bomb.id, col: bomb.col, row: bomb.row });
     }
   },
 
-  onPickUpSpoil: function(data) {
-    var game_id = this.socket_game_id;
-    var current_game = allGames.find(game => game.id === game_id);
-    var current_player = current_game.players_info.find(item => item.id == this.id);
+  onPickUpSpoil: function({ spoil_id }) {
+    let game_id = this.socket_game_id;
+    let current_game = allGames.find(game => game.id === game_id);
+    let current_player = current_game.players_info.find(item => item.id == this.id);
 
-    let spoil = current_game.findSpoil(data.spoil_id)
+    let spoil = current_game.findSpoil(spoil_id)
 
     if (spoil) {
       current_game.deleteSpoil(spoil.id)
@@ -102,12 +82,8 @@ var Play = {
     }
   },
 
-  onPlayerDied: function(data) {
-    var game_id = this.socket_game_id;
-    var current_game = allGames.find(game => game.id === game_id);
-    var current_player = current_game.players_info.find(item => item.id == this.id);
-
-    serverSocket.sockets.to(game_id).emit('show bones', { player_id: current_player.id, col: current_player.currentCol(), row: current_player.currentRow() });
+  onPlayerDied: function(coordinates) {
+    serverSocket.sockets.to(this.socket_game_id).emit('show bones', Object.assign({}, { player_id: this.id }, coordinates));
   }
 }
 

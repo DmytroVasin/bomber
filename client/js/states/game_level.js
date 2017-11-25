@@ -83,13 +83,13 @@ class GameLevel extends Phaser.State {
 
   getDied(player, blast) {
     if (player.alive) {
-      clientSocket.emit('player died');
+      clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
       player.kill();
     }
   }
 
-  onMovePlayer({ id, x, y }) {
-    let enemy = findFrom(id, this.enemies);
+  onMovePlayer({ player_id, x, y }) {
+    let enemy = findFrom(player_id, this.enemies);
     if (!enemy) { return }
 
     enemy.goTo({ x: x, y: y })
@@ -107,8 +107,8 @@ class GameLevel extends Phaser.State {
     this.state.start('Win');
   }
 
-  onShowBomb({ id, col, row }) {
-    this.bombs.add(new Bomb(this.game, id, col, row));
+  onShowBomb({ bomb_id, col, row }) {
+    this.bombs.add(new Bomb(this.game, bomb_id, col, row));
   }
 
   onDetonateBomb({ bomb_id, blastedCells }) {

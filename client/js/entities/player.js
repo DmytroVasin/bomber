@@ -97,7 +97,6 @@ export default class Player extends Phaser.Sprite {
     return Math.floor(this.body.position.y / TILE_SIZE)
   }
 
-
   positionUpdaterLoop() {
     let newPosition = { x: this.position.x, y: this.position.y }
 

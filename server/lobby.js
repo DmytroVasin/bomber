@@ -5,9 +5,6 @@ var lobbyId = 'lobby_room';
 var allPendingGames = []
 
 var Lobby = {
-  initialize: function () {
-  },
-
   onEnterLobby: function (data) {
     console.log('>>>> ON ENTER LOBBY')
 
