@@ -2,7 +2,10 @@
 
 import Info from './info';
 
+const PING = 100 // - Need to be depended on positionUpdaterLoop
+
 const SPEED = 0
+const POWER = 1
 const DELAY = 2
 
 const MAX_SPEED = 350
@@ -15,7 +18,7 @@ const INITIAL_DELAY = 2000
 
 export default class Player extends Phaser.Sprite {
 
-  constructor(game, id, spawn, color) {
+  constructor({game, id, spawn, color}) {
     super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
     this.game = game;
@@ -25,7 +28,7 @@ export default class Player extends Phaser.Sprite {
     this.prevPosition = {x: 0, y: 0}; // new Phaser.Point - DO WE NEED THAT ???
 
     this.delay = INITIAL_DELAY;
-    this.power = 1; //we do not use it!
+    this.power = 1; // WE SHOULD COPY FROM SERVER!!!
     this.speed = INITIAL_SPEED;
     this.faceDirection = 'down';
     this._lastBombTime = 0;
@@ -34,7 +37,7 @@ export default class Player extends Phaser.Sprite {
     this.game.physics.arcade.enable(this);
     this.body.setSize(20, 20, 0, 0);
 
-    game.time.events.loop(100 , this.positionUpdaterLoop, this);
+    game.time.events.loop(PING , this.positionUpdaterLoop.bind(this));
 
     this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
     this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
@@ -102,10 +105,13 @@ export default class Player extends Phaser.Sprite {
       this.increaseSpeed()
     }
 
+    if (spoil_type === POWER){
+      this.increasePower()
+    }
+
     if (spoil_type === DELAY){
       this.increaseDelay()
     }
-
     // DRAW something or play something
   }
 
@@ -121,5 +127,10 @@ export default class Player extends Phaser.Sprite {
       this.delay -= STEP_DELAY;
       this.info.refreshStatistic();
     }
+  }
+
+  increasePower(){
+    this.power += 1;
+    this.info.refreshStatistic();
   }
 }

@@ -1,4 +1,3 @@
-// export default class Info {
 export default class Info {
 
   constructor({ game, player }) {
@@ -7,14 +6,9 @@ export default class Info {
 
     this.style = { font: '20px Arial', fill: '#ffffff', align: 'left' }
 
-    this.speedText = new Phaser.Text(this.game, 32, 432, this.speedLabel(), this.style);
-    this.powerText = new Phaser.Text(this.game, 32, 464, this.powerLabel(), this.style);
-    this.delayText = new Phaser.Text(this.game, 32, 496, this.delayLabel(), this.style);
-
-    this.game.add.existing(this.speedText);
-    this.game.add.existing(this.powerText);
-    this.game.add.existing(this.delayText);
-
+    this.speedText = this.game.add.text(32, 432, this.speedLabel(), this.style);
+    this.powerText = this.game.add.text(32, 464, this.powerLabel(), this.style);
+    this.delayText = this.game.add.text(32, 496, this.delayLabel(), this.style);
   }
 
   refreshStatistic() {
@@ -25,14 +19,14 @@ export default class Info {
 
 
   speedLabel() {
-    return 'Speed: '+this.player.speed
+    return `Speed: ${this.player.speed}`
   }
 
   powerLabel() {
-    return 'Power: '+this.player.power
+    return `Power: ${this.player.power}`
   }
 
   delayLabel() {
-    return 'Bomb Delay: '+this.player.delay
+    return `Bomb Delay: ${this.player.delay}`
   }
 }

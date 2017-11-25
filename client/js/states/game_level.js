@@ -11,21 +11,30 @@ class GameLevel extends Phaser.State {
     this.currentGame = game
     this.gameMap = MapInfo[this.currentGame.map_name];
     this.currentPlayerId = clientSocket.id;
-
-    this.enemyPlayers = {}
   }
 
   create() {
-    this.initializeMap();
-
-    this.initializePlayers();
-
+    this.createMap();
+    this.createPlayers();
     this.setEventHandlers();
 
-    this.game.time.events.loop(400 , this.stopAnimationLoop, this);
+    this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
   }
 
-  initializeMap() {
+  update() {
+    this.game.physics.arcade.collide(this.player, this.blockLayer);
+    this.game.physics.arcade.collide(this.player, this.enemies);
+
+    this.game.physics.arcade.overlap(this.player, this.spoils, this.getSpoil, null, this);
+    this.game.physics.arcade.overlap(this.player, this.blasts, this.getDied, null, this);
+  }
+
+  render () {
+    this.bombs.forEachAlive(function (member) { this.game.debug.body(member);}, this);
+    this.game.debug.spriteInfo(this.player, 32, 32);
+  }
+
+  createMap() {
     this.map = this.add.tilemap(this.gameMap.tilemap);
 
     this.map.addTilesetImage(this.gameMap.tileset);
@@ -35,11 +44,39 @@ class GameLevel extends Phaser.State {
 
     this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
-    this.bombs  = this.game.add.group();
-    this.spoils = this.game.add.group();
-    this.blasts = this.game.add.group();
+    this.player  = null;
+    this.bombs   = this.game.add.group();
+    this.spoils  = this.game.add.group();
+    this.blasts  = this.game.add.group();
+    this.enemies = this.game.add.group();
 
     this.game.physics.arcade.enable(this.blockLayer);
+  }
+
+  createPlayers() {
+    for (let player_info of this.currentGame.players_info) {
+      let setup = {
+        game:  this.game,
+        id:    player_info.id,
+        spawn: this.gameMap.spawn[player_info.spawnPosition],
+        color: player_info.color
+      }
+
+      if (player_info.id === this.currentPlayerId) {
+        this.player = new Player(setup);
+      } else {
+        this.enemies.add(new EnemyPlayer(setup))
+      }
+    }
+  }
+
+  setEventHandlers() {
+    clientSocket.on('move player', this.onMovePlayer.bind(this));
+    clientSocket.on('no opponents', this.onNoOpponents.bind(this));
+    clientSocket.on('show bomb', this.onShowBomb.bind(this));
+    clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
+    clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+    clientSocket.on('show bones', this.onShowBones.bind(this));
   }
 
   getSpoil(player, spoil) {
@@ -54,61 +91,17 @@ class GameLevel extends Phaser.State {
     }
   }
 
-  setEventHandlers() {
-    clientSocket.on('move player', this.onMovePlayer.bind(this));
-    clientSocket.on('no opponents', this.onNoOpponents.bind(this));
-    clientSocket.on('show bomb', this.onShowBomb.bind(this));
-    clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
-    clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+  onMovePlayer({ id, x, y, faceDirection }) {
+    let enemy = this.findEnemy(id);
+    if (!enemy) { return; }
 
-    clientSocket.on('show bones', this.onShowBones.bind(this));
-  }
-
-  onMovePlayer(data) {
-    var movingPlayer = this.enemyPlayers[data.id];
-
-    if (!movingPlayer) {
-      return;
-    }
-
-    movingPlayer.animations.play(data.faceDirection)
-    movingPlayer.goTo({ x: data.x, y: data.y })
-
-    movingPlayer.lastMoveAt = this.game.time.now;
-  }
-
-  initializePlayers() {
-    for (let player_info of this.currentGame.players_info) {
-
-      if (player_info.id === this.currentPlayerId) {
-        this.player = new Player(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
-      } else {
-        // todo: new MAP()
-        this.enemyPlayers[player_info.id] = new EnemyPlayer(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
-      }
-    }
-  }
-
-  update() {
-    this.game.physics.arcade.collide(this.player, this.blockLayer);
-
-    this.game.physics.arcade.overlap(this.player, this.spoils, this.getSpoil, null, this);
-    this.game.physics.arcade.overlap(this.player, this.blasts, this.getDied, null, this);
-  }
-
-  render () {
-    this.bombs.forEachAlive(function (member) { this.game.debug.body(member);}, this);
-    this.game.debug.spriteInfo(this.player, 32, 32);
+    enemy.goTo({ x: x, y: y, faceDirection: faceDirection })
   }
 
   stopAnimationLoop() {
-    for (let id in this.enemyPlayers) {
-      let enemy = this.enemyPlayers[id];
-
-      if (enemy.lastMoveAt) {
-        if (enemy.lastMoveAt < this.game.time.now - 200) {
-          enemy.animations.stop();
-        }
+    for (let enemy of this.enemies.children) {
+      if (enemy.lastMoveAt && enemy.lastMoveAt < this.game.time.now - 200) {
+        enemy.animations.stop();
       }
     }
   }
@@ -147,27 +140,39 @@ class GameLevel extends Phaser.State {
   }
 
   onSpoilWasPicked(data){
-    let currentSpoil;
-    this.spoils.forEach(function(item) {
-      if (item.id == data.spoil_id) {
-        currentSpoil = item
-      }
-    })
+    let spoil = this.findSpoil(data.spoil_id);
+    if (!spoil) { return; }
 
     if (data.player_id === this.player.id){
-      this.player.pickSpoil(currentSpoil.spoil_type)
+      this.player.pickSpoil(spoil.spoil_type)
     }
 
-    this.spoils.remove(currentSpoil);
+    this.spoils.remove(spoil);
   }
 
   onShowBones(data) {
     new Bone(this.game, data.col, data.row);
 
-    var deadPlayer = this.enemyPlayers[data.id];
+    let deadPlayer = this.findEnemy(data.id);
     if (!deadPlayer) { return; }
 
     deadPlayer.kill()
+  }
+
+  findEnemy(id) {
+    for (let enemy of this.enemies.children) {
+      if (enemy.id !== id) { continue }
+      return enemy
+    }
+    return null;
+  }
+
+  findSpoil(id) {
+    for (let spoil of this.spoils.children) {
+      if (spoil.id !== id) { continue }
+      return spoil
+    }
+    return null;
   }
 }
 
