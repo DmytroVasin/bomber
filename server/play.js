@@ -69,12 +69,12 @@ var Play = {
 
 
 
-  createBomb: function(coordinates) {
+  createBomb: function({col, row}) {
     var game_id = this.socket_game_id;
     var current_game = allGames.find(game => game.id === game_id);
     var current_player = current_game.players_info.find(item => item.id == this.id);
 
-    var bomb = current_game.addBomb(current_player.power, coordinates)
+    var bomb = current_game.addBomb({ col: col, row: row, power: current_player.power })
 
     if ( bomb ){
       setTimeout(function() {

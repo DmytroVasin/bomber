@@ -9,15 +9,15 @@ var uuidv4 = require('uuid/v4');
 
 class Bomb {
 
-  constructor(game, power, coordinates) {
+  constructor({ game, col, row, power }) {
     this.id = uuidv4();
 
     this.game = game;
-    this.explosion_time = EXPLOSION_TIME
     this.power = power
+    this.explosion_time = EXPLOSION_TIME
 
-    this.col = coordinates.col
-    this.row = coordinates.row
+    this.col = col
+    this.row = row
 
     this.blastedCells = [];
   }

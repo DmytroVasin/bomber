@@ -8,10 +8,12 @@ class Game {
   constructor(json) {
     this.id           = json.id;
     this.map_name     = json.map_name;
-    // TODO: BOMBS should not be in shadow map!!!
+
     this.shadow_map   = this.createMapData(json.map_name);
     this.players_info = this.createPlayers(json.playersInfo);
+
     this.spoils       = new Map();
+    this.bombs        = new Map();
   }
 
   createPlayers(playersInfo) {
@@ -65,19 +67,12 @@ class Game {
     this.players_info = this.players_info.filter(item => item.id !== player_id);
   }
 
-  addBomb(power, coordinates) {
-    var bomb = new Bomb(this, power, coordinates);
-
-    if ( this.shadow_map[bomb.row][bomb.col] == BOMB_CELL) {
-      return false;
+  addBomb({ col, row, power }) {
+    let bomb = new Bomb({ game: this, col: col, row: row, power: power });
+    if ( this.bombs.get(bomb.id) ) {
+      return false
     }
-
-    this.shadow_map[bomb.row][bomb.col] = BOMB_CELL
-
-    console.log('----------------------')
-    console.log(this.shadow_map)
-    console.log('----------------------')
-
+    this.bombs.set(bomb.id, bomb);
     return bomb
   }
 
