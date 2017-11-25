@@ -18,6 +18,7 @@ export default class Bomb extends Phaser.Sprite {
 
     this.game.add.tween(this.scale).to({x: 1.2, y: 1.2}, explosion_time, Phaser.Easing.Linear.None, true);
 
+    this.body.immovable = true;
     this.animations.add('bomb', [0, 1, 2], 3, true);
     this.animations.play('bomb');
   }

@@ -80,7 +80,7 @@ var Play = {
       setTimeout(function() {
         var blastedCells = bomb.detonate()
 
-        serverSocket.sockets.to(game_id).emit('detonate bomb', { id: bomb.id, blastedCells: blastedCells });
+        serverSocket.sockets.to(game_id).emit('detonate bomb', { bomb_id: bomb.id, blastedCells: blastedCells });
 
       }, bomb.explosion_time);
 
@@ -100,7 +100,7 @@ var Play = {
 
       current_player.pickSpoil(spoil.spoil_type)
 
-      serverSocket.sockets.to(game_id).emit('spoil was picked', { player_id: current_player.id, spoil_type: spoil.spoil_type });
+      serverSocket.sockets.to(game_id).emit('spoil was picked', { player_id: current_player.id, spoil_id: spoil.id, spoil_type: spoil.spoil_type });
     }
   },
 
@@ -109,7 +109,7 @@ var Play = {
     var current_game = allGames.find(game => game.id === game_id);
     var current_player = current_game.players_info.find(item => item.id == this.id);
 
-    serverSocket.sockets.to(game_id).emit('show bones', { id: current_player.id, col: current_player.currentCol(), row: current_player.currentRow() });
+    serverSocket.sockets.to(game_id).emit('show bones', { player_id: current_player.id, col: current_player.currentCol(), row: current_player.currentRow() });
   }
 }
 

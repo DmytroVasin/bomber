@@ -1,3 +1,5 @@
+import { findFrom, findAndDestroyFrom } from '../utils/utils';
+
 import MapInfo from '../../game_levels/map_info';
 import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
@@ -23,6 +25,7 @@ class GameLevel extends Phaser.State {
   update() {
     this.game.physics.arcade.collide(this.player, this.blockLayer);
     this.game.physics.arcade.collide(this.player, this.enemies);
+    this.game.physics.arcade.collide(this.player, this.bombs);
 
     this.game.physics.arcade.overlap(this.player, this.spoils, this.getSpoil, null, this);
     this.game.physics.arcade.overlap(this.player, this.blasts, this.getDied, null, this);
@@ -76,7 +79,6 @@ class GameLevel extends Phaser.State {
   getSpoil(player, spoil) {
     clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
     spoil.kill();
-    this.spoils.remove(spoil);
   }
 
   getDied(player, blast) {
@@ -87,15 +89,15 @@ class GameLevel extends Phaser.State {
   }
 
   onMovePlayer({ id, x, y, faceDirection }) {
-    let enemy = this.findEnemy(id);
-    if (!enemy) { return; }
+    let enemy = findFrom(id, this.enemies);
+    if (!enemy) { return }
 
     enemy.goTo({ x: x, y: y, faceDirection: faceDirection })
   }
 
   stopAnimationLoop() {
     for (let enemy of this.enemies.children) {
-      if (enemy.lastMoveAt && enemy.lastMoveAt < this.game.time.now - 200) {
+      if (enemy.lastMoveAt < this.game.time.now - 200) {
         enemy.animations.stop();
       }
     }
@@ -105,28 +107,27 @@ class GameLevel extends Phaser.State {
     this.state.start('Win');
   }
 
-  onShowBomb({id, col, row}) {
+  onShowBomb({ id, col, row }) {
     this.bombs.add(new Bomb(this.game, id, col, row));
   }
 
-  onDetonateBomb(data) {
+  onDetonateBomb({ bomb_id, blastedCells }) {
     // Remove Bomb:
-    for (let bomb of this.bombs.children) {
-      if (bomb.id === data.id) {
-        bomb.destroy()
-      }
-    }
+    findAndDestroyFrom(bomb_id, this.bombs)
+
     // Render Blast:
-    for (let cell of data.blastedCells) {
+    for (let cell of blastedCells) {
       this.blasts.add(new FireBlast(this.game, cell));
     };
+
     // Destroy Tiles:
-    for (let cell of data.blastedCells) {
+    for (let cell of blastedCells) {
       if (!cell.destroyed) { continue }
       this.map.putTile(this.gameMap.emptyTileId, cell.col, cell.row, this.blockLayer);
     };
+
     // Add Spoils:
-    for (let cell of data.blastedCells) {
+    for (let cell of blastedCells) {
       if (!cell.destroyed) { continue }
       if (!cell.spoil) { continue }
 
@@ -134,27 +135,18 @@ class GameLevel extends Phaser.State {
     };
   }
 
-  onSpoilWasPicked({player_id, spoil_type}){
+  onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
     if (player_id === this.player.id){
       this.player.pickSpoil(spoil_type)
     }
+
+    findAndDestroyFrom(spoil_id, this.spoils)
   }
 
-  onShowBones(data) {
-    new Bone(this.game, data.col, data.row);
+  onShowBones({ player_id, col, row }) {
+    new Bone(this.game, col, row);
 
-    let deadPlayer = this.findEnemy(data.id);
-    if (!deadPlayer) { return; }
-
-    deadPlayer.kill()
-  }
-
-  findEnemy(id) {
-    for (let enemy of this.enemies.children) {
-      if (enemy.id !== id) { continue }
-      return enemy
-    }
-    return null;
+    findAndDestroyFrom(player_id, this.enemies)
   }
 }
 
