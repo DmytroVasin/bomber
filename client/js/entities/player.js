@@ -22,19 +22,17 @@ const STEP_POWER = 1
 
 export default class Player extends Phaser.Sprite {
 
-  constructor({game, id, spawn, color}) {
+  constructor({ game, id, spawn, color }) {
     super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
     this.game = game;
     this.id = id;
 
-    this.position = spawn;
-    this.prevPosition = {x: 0, y: 0}; // new Phaser.Point - DO WE NEED THAT ???
+    this.prevPosition = { x: spawn.x, y: spawn.y };
 
     this.delay = INITIAL_DELAY;
-    this.power = INITIAL_POWER; // WE SHOULD COPY FROM SERVER!!!
+    this.power = INITIAL_POWER;
     this.speed = INITIAL_SPEED;
-    this.faceDirection = 'down';
     this._lastBombTime = 0;
 
     this.game.add.existing(this);
@@ -65,19 +63,15 @@ export default class Player extends Phaser.Sprite {
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
       this.body.velocity.x = -this.speed;
       this.animations.play('left');
-      this.faceDirection = 'left';
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
       this.body.velocity.x = this.speed;
       this.animations.play('right');
-      this.faceDirection = 'right';
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
       this.body.velocity.y = -this.speed;
       this.animations.play('up');
-      this.faceDirection = 'up';
     } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
       this.body.velocity.y = this.speed;
       this.animations.play('down')
-      this.faceDirection = 'down';
     } else {
       this.animations.stop();
     }
@@ -105,8 +99,7 @@ export default class Player extends Phaser.Sprite {
 
 
   positionUpdaterLoop() {
-    // If position changed - we should send notification.
-    let newPosition = { x: this.position.x, y: this.position.y, faceDirection: this.faceDirection }
+    let newPosition = { x: this.position.x, y: this.position.y }
 
     if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
       clientSocket.emit('update player position', newPosition);
@@ -114,18 +107,11 @@ export default class Player extends Phaser.Sprite {
     }
   }
 
-  pickSpoil(spoil_type){
-    if (spoil_type === SPEED){
-      this.increaseSpeed()
-    }
+  pickSpoil( spoil_type ){
+    if ( spoil_type === SPEED ){ this.increaseSpeed() }
+    if ( spoil_type === POWER ){ this.increasePower() }
+    if ( spoil_type === DELAY ){ this.increaseDelay() }
 
-    if (spoil_type === POWER){
-      this.increasePower()
-    }
-
-    if (spoil_type === DELAY){
-      this.increaseDelay()
-    }
     // DRAW something or play something
   }
 

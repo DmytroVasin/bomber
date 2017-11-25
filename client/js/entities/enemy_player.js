@@ -3,14 +3,13 @@ const PING = 100
 
 export default class EnemyPlayer extends Phaser.Sprite {
 
-  constructor({game, id, spawn, color}) {
+  constructor({ game, id, spawn, color }) {
     super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
     this.game = game
     this.id = id;
 
-    this.x = spawn.x
-    this.y = spawn.y
+    this.currentPosition = spawn;
 
     this.speed = INITIAL_SPEED;
 
@@ -31,11 +30,30 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.game.debug.body(this);
   }
 
-  goTo({x, y, faceDirection}) {
+  goTo(newPosition) {
     this.lastMoveAt = this.game.time.now;
 
-    this.animations.play(faceDirection)
+    this.animateFace(newPosition);
 
-    this.game.add.tween(this).to({x: x, y: y}, PING, Phaser.Easing.Linear.None, true);
+    this.game.add.tween(this).to(newPosition, PING, Phaser.Easing.Linear.None, true);
+  }
+
+  animateFace(newPosition) {
+    let face = 'down';
+    let diffX = newPosition.x - this.currentPosition.x;
+    let diffY = newPosition.y - this.currentPosition.y;
+
+    if (diffX < 0) {
+      face = 'left'
+    } else if (diffX > 0) {
+      face = 'right'
+    } else if (diffY < 0) {
+      face = 'up'
+    } else if (diffY > 0) {
+      face = 'down'
+    }
+
+    this.animations.play(face)
+    this.currentPosition = newPosition;
   }
 }

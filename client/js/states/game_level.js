@@ -88,11 +88,11 @@ class GameLevel extends Phaser.State {
     }
   }
 
-  onMovePlayer({ id, x, y, faceDirection }) {
+  onMovePlayer({ id, x, y }) {
     let enemy = findFrom(id, this.enemies);
     if (!enemy) { return }
 
-    enemy.goTo({ x: x, y: y, faceDirection: faceDirection })
+    enemy.goTo({ x: x, y: y })
   }
 
   stopAnimationLoop() {
