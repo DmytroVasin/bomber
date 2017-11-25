@@ -1,41 +1,50 @@
 // https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
+const SPEED = 0
+const DELAY = 2
+
+const MAX_SPEED = 350
+const STEP_SPEED = 50
+const INITIAL_SPEED = 150
+
+const MIN_DELAY = 500
+const STEP_DELAY = 500
+const INITIAL_DELAY = 2000
+
 export default class Player extends Phaser.Sprite {
 
   constructor(game, id, spawn, color) {
     super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
-    this.game = game
+    this.game = game;
     this.id = id;
 
     this.position = spawn;
-    this.prevPosition = {x: 0, y: 0}; // new Phaser.Point
+    this.prevPosition = {x: 0, y: 0}; // new Phaser.Point - DO WE NEED THAT ???
 
-    this.delay = 2000;
+    this.delay = INITIAL_DELAY;
     this.power = 1; //we do not use it!
-    this.speed = 150;
+    this.speed = INITIAL_SPEED;
     this.faceDirection = 'down';
     this._lastBombTime = 0;
 
+    this.game.add.existing(this);
     this.game.physics.arcade.enable(this);
-
     this.body.setSize(20, 20, 0, 0);
+
+    game.time.events.loop(100 , this.positionUpdaterLoop, this);
 
     this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
     this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
     this.animations.add('right', [16, 17, 18, 19, 20, 21, 22, 23], 15, true);
     this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
 
-    // WHY WE NEED THAT ???
-    this.game.add.existing(this);
-
-    game.time.events.loop(100 , this.positionUpdaterLoop, this);
+    this.createStatistic();
   }
 
   update () {
     this.handleMoves()
     this.handleBombs()
-    this.drawStatistic()
   }
 
   handleMoves () {
@@ -87,13 +96,11 @@ export default class Player extends Phaser.Sprite {
   }
 
   pickSpoil(spoil_type){
-    // increase SPEED
-    if (spoil_type === 0){
+    if (spoil_type === SPEED){
       this.increaseSpeed()
     }
 
-    // increase DELAY
-    if (spoil_type === 2){
+    if (spoil_type === DELAY){
       this.increaseDelay()
     }
 
@@ -101,22 +108,28 @@ export default class Player extends Phaser.Sprite {
   }
 
   increaseSpeed(){
-    if (this.speed < 300) {
-      this.speed = this.speed + 50
+    if (this.speed < MAX_SPEED) {
+      this.speed = this.speed + STEP_SPEED;
+      this.refreshStatistic();
     }
   }
 
   increaseDelay(){
-    if (this.delay > 500){
-      this.delay -= 500
+    if (this.delay > MIN_DELAY){
+      this.delay -= STEP_DELAY;
+      this.refreshStatistic();
     }
   }
 
-  drawStatistic() {
-    // https://phaser.io/examples/v2/games/breakout
+  createStatistic() {
+    this.speedText = this.game.add.text(32, 432, 'Speed: '+this.speed, { font: '20px Arial', fill: '#ffffff', align: 'left' });
+    this.powerText = this.game.add.text(32, 464, 'Power: '+this.power, { font: '20px Arial', fill: '#ffffff', align: 'left' });
+    this.delayText = this.game.add.text(32, 496, 'Bomb Delay: '+this.delay, { font: '20px Arial', fill: '#ffffff', align: 'left' });
+  }
 
-    // this.speedText = this.game.add.text(32, 432, 'Speed: '+this.speed, { font: "20px Arial", fill: "#ffffff", align: "left" });
-    // this.powerText = this.game.add.text(32, 464, 'Power: '+this.power, { font: "20px Arial", fill: "#ffffff", align: "left" });
-    // this.delayText = this.game.add.text(32, 496, 'Bomb Delay: '+this.delay, { font: "20px Arial", fill: "#ffffff", align: "left" });
+  refreshStatistic() {
+    this.speedText.text = 'Speed: '+this.speed;
+    this.powerText.text = 'Power: '+this.power;
+    this.delayText.text = 'Bomb Delay: '+this.delay;
   }
 }

@@ -11,9 +11,6 @@ import {
   characterSquareXDistance,
   characterSquareYDistance,
 
-  minPlayerMessageOffsetX,
-  minPlayerMessageOffsetY,
-
   characterOffsetX,
   characterOffsetY
 } from '../utils/constants';
@@ -42,8 +39,6 @@ class PendingGame extends Phaser.State {
     this.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, this, 1, 0);
 
     this.drawCharacterSquares();
-
-    this.minPlayerMessage = this.add.text(minPlayerMessageOffsetX, minPlayerMessageOffsetY, 'Cannot start game without\nat least 2 players.', { font: 'Carter One', fill: 'red', fontSize: 17, visible: false });
 
     this.add.text(400, 50, this.game_name, { font: 'Carter One', fill: 'red', fontSize: 17});
 
@@ -91,16 +86,12 @@ class PendingGame extends Phaser.State {
   }
 
   enableStartGame() {
-    this.minPlayerMessage.visible = false;
-
     this.startGameButton.setFrames(1, 0);
     this.startGameButton.inputEnabled = true;
     this.startGameButton.input.useHandCursor = true
   }
 
   disableStartGame(){
-    this.minPlayerMessage.visible = true;
-
     this.startGameButton.setFrames(2, 2);
     this.startGameButton.inputEnabled = false;
     this.startGameButton.input.useHandCursor = false

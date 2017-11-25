@@ -85,7 +85,6 @@ class GameLevel extends Phaser.State {
       if (player_info.id === this.currentPlayerId) {
         this.player = new Player(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       } else {
-        // SAME AS ENEMY PLAYER ( should use same class )
         // todo: new MAP()
         this.enemyPlayers[player_info.id] = new EnemyPlayer(this.game, player_info.id, this.gameMap.spawn[player_info.spawnPosition], player_info.color);
       }
