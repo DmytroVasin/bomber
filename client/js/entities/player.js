@@ -1,5 +1,7 @@
 // https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
+import Info from './info';
+
 const SPEED = 0
 const DELAY = 2
 
@@ -39,7 +41,7 @@ export default class Player extends Phaser.Sprite {
     this.animations.add('right', [16, 17, 18, 19, 20, 21, 22, 23], 15, true);
     this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
 
-    this.createStatistic();
+    this.info = new Info({ game: this.game, player: this });
   }
 
   update () {
@@ -110,26 +112,14 @@ export default class Player extends Phaser.Sprite {
   increaseSpeed(){
     if (this.speed < MAX_SPEED) {
       this.speed = this.speed + STEP_SPEED;
-      this.refreshStatistic();
+      this.info.refreshStatistic();
     }
   }
 
   increaseDelay(){
     if (this.delay > MIN_DELAY){
       this.delay -= STEP_DELAY;
-      this.refreshStatistic();
+      this.info.refreshStatistic();
     }
-  }
-
-  createStatistic() {
-    this.speedText = this.game.add.text(32, 432, 'Speed: '+this.speed, { font: '20px Arial', fill: '#ffffff', align: 'left' });
-    this.powerText = this.game.add.text(32, 464, 'Power: '+this.power, { font: '20px Arial', fill: '#ffffff', align: 'left' });
-    this.delayText = this.game.add.text(32, 496, 'Bomb Delay: '+this.delay, { font: '20px Arial', fill: '#ffffff', align: 'left' });
-  }
-
-  refreshStatistic() {
-    this.speedText.text = 'Speed: '+this.speed;
-    this.powerText.text = 'Power: '+this.power;
-    this.delayText.text = 'Bomb Delay: '+this.delay;
   }
 }

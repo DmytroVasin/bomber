@@ -18,8 +18,6 @@ class GameLevel extends Phaser.State {
   create() {
     this.initializeMap();
 
-    this.bombs = this.game.add.group();
-
     this.initializePlayers();
 
     this.setEventHandlers();
@@ -37,9 +35,9 @@ class GameLevel extends Phaser.State {
 
     this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
 
+    this.bombs  = this.game.add.group();
     this.spoils = this.game.add.group();
     this.blasts = this.game.add.group();
-    this.bones  = this.game.add.group();
 
     this.game.physics.arcade.enable(this.blockLayer);
   }
@@ -99,7 +97,6 @@ class GameLevel extends Phaser.State {
   }
 
   render () {
-    // this.game.debug.body(this.blockLayer);
     this.bombs.forEachAlive(function (member) { this.game.debug.body(member);}, this);
     this.game.debug.spriteInfo(this.player, 32, 32);
   }
@@ -116,48 +113,36 @@ class GameLevel extends Phaser.State {
     }
   }
 
-
   onNoOpponents() {
     this.state.start('Win');
   }
 
   onShowBomb(data) {
-    console.log('Bomb was placed...')
     this.bombs.add(new Bomb(this.game, data.id, data.x, data.y));
   }
 
-  // SHOULD BE INSIDE BOMB????
   onDetonateBomb(data) {
-    console.log('Bomb detonated... BOOOOM....')
-
     // Remove Bomb:
     for (let bomb of this.bombs.children) {
       if (bomb.id === data.id) {
         bomb.destroy()
       }
     }
-
     // Render Blast:
     for (let cell of data.blastedCells) {
-      let blastedItem = new FireBlast(this.game, cell)
-      this.blasts.add(blastedItem);
+      this.blasts.add(new FireBlast(this.game, cell));
     };
-
-
     // Destroy Tiles:
     for (let cell of data.blastedCells) {
       if (!cell.destroyed) { continue }
       this.map.putTile(this.gameMap.emptyTileId, cell.col, cell.row, this.blockLayer);
     };
-
-
     // Add Spoils:
     for (let cell of data.blastedCells) {
       if (!cell.destroyed) { continue }
       if (!cell.spoil) { continue }
 
-      let spoiledItem = new Spoil(this.game, cell.spoil);
-      this.spoils.add(spoiledItem);
+      this.spoils.add(new Spoil(this.game, cell.spoil));
     };
   }
 
@@ -177,8 +162,7 @@ class GameLevel extends Phaser.State {
   }
 
   onShowBones(data) {
-    let boneItem = new Bone(this.game, data.col, data.row);
-    this.bones.add(boneItem);
+    new Bone(this.game, data.col, data.row);
 
     var deadPlayer = this.enemyPlayers[data.id];
     if (!deadPlayer) { return; }
