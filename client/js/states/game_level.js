@@ -10,7 +10,6 @@ class GameLevel extends Phaser.State {
   init(game) {
     this.currentGame = game
     this.gameMap = MapInfo[this.currentGame.map_name];
-    this.currentPlayerId = clientSocket.id;
   }
 
   create() {
@@ -62,7 +61,7 @@ class GameLevel extends Phaser.State {
         color: player_info.color
       }
 
-      if (player_info.id === this.currentPlayerId) {
+      if (player_info.id === clientSocket.id) {
         this.player = new Player(setup);
       } else {
         this.enemies.add(new EnemyPlayer(setup))
@@ -82,6 +81,7 @@ class GameLevel extends Phaser.State {
   getSpoil(player, spoil) {
     clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
     spoil.kill();
+    this.spoils.remove(spoil);
   }
 
   getDied(player, blast) {
@@ -139,15 +139,10 @@ class GameLevel extends Phaser.State {
     };
   }
 
-  onSpoilWasPicked(data){
-    let spoil = this.findSpoil(data.spoil_id);
-    if (!spoil) { return; }
-
-    if (data.player_id === this.player.id){
-      this.player.pickSpoil(spoil.spoil_type)
+  onSpoilWasPicked({player_id, spoil_type}){
+    if (player_id === this.player.id){
+      this.player.pickSpoil(spoil_type)
     }
-
-    this.spoils.remove(spoil);
   }
 
   onShowBones(data) {
@@ -163,14 +158,6 @@ class GameLevel extends Phaser.State {
     for (let enemy of this.enemies.children) {
       if (enemy.id !== id) { continue }
       return enemy
-    }
-    return null;
-  }
-
-  findSpoil(id) {
-    for (let spoil of this.spoils.children) {
-      if (spoil.id !== id) { continue }
-      return spoil
     }
     return null;
   }

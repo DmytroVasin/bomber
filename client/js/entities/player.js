@@ -16,6 +16,9 @@ const MIN_DELAY = 500
 const STEP_DELAY = 500
 const INITIAL_DELAY = 2000
 
+const INITIAL_POWER = 1
+const STEP_POWER = 1
+
 export default class Player extends Phaser.Sprite {
 
   constructor({game, id, spawn, color}) {
@@ -28,7 +31,7 @@ export default class Player extends Phaser.Sprite {
     this.prevPosition = {x: 0, y: 0}; // new Phaser.Point - DO WE NEED THAT ???
 
     this.delay = INITIAL_DELAY;
-    this.power = 1; // WE SHOULD COPY FROM SERVER!!!
+    this.power = INITIAL_POWER; // WE SHOULD COPY FROM SERVER!!!
     this.speed = INITIAL_SPEED;
     this.faceDirection = 'down';
     this._lastBombTime = 0;
@@ -130,7 +133,7 @@ export default class Player extends Phaser.Sprite {
   }
 
   increasePower(){
-    this.power += 1;
+    this.power += STEP_POWER;
     this.info.refreshStatistic();
   }
 }

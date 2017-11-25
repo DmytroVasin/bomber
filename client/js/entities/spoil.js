@@ -1,6 +1,7 @@
 const SPEED = 0
 const POWER = 1
 const DELAY = 2
+const TILE_SIZE = 35
 
 export default class Spoil extends Phaser.Sprite {
 
@@ -17,14 +18,9 @@ export default class Spoil extends Phaser.Sprite {
       spoil_type = 2
     }
 
-    super(game, spoil.col * 35, spoil.row * 35, 'spoil_tiles', spoil_type);
+    super(game, (spoil.col * TILE_SIZE), (spoil.row * TILE_SIZE), 'spoil_tiles', spoil_type);
 
     this.id = spoil.id
-
-    this.row = spoil.row
-    this.col = spoil.col
-
-    this.spoil_type = spoil.spoil_type
 
     this.game.physics.arcade.enable(this);
   }

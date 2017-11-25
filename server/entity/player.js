@@ -1,4 +1,4 @@
-const { TILE_SIZE, POWER } = require('../constants');
+const { TILE_SIZE, POWER, INITIAL_POWER, STEP_POWER } = require('../constants');
 
 class Player {
 
@@ -7,24 +7,16 @@ class Player {
     this.id = id;
     this.color = color;
 
-    this.power = 1;
-    // this.delay = 1;
-    // THIS ALL SET UP in "updatePlayerPosition"
-    // DO WE HAVVE this.x this.y???
-    // DOP WE NEED ? faceDirection
+    this.power = INITIAL_POWER;
   }
 
   pickSpoil(spoil_type) {
     if (spoil_type === POWER){
-      this.power += 1
+      this.power += STEP_POWER
     }
   }
 
   currentCol() {
-    console.log('--------------------------------------')
-    console.log(this.x)
-    console.log(this.y)
-    console.log('--------------------------------------')
     return Math.floor(this.x / TILE_SIZE)
   }
 

@@ -100,7 +100,7 @@ var Play = {
 
       current_player.pickSpoil(spoil.spoil_type)
 
-      serverSocket.sockets.to(game_id).emit('spoil was picked', { spoil_id: spoil.id, player_id: current_player.id });
+      serverSocket.sockets.to(game_id).emit('spoil was picked', { player_id: current_player.id, spoil_type: spoil.spoil_type });
     }
   },
 
