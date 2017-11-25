@@ -28,11 +28,6 @@ class GameLevel extends Phaser.State {
     this.game.physics.arcade.overlap(this.player, this.blasts, this.getDied, null, this);
   }
 
-  render () {
-    this.bombs.forEachAlive(function (member) { this.game.debug.body(member);}, this);
-    this.game.debug.spriteInfo(this.player, 32, 32);
-  }
-
   createMap() {
     this.map = this.add.tilemap(this.gameMap.tilemap);
 
@@ -110,8 +105,8 @@ class GameLevel extends Phaser.State {
     this.state.start('Win');
   }
 
-  onShowBomb(data) {
-    this.bombs.add(new Bomb(this.game, data.id, data.x, data.y));
+  onShowBomb({id, col, row}) {
+    this.bombs.add(new Bomb(this.game, id, col, row));
   }
 
   onDetonateBomb(data) {

@@ -3,6 +3,7 @@
 import Info from './info';
 
 const PING = 100 // - Need to be depended on positionUpdaterLoop
+const TILE_SIZE = 35
 
 const SPEED = 0
 const POWER = 1
@@ -53,6 +54,9 @@ export default class Player extends Phaser.Sprite {
   update () {
     this.handleMoves()
     this.handleBombs()
+
+    this.game.debug.body(this);
+    this.game.debug.spriteInfo(this, 32, 32);
   }
 
   handleMoves () {
@@ -77,8 +81,6 @@ export default class Player extends Phaser.Sprite {
     } else {
       this.animations.stop();
     }
-
-    this.game.debug.body(this);
   }
 
   handleBombs() {
@@ -88,10 +90,19 @@ export default class Player extends Phaser.Sprite {
       if (now > this._lastBombTime) {
         this._lastBombTime = now + this.delay;
 
-        clientSocket.emit('create bomb', { x: this.body.position.x, y: this.body.position.y });
+        clientSocket.emit('create bomb', { col: this.currentCol(), row: this.currentRow() });
       }
     }
   }
+
+  currentCol() {
+    return Math.floor(this.body.position.x / TILE_SIZE)
+  }
+
+  currentRow() {
+    return Math.floor(this.body.position.y / TILE_SIZE)
+  }
+
 
   positionUpdaterLoop() {
     // If position changed - we should send notification.

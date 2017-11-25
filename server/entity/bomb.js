@@ -16,21 +16,10 @@ class Bomb {
     this.explosion_time = EXPLOSION_TIME
     this.power = power
 
-    this.col = this.cellNumber(coordinates.x)
-    this.row = this.cellNumber(coordinates.y)
-
-    this.x   = this.centerCell(coordinates.x)
-    this.y   = this.centerCell(coordinates.y)
+    this.col = coordinates.col
+    this.row = coordinates.row
 
     this.blastedCells = [];
-  }
-
-  cellNumber(coordinate) {
-    return Math.floor(coordinate / TILE_SIZE)
-  }
-
-  centerCell(coordinate) {
-    return (Math.floor(coordinate / TILE_SIZE) * TILE_SIZE + TILE_SIZE / 2)
   }
 
   detonate() {

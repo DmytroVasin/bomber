@@ -84,7 +84,7 @@ var Play = {
 
       }, bomb.explosion_time);
 
-      serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, x: bomb.x, y: bomb.y });
+      serverSocket.sockets.to(game_id).emit('show bomb', { id: bomb.id, col: bomb.col, row: bomb.row });
     }
   },
 
