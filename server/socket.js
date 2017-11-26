@@ -10,12 +10,12 @@ module.exports = function(server) {
 
     client.on('enter lobby', Lobby.onEnterLobby);
     client.on('leave lobby', Lobby.onLeaveLobby);
-    client.on('new game created', Lobby.onGameCreation);
+    client.on('create game', Lobby.onCreateGame);
 
     client.on('enter pending game', Lobby.onEnterPendingGame);
     client.on('leave pending game', Lobby.onLeavePendingGame);
 
-    client.on('create game', Play.onStartGame);
+    client.on('start game', Play.onStartGame);
 
     client.on('update player position', Play.updatePlayerPosition);
     client.on('create bomb', Play.createBomb);

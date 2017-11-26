@@ -1,100 +1,86 @@
-import {
-  xOffset,
-  yOffset,
-
-  buttonXOffset,
-  startGameButtonYOffset,
-  leaveButtonYOffset,
-
-  characterSquareStartingX,
-  characterSquareStartingY,
-  characterSquareXDistance,
-  characterSquareYDistance,
-
-  characterOffsetX,
-  characterOffsetY
-} from '../utils/constants';
+import { Text, Button, PlayerSlots } from '../helpers/elements';
 
 class PendingGame extends Phaser.State {
 
-  init(data) {
+  init({ game_id }) {
     this.profileBoxes = [];
     this.profileImages = [];
+    this.slotsWithPlayer = null;
 
-    this.game_id = data.game_id;
-    this.game_name = data.game_name;
+    this.game_id = game_id;
 
-    clientSocket.on('update players', this.populateCharacterSquares.bind(this));
+    clientSocket.on('update game', this.displayGameInfo.bind(this));
     clientSocket.on('launch game', this.startGame.bind(this));
-  }
-
-  create() {
-    this.add.sprite(0, 0, 'background_select');
-    this.add.image(xOffset, yOffset, 'pending_game_backdrop');
-
-    this.startGameButton = this.add.button(buttonXOffset, startGameButtonYOffset, 'start_game_button', this.startGameAction, this, 2, 2);
-    this.startGameButton.input.enabled = false
-    this.startGameButton.input.useHandCursor = false
-
-    this.add.button(buttonXOffset, leaveButtonYOffset, 'leave_game_button', this.leaveGameAction, this, 1, 0);
-
-    this.drawCharacterSquares();
-
-    this.add.text(400, 50, this.game_name, { font: 'Carter One', fill: 'red', fontSize: 17});
 
     clientSocket.emit('enter pending game', { game_id: this.game_id });
   }
 
-  drawCharacterSquares() {
-    let xOffset = characterSquareStartingX;
-    let yOffset = characterSquareStartingY;
+  create() {
+    this.add.sprite(0, 0, 'background_select');
 
-    for(let i = 0; i < 2; i++) {
-      let profileBox = this.add.sprite(xOffset, yOffset, 'character_square', 0);
-      this.profileBoxes[i] = profileBox
-
-      if(i % 2 == 0) {
-        xOffset += characterSquareXDistance;
-      } else {
-        xOffset = characterSquareStartingX;
-        yOffset += characterSquareYDistance;
+    this.gameTitle = new Text({
+      game: this.game,
+      x: this.game.world.centerX,
+      y: this.game.world.centerY - 240,
+      text: '',
+      style: {
+        font: '24px Areal',
+        fill: '#FFFFFF'
       }
-    }
-  }
-
-  populateCharacterSquares(data) {
-    for (let image of this.profileImages) {
-      // NOTE: 1. Not optimal way to rerender, we should implement AddPlayer, RemovePlayer
-      // NOTE: 2. You did not destroy object, it still in memory. Just marked as destroyed.
-      image.destroy();
-    }
-
-    data.players_info.forEach( (info, i) => {
-      let playerSquare = this.profileBoxes[i]
-      let playerImage = this.add.image(characterOffsetX, characterOffsetY, 'bomberman_head_' + info.color);
-
-      this.profileImages[i] = playerImage
-
-      playerSquare.addChild(playerImage)
     })
 
-    if(data.players_info.length > 1) {
-      this.enableStartGame();
-    } else {
-      this.disableStartGame();
+    this.startGameButton = new Button({
+      game: this.game,
+      x: this.game.world.centerX,
+      y: this.game.world.centerY + 100,
+      asset: 'start_game_button',
+      callback: this.startGameAction,
+      callbackContext: this,
+      overFrame: 1,
+      outFrame: 0,
+      downFrame: 2,
+      upFrame: 0,
+    })
+    this.startGameButton.disable()
+
+    new Button({
+      game: this.game,
+      x: this.game.world.centerX,
+      y: this.game.world.centerY + 150,
+      asset: 'leave_game_button',
+      callback: this.leaveGameAction,
+      callbackContext: this,
+      overFrame: 1,
+      outFrame: 0,
+      downFrame: 1,
+      upFrame: 0,
+    })
+  }
+
+  displayGameInfo({ current_game }) {
+    let players = Object.values(current_game.players);
+
+    this.gameTitle.text = `Game name: ${current_game.name}`
+
+    if (this.slotsWithPlayer) {
+      this.slotsWithPlayer.destroy()
     }
-  }
 
-  enableStartGame() {
-    this.startGameButton.setFrames(1, 0);
-    this.startGameButton.inputEnabled = true;
-    this.startGameButton.input.useHandCursor = true
-  }
+    this.slotsWithPlayer = new PlayerSlots({
+      game: this.game,
+      map_size: current_game.map_size,
+      players: players,
+      x: this.game.world.centerX - 150,
+      y: 100,
+      asset_box: 'character_square',
+      asset_player: 'bomberman_head_'
+    })
 
-  disableStartGame(){
-    this.startGameButton.setFrames(2, 2);
-    this.startGameButton.inputEnabled = false;
-    this.startGameButton.input.useHandCursor = false
+    if(players.length > 1) {
+      this.startGameButton.enable();
+    } else {
+      this.startGameButton.disable();
+    }
   }
 
   leaveGameAction() {
@@ -104,11 +90,11 @@ class PendingGame extends Phaser.State {
   }
 
   startGameAction() {
-    clientSocket.emit('create game', { game_id: this.game_id });
+    clientSocket.emit('start game', { game_id: this.game_id });
   }
 
-  startGame(data) {
-    this.state.start('GameLevel', true, false, data.game);
+  startGame(game) {
+    this.state.start('GameLevel', true, false, game);
   }
 }
 

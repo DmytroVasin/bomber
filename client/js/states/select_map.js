@@ -1,48 +1,50 @@
-import {
-  xOffset,
-  yOffset,
-  stageNameYOffset
-} from '../utils/constants';
+import { availableMaps } from '../utils/constants';
+
+import { Button, PlayerSlots } from '../helpers/elements';
 
 class SelectMap extends Phaser.State {
-  init(){
-    console.log('SelectState')
-  }
 
-  preload(){
-    this.load.image('pinkBlock', 'images/assets/pinkBlock.png');
-    this.load.image('blueBlock', 'images/assets/blueBlock.png');
-    this.load.spritesheet('accept', 'images/assets/accept.png', 80, 80);
-    this.load.image('prev', 'images/assets/prev.png');
-    this.load.image('next', 'images/assets/next.png');
-
+  init() {
     this.slider = new phaseSlider(this);
   }
 
-  create(){
+  create() {
     this.add.sprite(0, 0, 'background_select');
 
-    var pinkBlock = this.add.image(0, 0, 'pinkBlock');
-    var blueBlock = this.add.image(0, 0, 'blueBlock');
+    let pinkBlock = this.add.image(0, 0, 'pinkBlock');
+    let blueBlock = this.add.image(0, 0, 'blueBlock');
 
+    // WARN: https://github.com/netgfx/PhaseSlider/issues/1
     this.slider.createSlider({
-      x: this.game.width / 2 - 500 / 2,
-      y: this.game.height / 2 - 400 / 2,
+      x: this.game.world.centerX - pinkBlock.width / 2,
+      y: this.game.world.centerY - pinkBlock.height / 2,
       customHandlePrev: 'prev',
       customHandleNext: 'next',
-      objects:[pinkBlock, blueBlock]
+      objects: [pinkBlock, blueBlock]
     });
 
-    this.add.button(this.game.width / 2 - 80 / 2, 425, 'accept', this.confirmStageSelection, this, 1, 0);
+    new Button({
+      game: this.game,
+      x: this.game.world.centerX,
+      y: 425,
+      asset: 'accept',
+      callback: this.confirmStageSelection,
+      callbackContext: this,
+      overFrame: 1,
+      outFrame: 0,
+      downFrame: 1,
+      upFrame: 0,
+    })
   }
 
-  confirmStageSelection(){
-    var map_name = ['small_map', 'big_map'][this.slider.getCurrentIndex()]
+  confirmStageSelection() {
+    let map_name = availableMaps[this.slider.getCurrentIndex()]
 
-    clientSocket.emit('new game created', { map_name: map_name }, (data) => {
-      this.state.start('PendingGame', true, false, data);
-    });
+    clientSocket.emit('create game', map_name, this.joinToNewGame.bind(this));
+  }
 
+  joinToNewGame(game_id) {
+    this.state.start('PendingGame', true, false, game_id);
   }
 }
 

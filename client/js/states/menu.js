@@ -6,7 +6,7 @@ var slotYOffset = 410;
 var textXOffset = 260;
 var textYOffset = 25;
 
-var lobbySlots = null;
+var slotsWithGame = null;
 
 class Menu extends Phaser.State {
 
@@ -51,7 +51,8 @@ class Menu extends Phaser.State {
 
   hostGameAction() {
     clientSocket.emit('leave lobby');
-    this.state.start('SelectMap', true, false);
+
+    this.state.start('SelectMap');
   }
 
   displayPendingGames(availableGames) {
@@ -59,11 +60,11 @@ class Menu extends Phaser.State {
     //       we should implement AddSlotToGroup, RemoveSlotFromGroup
 
     // I triying to care about readability, not about performance.
-    if (lobbySlots) {
-      lobbySlots.destroy()
+    if (slotsWithGame) {
+      slotsWithGame.destroy()
     }
 
-    lobbySlots = new GameSlots({
+    slotsWithGame = new GameSlots({
       game: this.game,
       availableGames: availableGames,
       callback: this.joinGameAction,
@@ -82,7 +83,7 @@ class Menu extends Phaser.State {
     })
   }
 
-  joinGameAction({ game_id }) {
+  joinGameAction(game_id) {
     // https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start
     this.state.start('PendingGame', true, false, game_id);
   }

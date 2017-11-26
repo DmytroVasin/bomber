@@ -13,9 +13,16 @@ class Preload extends Phaser.State {
     this.load.spritesheet('character_square', 'images/character_square.png', 89, 89);
 
 
+    this.load.image('pinkBlock', 'images/assets/pinkBlock.png');
+    this.load.image('blueBlock', 'images/assets/blueBlock.png');
+    this.load.spritesheet('accept', 'images/assets/accept.png', 80, 80);
+    this.load.image('prev', 'images/assets/prev.png');
+    this.load.image('next', 'images/assets/next.png');
+
+
     this.load.image('bomberman_head_white', 'images/icon_white.png');
     this.load.image('bomberman_head_blue', 'images/icon_blue.png');
-    this.load.image('bomberman_head_red', 'images/icon_green.png');
+    this.load.image('bomberman_head_red', 'images/icon_red.png');
     this.load.image('bomberman_head_black', 'images/icon_black.png');
 
 

@@ -1,8 +1,9 @@
-var { PendingGame } = require('./entity/pending_game');
+var { Game } = require('./entity/game');
 
 var lobbyId = 'lobby_room';
 
-var allPendingGames = []
+var pendingGames = new Map();
+
 
 var Lobby = {
   onEnterLobby: function (callback) {
@@ -17,21 +18,18 @@ var Lobby = {
     this.leave(lobbyId);
   },
 
-  onGameCreation: function(data, callback) {
-    console.log('>>>> ON NEW GAME CREATED');
-    var newGame = new PendingGame(data.map_name);
+  onCreateGame: function(map_name, callback) {
+    var newGame = new Game({ map_name: map_name });
+    pendingGames.set(newGame.id, newGame);
 
-    allPendingGames.push(newGame)
+    Lobby.updateLobbyGames()
 
-    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
-
-    callback({ game_id: newGame.id, game_name: newGame.name });
+    callback({ game_id: newGame.id });
   },
 
-  onEnterPendingGame: function (data) {
-    console.log('>>>> ON ENTER PENDING GAME')
+  onEnterPendingGame: function ({ game_id }) {
 
-    var current_game = allPendingGames.find(game => game.id === data.game_id);
+    let current_game = pendingGames.get(game_id);
 
     // TODO: Should leave before redirect
     this.leave(lobbyId);
@@ -42,53 +40,57 @@ var Lobby = {
 
     current_game.addPlayer(this.id);
 
-    serverSocket.sockets.in(current_game.id).emit('update players', { players_info: current_game.players_info });
-
     if ( current_game.isFull() ){
-     serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
+     Lobby.updateLobbyGames();
     }
+
+    Lobby.updateCurrentGame(current_game)
   },
 
   onLeavePendingGame: function(data) {
-    console.log('>>>> ON LEAVE PENDING GAME')
-    var current_game = allPendingGames.find(game => game.id === data.game_id);
+    let current_game = pendingGames.get(data.game_id);
 
-    // Trick to live pending game
-    if (current_game) {
-      this.leave(current_game.game_id);
+    this.leave(current_game.game_id);
 
-      // place game_id inside Socket connection.... to know when he disconnect
-      this.socket_game_id = null;
+    // place game_id inside Socket connection.... to know when he disconnect
+    this.socket_game_id = null;
 
-      current_game.removePlayer(this.id);
+    current_game.removePlayer(this.id);
 
-      if( current_game.isEmpty() ){
-        allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
-        serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
-        return
-      }
-
-      if ( !current_game.isFull() ){ // Availbable ( User Quit! )
-        serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
-      }
-
-      serverSocket.sockets.in(current_game.id).emit('update players', { players_info: current_game.players_info });
+    if( current_game.isEmpty() ){
+      pendingGames.delete(current_game.id);
+      Lobby.updateLobbyGames();
+      return
     }
+
+    if ( !current_game.isFull() ){
+      Lobby.updateLobbyGames();
+    }
+
+    Lobby.updateCurrentGame(current_game)
   },
 
   startGame: function(game_id) {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>> START GAME >>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    var current_game = allPendingGames.find(game => game.id === game_id);
+    let game = pendingGames.get(game_id);
 
-    allPendingGames = allPendingGames.filter(item => item.id !== current_game.id);
+    pendingGames.delete(game_id);
 
-    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames());
+    Lobby.updateLobbyGames();
 
-    return current_game
+    return game
   },
 
   availablePendingGames: function() {
-    return allPendingGames.filter(item => item.isFull() === false );
+    return [...pendingGames.values()].filter(item => item.isFull() === false );
+  },
+
+  updateLobbyGames: function() {
+    serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
+  },
+
+  updateCurrentGame: function(game) {
+    // Emit to ALL including ME
+    serverSocket.sockets.in(game.id).emit('update game', { current_game: game });
   }
 }
 

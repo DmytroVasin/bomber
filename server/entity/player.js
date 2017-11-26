@@ -2,7 +2,7 @@ const { TILE_SIZE, POWER, INITIAL_POWER, STEP_POWER } = require('../constants');
 
 class Player {
 
-  constructor(id, color, spawnPosition) {
+  constructor({ id, color, spawnPosition }) {
     this.spawnPosition = spawnPosition;
     this.id = id;
     this.color = color;

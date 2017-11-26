@@ -11,6 +11,29 @@ export class Text extends Phaser.Text {
 
 }
 
+export class Button extends Phaser.Button {
+
+  constructor({ game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame }) {
+    super(game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame);
+    this.anchor.setTo(0.5);
+
+    this.game.add.existing(this);
+  }
+
+  disable() {
+    this.setFrames(2, 2);
+    this.inputEnabled = false;
+    this.input.useHandCursor = false;
+  }
+
+  enable() {
+    this.setFrames(1, 0);
+    this.inputEnabled = true;
+    this.input.useHandCursor = true;
+  }
+
+}
+
 export class TextButton extends Phaser.Button {
 
   constructor({ game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame, label, style }) {
@@ -46,6 +69,33 @@ export class GameSlots extends Phaser.Group {
       this.add(slot);
 
       yOffset += 50;
+    }
+  }
+
+  destroy() {
+    this.callAll('kill') // destroy
+  }
+}
+
+export class PlayerSlots extends Phaser.Group {
+
+  constructor({ game, map_size, players, x, y, asset_box, asset_player }) {
+    super(game);
+
+    let xOffset = x;
+
+    for (let i = 0; i < map_size; i++) {
+      let _player = players[i]
+
+      let slotBox = new Phaser.Sprite(this.game, xOffset, y, asset_box, 0);
+
+      if (_player) {
+        let slotPlayer = new Phaser.Image(this.game, 5, 5, asset_player+_player.color)
+        slotBox.addChild(slotPlayer)
+      }
+
+      this.add(slotBox);
+      xOffset += 100;
     }
   }
 

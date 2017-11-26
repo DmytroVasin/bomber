@@ -3,30 +3,56 @@ const { EMPTY_CELL, BOMB_CELL, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL } = requ
 var { Player } = require('./player');
 var { Bomb } = require('./bomb.js');
 
+var uuidv4 = require('uuid/v4');
+var faker = require('faker');
+
 class Game {
 
-  constructor(json) {
-    this.id           = json.id;
-    this.map_name     = json.map_name;
+  constructor({ map_name }) {
+    this.id           = uuidv4();
+    this.name         = faker.commerce.color()
+    this.map_name     = map_name;
 
-    this.shadow_map   = this.createMapData(json.map_name);
-    this.players_info = this.createPlayers(json.playersInfo);
+    this.map_size     = 3 // Take from map!
+    // NOTE: we can`t use new Map - because Socket.io do not support such format
+    this.players      = {}
+    this.playerColors = ['white', 'blue', 'black', 'red']
 
+
+
+    this.shadow_map   = this.createMapData(map_name);
     this.spoils       = new Map();
     this.bombs        = new Map();
   }
 
-  createPlayers(playersInfo) {
-    let gamePlayers = []
-
-    for (let [index, playerInfo] of playersInfo.entries()) {
-      let player = new Player(playerInfo.id, playerInfo.color, index)
-
-      gamePlayers.push(player);
-    }
-
-    return gamePlayers;
+  addPlayer(id) {
+    let player = new Player({ id: id, color: this.getAvailableColor(), spawnPosition: 1 }) // WRONG!
+    this.players[player.id] = player
   }
+
+  removePlayer(id) {
+    let player = this.players[id];
+    this.playerColors.push(player.color)
+    delete this.players[id];
+  }
+
+  getAvailableColor() {
+    return this.playerColors.pop();
+  }
+
+  isEmpty() {
+    return Object.keys(this.players).length === 0
+  }
+
+  isFull() {
+    return Object.keys(this.players).length === this.map_size
+  }
+
+
+
+  // ----------------
+
+
 
   createMapData(map_name) {
     var game_level_info = require('../../client/game_levels/' + map_name + '.json')
@@ -57,14 +83,6 @@ class Game {
     }
 
     return mapMatrix;
-  }
-
-  removePlayer(player_id) {
-    // Find player
-    var player = this.players_info.find(item => item.id === player_id);
-
-    // Remove user from game
-    this.players_info = this.players_info.filter(item => item.id !== player_id);
   }
 
   addBomb({ col, row, power }) {

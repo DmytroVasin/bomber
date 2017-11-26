@@ -51,15 +51,16 @@ class GameLevel extends Phaser.State {
   }
 
   createPlayers() {
-    for (let player_info of this.currentGame.players_info) {
+    for (let player of Object.values(this.currentGame.players)) {
+
       let setup = {
         game:  this.game,
-        id:    player_info.id,
-        spawn: this.gameMap.spawn[player_info.spawnPosition],
-        color: player_info.color
+        id:    player.id,
+        spawn: this.gameMap.spawn[player.spawnPosition],
+        color: player.color
       }
 
-      if (player_info.id === clientSocket.id) {
+      if (player.id === clientSocket.id) {
         this.player = new Player(setup);
       } else {
         this.enemies.add(new EnemyPlayer(setup))

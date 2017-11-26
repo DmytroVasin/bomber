@@ -16,3 +16,5 @@ export  const characterSquareYDistance = 100;
 
 export  const characterOffsetX = 4.5;
 export  const characterOffsetY = 4.5;
+
+export  const availableMaps = ['small_map', 'big_map']
