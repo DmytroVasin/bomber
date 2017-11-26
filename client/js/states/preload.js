@@ -1,8 +1,6 @@
 class Preload extends Phaser.State {
 
   preload() {
-    console.log('LoadState')
-
     this.load.image('background', "images/background.png");
     this.load.spritesheet("game_slot", 'images/game_slot.png', 522, 48);
     this.load.spritesheet("game_number", 'images/game_number.png', 522, 48);
@@ -44,8 +42,6 @@ class Preload extends Phaser.State {
     this.load.spritesheet('spoil_tiles', 'images/spoil_tiles.png', 35, 35);
 
     this.load.spritesheet('bone', 'images/bone.png', 35, 35);
-
-    this.add.text(80, 150, 'Loading...', { font: '30px Courier', fill: '#FFFFFF' });
   }
 
   create() {

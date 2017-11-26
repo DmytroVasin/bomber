@@ -5,12 +5,11 @@ var lobbyId = 'lobby_room';
 var allPendingGames = []
 
 var Lobby = {
-  onEnterLobby: function (data) {
-    console.log('>>>> ON ENTER LOBBY')
-
+  onEnterLobby: function (callback) {
+    // this == client
     this.join(lobbyId);
-    // WE NEED TO UPDATE ONLY USERS LOBBY - SENT TO YOURSELF!
-    serverSocket.sockets.in(this.id).emit('display pending games', Lobby.availablePendingGames());
+
+    callback( Lobby.availablePendingGames() )
   },
 
   onLeaveLobby: function (data) {
