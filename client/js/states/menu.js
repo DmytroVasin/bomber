@@ -50,8 +50,8 @@ class Menu extends Phaser.State {
   }
 
   hostGameAction() {
+    // TODO: Fix through callback
     clientSocket.emit('leave lobby');
-
     this.state.start('SelectMap');
   }
 
@@ -84,6 +84,7 @@ class Menu extends Phaser.State {
   }
 
   joinGameAction(game_id) {
+    clientSocket.emit('leave lobby');
     // https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start
     this.state.start('PendingGame', true, false, game_id);
   }

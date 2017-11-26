@@ -14,7 +14,6 @@ var Lobby = {
   },
 
   onLeaveLobby: function (data) {
-    console.log('>>>> ON LEAVE LOBBY')
     this.leave(lobbyId);
   },
 
@@ -28,11 +27,8 @@ var Lobby = {
   },
 
   onEnterPendingGame: function ({ game_id }) {
-
     let current_game = pendingGames.get(game_id);
 
-    // TODO: Should leave before redirect
-    this.leave(lobbyId);
     this.join(current_game.id);
 
     // place game_id inside Socket connection.... to know when he disconnect
