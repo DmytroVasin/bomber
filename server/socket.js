@@ -31,15 +31,15 @@ module.exports = function(server) {
     if (this.socket_game_id == null) {
       console.log('Player was not be inside any game...');
       return
-    } else {
-      console.log('Player was inside game...');
     }
 
+    console.log('Player was inside game...');
+
     // If game is pending then use Lobby.
-    Lobby.onLeavePendingGame()
+    Lobby.onLeavePendingGame.call(this)
 
     // If game is non-pending then use Play.
-    Play.onLeaveGame()
+    Play.onLeaveGame.call(this)
   }
 
 };

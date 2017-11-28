@@ -17,18 +17,15 @@ var Play = {
   },
 
   onLeaveGame: function() {
-    var current_game = runningGames.get(this.socket_game_id);
-    this.leave(current_game.id);
-    this.socket_game_id = null;
+    let current_game = runningGames.get(this.socket_game_id);
 
-    // debugger
+    if (current_game) {
+      this.leave(current_game.id);
+      this.socket_game_id = null;
 
-    // WTF WHY IT CALL THIS FUNCTION TWICE!!!!!!
-    current_game.removePlayer(this.id);
+      current_game.removePlayer(this.id);
 
-    if (current_game.players.length < 2) {
-      // WTF - strange loggic!
-      if (current_game.players.length == 1) {
+      if ( Object.values(current_game.players).length === 1 ){
         serverSocket.sockets.in(current_game.id).emit('no opponents');
       }
 

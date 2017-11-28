@@ -53,7 +53,7 @@ class Game {
   }
 
   getAndRemoveColor() {
-    // Note we can user here simple .pop()
+    // NOTE: we can user here simple .pop()
     let index = Math.floor(Math.random() * this.playerColors.length);
     let randomColor = this.playerColors[index];
     this.playerColors.splice(index, 1);
@@ -69,12 +69,6 @@ class Game {
     let spawn = { x: spawnOnGrid.row * TILE_SIZE, y: spawnOnGrid.col * TILE_SIZE };
     return [spawn, spawnOnGrid];
   }
-
-
-
-  // ----------------
-
-
 
   createMapData() {
     let tiles  = this.layer_info.data
