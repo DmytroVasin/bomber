@@ -10,7 +10,7 @@ class PendingGame extends Phaser.State {
     this.game_id = game_id;
 
     clientSocket.on('update game', this.displayGameInfo.bind(this));
-    clientSocket.on('launch game', this.startGame.bind(this));
+    clientSocket.on('launch game', this.launchGame.bind(this));
 
     clientSocket.emit('enter pending game', { game_id: this.game_id });
   }
@@ -68,7 +68,7 @@ class PendingGame extends Phaser.State {
 
     this.slotsWithPlayer = new PlayerSlots({
       game: this.game,
-      map_size: current_game.map_size,
+      max_players: current_game.max_players,
       players: players,
       x: this.game.world.centerX - 150,
       y: 100,
@@ -84,16 +84,16 @@ class PendingGame extends Phaser.State {
   }
 
   leaveGameAction() {
-    clientSocket.emit('leave pending game', { game_id: this.game_id });
+    clientSocket.emit('leave pending game');
 
     this.state.start('Menu');
   }
 
   startGameAction() {
-    clientSocket.emit('start game', { game_id: this.game_id });
+    clientSocket.emit('start game');
   }
 
-  startGame(game) {
+  launchGame(game) {
     this.state.start('GameLevel', true, false, game);
   }
 }

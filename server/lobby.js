@@ -7,7 +7,7 @@ var pendingGames = new Map();
 
 var Lobby = {
   onEnterLobby: function (callback) {
-    // this == client
+    // this == socket
     this.join(lobbyId);
 
     callback( Lobby.availablePendingGames() )
@@ -31,7 +31,8 @@ var Lobby = {
 
     this.join(current_game.id);
 
-    // place game_id inside Socket connection.... to know when he disconnect
+    // NOTE: We save current_game_id inside Socket connection.
+    //       We should knew it on disconnect
     this.socket_game_id = current_game.id;
 
     current_game.addPlayer(this.id);
@@ -43,12 +44,10 @@ var Lobby = {
     Lobby.updateCurrentGame(current_game)
   },
 
-  onLeavePendingGame: function(data) {
-    let current_game = pendingGames.get(data.game_id);
+  onLeavePendingGame: function() {
+    let current_game = pendingGames.get(this.socket_game_id);
 
-    this.leave(current_game.game_id);
-
-    // place game_id inside Socket connection.... to know when he disconnect
+    this.leave(current_game.id);
     this.socket_game_id = null;
 
     current_game.removePlayer(this.id);
@@ -66,11 +65,10 @@ var Lobby = {
     Lobby.updateCurrentGame(current_game)
   },
 
-  startGame: function(game_id) {
+  deletePendingGame: function(game_id) {
     let game = pendingGames.get(game_id);
 
-    pendingGames.delete(game_id);
-
+    pendingGames.delete(game.id);
     Lobby.updateLobbyGames();
 
     return game

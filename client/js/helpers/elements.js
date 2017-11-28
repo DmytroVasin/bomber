@@ -79,12 +79,12 @@ export class GameSlots extends Phaser.Group {
 
 export class PlayerSlots extends Phaser.Group {
 
-  constructor({ game, map_size, players, x, y, asset_box, asset_player }) {
+  constructor({ game, max_players, players, x, y, asset_box, asset_player }) {
     super(game);
 
     let xOffset = x;
 
-    for (let i = 0; i < map_size; i++) {
+    for (let i = 0; i < max_players; i++) {
       let _player = players[i]
 
       let slotBox = new Phaser.Sprite(this.game, xOffset, y, asset_box, 0);

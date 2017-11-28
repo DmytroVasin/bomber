@@ -11,6 +11,7 @@ import Bone from '../entities/bone';
 class GameLevel extends Phaser.State {
   init(game) {
     this.currentGame = game
+    // WTF - fix MapInfo!!!
     this.gameMap = MapInfo[this.currentGame.map_name];
   }
 
@@ -39,7 +40,7 @@ class GameLevel extends Phaser.State {
     this.blockLayer = this.map.createLayer(this.gameMap.blockLayer);
     this.blockLayer.resizeWorld();
 
-    this.map.setCollision(this.gameMap.collisionTiles, true, this.blockLayer);
+    this.map.setCollision(this.blockLayer.layer.properties.collisionTiles)
 
     this.player  = null;
     this.bombs   = this.game.add.group();
@@ -52,12 +53,11 @@ class GameLevel extends Phaser.State {
 
   createPlayers() {
     for (let player of Object.values(this.currentGame.players)) {
-
       let setup = {
-        game:  this.game,
-        id:    player.id,
-        spawn: this.gameMap.spawn[player.spawnPosition],
-        color: player.color
+        game:   this.game,
+        id:     player.id,
+        spawn:  player.spawn,
+        color:  player.color
       }
 
       if (player.id === clientSocket.id) {
@@ -124,7 +124,8 @@ class GameLevel extends Phaser.State {
     // Destroy Tiles:
     for (let cell of blastedCells) {
       if (!cell.destroyed) { continue }
-      this.map.putTile(this.gameMap.emptyTileId, cell.col, cell.row, this.blockLayer);
+
+      this.map.putTile(this.blockLayer.layer.properties.empty, cell.col, cell.row, this.blockLayer);
     };
 
     // Add Spoils:

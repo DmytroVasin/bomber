@@ -36,10 +36,10 @@ module.exports = function(server) {
     }
 
     // If game is pending then use Lobby.
-    Lobby.onLeavePendingGame.call(this, { game_id: this.socket_game_id })
+    Lobby.onLeavePendingGame()
 
     // If game is non-pending then use Play.
-    Play.onLeaveGame.call(this, { game_id: this.socket_game_id })
+    Play.onLeaveGame()
   }
 
 };

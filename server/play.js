@@ -4,44 +4,42 @@ var { Game } = require('./entity/game');
 var runningGames = new Map();
 
 var Play = {
-  onStartGame: function({ game_id }) {
-    let game = Lobby.startGame(game_id);
+  onStartGame: function() {
+    let game = Lobby.deletePendingGame(this.socket_game_id);
     runningGames.set(game.id, game)
 
     serverSocket.sockets.in(game.id).emit('launch game', game);
   },
 
   updatePlayerPosition: function (coordinates) {
-    // this == socket | We broadcast only for opponents.
+    // NOTE: We broadcast only for opponents.
     this.broadcast.to(this.socket_game_id).emit('move player', Object.assign({}, { player_id: this.id }, coordinates));
   },
 
-  onLeaveGame: function(data) {
-    // console.log(this.socket_game_id)
-    var current_game = runningGames.get(data.game_id);
+  onLeaveGame: function() {
+    var current_game = runningGames.get(this.socket_game_id);
+    this.leave(current_game.id);
+    this.socket_game_id = null;
 
-    // if (current_game) {
-      // WTF WHY IT CALL THIS FUNCTION TWICE!!!!!!
-      current_game.removePlayer(this.id);
-      if (current_game.players_info.length < 2) {
-        if (current_game.players_info.length == 1) {
-          serverSocket.sockets.in(current_game.id).emit('no opponents');
-        }
+    // debugger
 
-        Play.terminateExistingGame(current_game.id);
+    // WTF WHY IT CALL THIS FUNCTION TWICE!!!!!!
+    current_game.removePlayer(this.id);
+
+    if (current_game.players.length < 2) {
+      // WTF - strange loggic!
+      if (current_game.players.length == 1) {
+        serverSocket.sockets.in(current_game.id).emit('no opponents');
       }
-    // }
-  },
 
-  terminateExistingGame: function(game_id) {
-    runningGames.delete(game_id);
+      runningGames.delete(current_game.id);
+    }
   },
-
 
   createBomb: function({ col, row }) {
     let game_id = this.socket_game_id;
     let current_game = runningGames.get(game_id);
-    let current_player = current_game.players_info.find(item => item.id == this.id);
+    let current_player = current_game.players[this.id];
 
     let bomb = current_game.addBomb({ col: col, row: row, power: current_player.power })
 
@@ -60,7 +58,7 @@ var Play = {
   onPickUpSpoil: function({ spoil_id }) {
     let game_id = this.socket_game_id;
     let current_game = runningGames.get(game_id);
-    let current_player = current_game.players_info.find(item => item.id == this.id);
+    let current_player = current_game.players[this.id];
 
     let spoil = current_game.findSpoil(spoil_id)
 

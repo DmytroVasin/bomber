@@ -50,7 +50,6 @@ class Menu extends Phaser.State {
   }
 
   hostGameAction() {
-    // TODO: Fix through callback
     clientSocket.emit('leave lobby');
     this.state.start('SelectMap');
   }

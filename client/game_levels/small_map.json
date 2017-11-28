@@ -30,7 +30,19 @@
       "opacity": 1,
       "type": "tilelayer",
       "visible": true,
-      "properties": {}
+      "properties": {
+        "max_players": 3,
+        "collisionTiles": [3, 4],
+        "empty": 5,
+        "balk": 4,
+        "wall": 3,
+        "spawns": [
+          { "row": 8,  "col": 2 },
+          { "row": 23, "col": 2 },
+          { "row": 3,  "col": 2 },
+          { "row": 12, "col": 6 }
+        ]
+      }
     }
   ],
   "renderorder": "right-down",
