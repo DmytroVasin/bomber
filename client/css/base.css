@@ -3,3 +3,13 @@
   padding: 0;
   background: grey;
 }
+
+html, body, #game-wrapper, #game-container {
+  height: 100%;
+}
+
+#game-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

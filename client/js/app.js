@@ -10,7 +10,7 @@ import Win from './states/win';
 
 class Game extends Phaser.Game {
   constructor() {
-    super(875, 525, Phaser.AUTO);
+    super(875, 525, Phaser.AUTO, 'game-container');
 
     this.state.add('Boot',         Boot);
     this.state.add('Preload',      Preload);
