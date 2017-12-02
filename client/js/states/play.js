@@ -9,7 +9,7 @@ import Spoil from '../entities/spoil';
 import FireBlast from '../entities/fire_blast';
 import Bone from '../entities/bone';
 
-class GameLevel extends Phaser.State {
+class Play extends Phaser.State {
   init(game) {
     this.currentGame = game
   }
@@ -87,7 +87,7 @@ class GameLevel extends Phaser.State {
   getDied(player, blast) {
     if (player.alive) {
       clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
-      player.kill();
+      player.becomesDead()
     }
   }
 
@@ -165,4 +165,4 @@ class GameLevel extends Phaser.State {
   }
 }
 
-export default GameLevel;
+export default Play;

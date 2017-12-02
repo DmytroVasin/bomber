@@ -94,7 +94,7 @@ class PendingGame extends Phaser.State {
   }
 
   launchGame(game) {
-    this.state.start('GameLevel', true, false, game);
+    this.state.start('Play', true, false, game);
   }
 }
 

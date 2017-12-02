@@ -26,9 +26,9 @@ class Preload extends Phaser.State {
     this.load.image('bomberman_head_black', 'images/icon_black.png');
 
 
-    this.load.image('tiles', 'game_levels/tileset.png');
-    this.load.tilemap('hot_map', 'game_levels/hot_map.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.tilemap('cold_map', 'game_levels/cold_map.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('tiles', 'maps/tileset.png');
+    this.load.tilemap('hot_map', 'maps/hot_map.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('cold_map', 'maps/cold_map.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.load.spritesheet('bomberman_white', 'images/bomberman_white.png', 32, 64);
     this.load.spritesheet('bomberman_black', 'images/bomberman_black.png', 32, 64);

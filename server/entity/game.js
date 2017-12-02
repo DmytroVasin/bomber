@@ -13,7 +13,7 @@ class Game {
     this.name         = faker.commerce.color()
     this.map_name     = map_name;
 
-    this.layer_info   = require('../../client/game_levels/' + this.map_name + '.json').layers[0]
+    this.layer_info   = require('../../client/maps/' + this.map_name + '.json').layers[0]
     this.max_players  = this.layer_info.properties.max_players
 
     // NOTE: we can`t use new Map - because Socket.io do not support such format
