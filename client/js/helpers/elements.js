@@ -1,9 +1,5 @@
 // https://gist.github.com/woubuc/6ef002051aeef453a95b
 
-const SPEED = 0
-const POWER = 1
-const DELAY = 2
-
 export class Text extends Phaser.Text {
 
   constructor({ game, x, y, text, style }) {

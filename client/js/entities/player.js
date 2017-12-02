@@ -1,7 +1,7 @@
 // https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
 import Info from './info';
-import { SpoilNotification } from '../helpers/elements';
+import { SpoilNotification, Text } from '../helpers/elements';
 
 const PING = 100 // - Need to be depended on positionUpdaterLoop
 const TILE_SIZE = 35
@@ -51,6 +51,7 @@ export default class Player extends Phaser.Sprite {
     this.info = new Info({ game: this.game, player: this });
 
     this.defineKeyboard()
+    this.defineSelf()
   }
 
   update() {
@@ -173,5 +174,20 @@ export default class Player extends Phaser.Sprite {
     this.info.refreshStatistic();
 
     new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
+  }
+
+  defineSelf() {
+    let playerText = new Text({
+      game: this.game,
+      x: 10,
+      y: -10,
+      text: 'Me',
+      style: {
+        font: '15px Areal',
+        fill: '#FFFFFF'
+      }
+    })
+
+    this.addChild(playerText);
   }
 }
