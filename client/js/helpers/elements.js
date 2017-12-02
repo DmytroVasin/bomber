@@ -1,5 +1,9 @@
 // https://gist.github.com/woubuc/6ef002051aeef453a95b
 
+const SPEED = 0
+const POWER = 1
+const DELAY = 2
+
 export class Text extends Phaser.Text {
 
   constructor({ game, x, y, text, style }) {
@@ -100,8 +104,77 @@ export class PlayerSlots extends Phaser.Group {
   }
 
   destroy() {
-    this.callAll('kill') // destroy
+    this.callAll('kill')
   }
 }
 
-// phaser last version 2.9.2
+export class CountDown extends Phaser.Group {
+
+  constructor({ game, callback }) {
+    super(game)
+
+    this.callback = callback
+    let duration = 1000
+
+    this.picture = new Phaser.Sprite(this.game, this.game.world.centerX, this.game.world.centerY, 'count_down');
+    this.picture.anchor.setTo(0.5);
+    this.picture.alpha = 0
+
+    this.add(this.picture);
+
+
+    this.tween_1 = this.game.add.tween(this.picture).to({ alpha: 1 }, duration).to({ alpha: 0 }, duration);
+    this.tween_2 = this.game.add.tween(this.picture).to({ alpha: 1 }, duration).to({ alpha: 0 }, duration);
+    this.tween_3 = this.game.add.tween(this.picture).to({ alpha: 1 }, duration).to({ alpha: 0 }, duration);
+
+    this.tween_1.onComplete.add(this.show_tween_2, this);
+    this.tween_2.onComplete.add(this.show_tween_3, this);
+    this.tween_3.onComplete.add(this.finish, this);
+
+    this.show_tween_1()
+  }
+
+  show_tween_1() {
+    this.picture.frame = 0
+    this.tween_1.start()
+  }
+
+  show_tween_2() {
+    this.picture.frame = 1
+    this.tween_2.start()
+  }
+
+  show_tween_3() {
+    this.picture.frame = 2
+    this.tween_3.start()
+  }
+
+  finish() {
+    this.callAll('kill')
+
+    if (this.callback) { this.callback() }
+  }
+}
+
+export class SpoilNotification extends Phaser.Group {
+
+  constructor({ game, asset, x, y }) {
+    super(game)
+
+    this.picture = new Phaser.Image(this.game, x, y - 20, asset);
+    this.picture.anchor.setTo(0.5);
+
+    this.add(this.picture);
+
+    this.tween = this.game.add.tween(this.picture);
+    this.tween.to({ y: this.picture.y - 25, alpha: 0 }, 600);
+
+    this.tween.onComplete.add(this.finish, this);
+
+    this.tween.start()
+  }
+
+  finish() {
+    this.callAll('kill')
+  }
+}

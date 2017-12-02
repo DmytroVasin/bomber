@@ -1,4 +1,7 @@
+import { CountDown } from '../helpers/elements';
 import { Text, TextButton, GameSlots } from '../helpers/elements';
+
+import { SpoilNotification } from '../helpers/elements';
 
 var slotXOffset = 155;
 var slotYOffset = 410;
@@ -47,6 +50,9 @@ class Menu extends Phaser.State {
     });
 
     clientSocket.emit('enter lobby', this.displayPendingGames.bind(this));
+  }
+
+  update() {
   }
 
   hostGameAction() {

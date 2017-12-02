@@ -1,6 +1,7 @@
 // https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
 
 import Info from './info';
+import { SpoilNotification } from '../helpers/elements';
 
 const PING = 100 // - Need to be depended on positionUpdaterLoop
 const TILE_SIZE = 35
@@ -25,6 +26,7 @@ export default class Player extends Phaser.Sprite {
   constructor({ game, id, spawn, color }) {
     super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
+    this.frozen = false;  // TODO: For DEV mode. - TRUE.!
     this.game = game;
     this.id = id;
 
@@ -47,34 +49,55 @@ export default class Player extends Phaser.Sprite {
     this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
 
     this.info = new Info({ game: this.game, player: this });
+
+    this.defineKeyboard()
   }
 
-  update () {
-    this.handleMoves()
-    this.handleBombs()
+  update() {
+    if (this.alive && !this.frozen) {
+      this.handleMoves()
+      this.handleBombs()
+    }
 
     this.game.debug.body(this);
     this.game.debug.spriteInfo(this, 32, 32);
   }
 
-  handleMoves () {
-    this.body.velocity.set(0);
+  defineKeyboard() {
+    this.upKey    = this.game.input.keyboard.addKey(Phaser.Keyboard.UP)
+    this.downKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN)
+    this.leftKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
+    this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
+    this.spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+  }
 
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+  handleMoves() {
+    this.body.velocity.set(0);
+    let animationsArray = []
+
+    if (this.leftKey.isDown){
       this.body.velocity.x = -this.speed;
-      this.animations.play('left');
-    } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+      animationsArray.push('left')
+    } else if (this.rightKey.isDown) {
       this.body.velocity.x = this.speed;
-      this.animations.play('right');
-    } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-      this.body.velocity.y = -this.speed;
-      this.animations.play('up');
-    } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-      this.body.velocity.y = this.speed;
-      this.animations.play('down')
-    } else {
-      this.animations.stop();
+      animationsArray.push('right')
     }
+
+    if (this.upKey.isDown) {
+      this.body.velocity.y = -this.speed;
+      animationsArray.push('up')
+    } else if (this.downKey.isDown) {
+      this.body.velocity.y = this.speed;
+      animationsArray.push('down')
+    }
+
+    let currentAnimation = animationsArray[0]
+    if (currentAnimation){
+      this.animations.play(currentAnimation)
+      return
+    }
+
+    this.animations.stop();
   }
 
   handleBombs() {
@@ -115,21 +138,35 @@ export default class Player extends Phaser.Sprite {
   }
 
   increaseSpeed(){
+    let asset = 'speed_up_no_bonus'
+
     if (this.speed < MAX_SPEED) {
       this.speed = this.speed + STEP_SPEED;
       this.info.refreshStatistic();
+      asset = 'speed_up_bonus'
     }
+
+    new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
   }
 
   increaseDelay(){
+    let asset = 'delay_up_no_bonus'
+
     if (this.delay > MIN_DELAY){
       this.delay -= STEP_DELAY;
       this.info.refreshStatistic();
+      asset = 'delay_up_bonus'
     }
+
+    new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
   }
 
   increasePower(){
+    let asset = 'power_up_bonus'
+
     this.power += STEP_POWER;
     this.info.refreshStatistic();
+
+    new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
   }
 }

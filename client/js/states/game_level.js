@@ -1,6 +1,7 @@
+import { CountDown } from '../helpers/elements';
 import { findFrom, findAndDestroyFrom } from '../utils/utils';
+import { TILESET, LAYER } from '../utils/constants';
 
-import MapInfo from '../../game_levels/map_info';
 import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
 import Bomb from '../entities/bomb';
@@ -11,14 +12,14 @@ import Bone from '../entities/bone';
 class GameLevel extends Phaser.State {
   init(game) {
     this.currentGame = game
-    // WTF - fix MapInfo!!!
-    this.gameMap = MapInfo[this.currentGame.map_name];
   }
 
   create() {
     this.createMap();
     this.createPlayers();
     this.setEventHandlers();
+
+    // this.initCountDown(); // TODO: For DEV mode.
 
     this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
   }
@@ -33,11 +34,11 @@ class GameLevel extends Phaser.State {
   }
 
   createMap() {
-    this.map = this.add.tilemap(this.gameMap.tilemap);
+    this.map = this.add.tilemap(this.currentGame.map_name);
 
-    this.map.addTilesetImage(this.gameMap.tileset);
+    this.map.addTilesetImage(TILESET);
 
-    this.blockLayer = this.map.createLayer(this.gameMap.blockLayer);
+    this.blockLayer = this.map.createLayer(LAYER);
     this.blockLayer.resizeWorld();
 
     this.map.setCollision(this.blockLayer.layer.properties.collisionTiles)
@@ -104,10 +105,6 @@ class GameLevel extends Phaser.State {
     }
   }
 
-  onNoOpponents() {
-    this.state.start('Win');
-  }
-
   onShowBomb({ bomb_id, col, row }) {
     this.bombs.add(new Bomb(this.game, bomb_id, col, row));
   }
@@ -149,6 +146,21 @@ class GameLevel extends Phaser.State {
     new Bone(this.game, col, row);
 
     findAndDestroyFrom(player_id, this.enemies)
+  }
+
+  initCountDown() {
+    new CountDown({
+      game: this.game,
+      callback: this.afterCountDown.bind(this)
+    })
+  }
+
+  afterCountDown() {
+    this.player.frozen = false
+  }
+
+  onNoOpponents() {
+    this.state.start('Win');
   }
 }
 

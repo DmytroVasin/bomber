@@ -1,4 +1,4 @@
-import { availableMaps } from '../utils/constants';
+import { AVAILABLE_MAPS } from '../utils/constants';
 
 import { Button, PlayerSlots } from '../helpers/elements';
 
@@ -38,7 +38,7 @@ class SelectMap extends Phaser.State {
   }
 
   confirmStageSelection() {
-    let map_name = availableMaps[this.slider.getCurrentIndex()]
+    let map_name = AVAILABLE_MAPS[this.slider.getCurrentIndex()]
 
     clientSocket.emit('create game', map_name, this.joinToNewGame.bind(this));
   }
