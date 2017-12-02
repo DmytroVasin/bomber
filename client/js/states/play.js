@@ -29,8 +29,8 @@ class Play extends Phaser.State {
     this.game.physics.arcade.collide(this.player, this.enemies);
     this.game.physics.arcade.collide(this.player, this.bombs);
 
-    this.game.physics.arcade.overlap(this.player, this.spoils, this.getSpoil, null, this);
-    this.game.physics.arcade.overlap(this.player, this.blasts, this.getDied, null, this);
+    this.game.physics.arcade.overlap(this.player, this.spoils, this.onPlayerVsSpoil, null, this);
+    this.game.physics.arcade.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
   }
 
   createMap() {
@@ -79,12 +79,12 @@ class Play extends Phaser.State {
     clientSocket.on('show bones', this.onShowBones.bind(this));
   }
 
-  getSpoil(player, spoil) {
+  onPlayerVsSpoil(player, spoil) {
     clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
     spoil.kill();
   }
 
-  getDied(player, blast) {
+  onPlayerVsBlast(player, blast) {
     if (player.alive) {
       clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
       player.becomesDead()
