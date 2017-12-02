@@ -13,7 +13,7 @@ var Lobby = {
     callback( Lobby.availablePendingGames() )
   },
 
-  onLeaveLobby: function (data) {
+  onLeaveLobby: function () {
     this.leave(lobbyId);
   },
 

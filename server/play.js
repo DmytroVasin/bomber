@@ -4,6 +4,13 @@ var { Game } = require('./entity/game');
 var runningGames = new Map();
 
 var Play = {
+  onLeaveGame: function (data) {
+    runningGames.delete(this.socket_game_id);
+
+    this.leave(this.socket_game_id);
+    this.socket_game_id = null;
+  },
+
   onStartGame: function() {
     let game = Lobby.deletePendingGame(this.socket_game_id);
     runningGames.set(game.id, game)
@@ -16,20 +23,11 @@ var Play = {
     this.broadcast.to(this.socket_game_id).emit('move player', Object.assign({}, { player_id: this.id }, coordinates));
   },
 
-  onLeaveGame: function() {
+  onDisconnectFromGame: function() {
     let current_game = runningGames.get(this.socket_game_id);
 
     if (current_game) {
-      this.leave(current_game.id);
-      this.socket_game_id = null;
-
-      current_game.removePlayer(this.id);
-
-      if ( Object.values(current_game.players).length === 1 ){
-        serverSocket.sockets.in(current_game.id).emit('player win');
-      }
-
-      runningGames.delete(current_game.id);
+      serverSocket.sockets.in(this.socket_game_id).emit('player disconnect', {player_id: this.id } );
     }
   },
 

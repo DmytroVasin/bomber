@@ -50,8 +50,6 @@ class Preload extends Phaser.State {
 
     this.load.spritesheet('bone', 'images/bone.png', 35, 35);
 
-    this.load.spritesheet('count_down', 'images/count_down.png', 452, 96);
-
     this.load.image('speed_up_bonus', 'images/speed_up_bonus.png');
     this.load.image('speed_up_no_bonus', 'images/speed_up_bonus.png');
     this.load.image('delay_up_bonus', 'images/delay_up_bonus.png');

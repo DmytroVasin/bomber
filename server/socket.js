@@ -22,6 +22,7 @@ module.exports = function(server) {
     client.on('pick up spoil', Play.onPickUpSpoil);
 
     client.on('player died', Play.onPlayerDied);
+    client.on('leave game', Play.onLeaveGame);
 
     client.on('disconnect', onClientDisconnect);
   });
@@ -39,7 +40,7 @@ module.exports = function(server) {
     Lobby.onLeavePendingGame.call(this)
 
     // If game is non-pending then use Play.
-    Play.onLeaveGame.call(this)
+    Play.onDisconnectFromGame.call(this)
   }
 
 };
