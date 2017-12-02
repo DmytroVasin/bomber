@@ -57,6 +57,10 @@ class Preload extends Phaser.State {
     this.load.image('delay_up_bonus', 'images/delay_up_bonus.png');
     this.load.image('delay_up_no_bonus', 'images/delay_up_bonus.png');
     this.load.image('power_up_bonus', 'images/power_up_bonus.png');
+
+    this.load.image('speed', 'images/speed.png');
+    this.load.image('power', 'images/power.png');
+    this.load.image('delay', 'images/delay.png');
   }
 
   create() {

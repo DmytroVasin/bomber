@@ -60,7 +60,7 @@ export default class Player extends Phaser.Sprite {
     }
 
     this.game.debug.body(this);
-    this.game.debug.spriteInfo(this, 32, 32);
+    // this.game.debug.spriteInfo(this, 32, 32);
   }
 
   defineKeyboard() {

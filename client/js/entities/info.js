@@ -4,14 +4,25 @@ export default class Info {
     this.game = game;
     this.player = player;
 
-    this.style = { font: '20px Arial', fill: '#ffffff', align: 'left' }
+    this.style    = { font: '20px Arial', fill: '#ffffff', align: 'left' }
     this.redStyle = { font: '30px Arial', fill: '#ff0044', align: 'center' };
 
-    this.speedText = this.game.add.text(32, 432, this.speedLabel(), this.style);
-    this.powerText = this.game.add.text(32, 464, this.powerLabel(), this.style);
-    this.delayText = this.game.add.text(32, 496, this.delayLabel(), this.style);
+    let bootsIcon  = new Phaser.Image(this.game, 10, 10, 'speed');
+    this.speedText = new Phaser.Text(this.game, 37, 3, this.speedLabel(), this.style);
+    bootsIcon.addChild(this.speedText)
+    this.game.add.existing(bootsIcon);
 
-    this.deadText  = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
+    let powerIcon  = new Phaser.Image(this.game, 110, 10, 'delay');
+    this.powerText = new Phaser.Text(this.game, 37, 3, this.powerLabel(), this.style);
+    powerIcon.addChild(this.powerText)
+    this.game.add.existing(powerIcon);
+
+    let delayIcon  = new Phaser.Image(this.game, 185, 10, 'power');
+    this.delayText = new Phaser.Text(this.game, 37, 3, this.delayLabel(), this.style);
+    delayIcon.addChild(this.delayText)
+    this.game.add.existing(delayIcon);
+
+    this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
     this.deadText.anchor.set(0.5);
     this.deadText.visible = false
   }
@@ -23,23 +34,18 @@ export default class Info {
   }
 
   showDeadInfo() {
-    this.speedText.destroy()
-    this.powerText.destroy()
-    this.delayText.destroy()
-
     this.deadText.visible = true
   }
 
-
   speedLabel() {
-    return `Speed: ${this.player.speed}`
+    return `x ${this.player.speed}`
   }
 
   powerLabel() {
-    return `Power: ${this.player.power}`
+    return `x ${this.player.power}`
   }
 
   delayLabel() {
-    return `Bomb Delay: ${this.player.delay}`
+    return `x ${this.player.delay / 1000} sec.`
   }
 }
