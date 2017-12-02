@@ -26,7 +26,7 @@ var Play = {
       current_game.removePlayer(this.id);
 
       if ( Object.values(current_game.players).length === 1 ){
-        serverSocket.sockets.in(current_game.id).emit('no opponents');
+        serverSocket.sockets.in(current_game.id).emit('player win');
       }
 
       runningGames.delete(current_game.id);
@@ -70,6 +70,29 @@ var Play = {
 
   onPlayerDied: function(coordinates) {
     serverSocket.sockets.to(this.socket_game_id).emit('show bones', Object.assign({}, { player_id: this.id }, coordinates));
+
+    let game_id = this.socket_game_id;
+    let current_game = runningGames.get(game_id);
+    let current_player = current_game.players[this.id]
+
+    current_player.dead()
+
+    let alivePlayersCount = 0
+    let alivePlayerColor = null
+    for (let player of Object.values(current_game.players)) {
+      if ( !player.isAlive ) { continue }
+
+      alivePlayerColor = player.color
+      alivePlayersCount += 1
+    }
+
+    if (alivePlayersCount >= 2) {
+      return
+    }
+
+    setTimeout(function() {
+      serverSocket.sockets.to(game_id).emit('player win', alivePlayerColor);
+    }, 3000);
   }
 }
 

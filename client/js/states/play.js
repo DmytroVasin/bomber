@@ -72,7 +72,7 @@ class Play extends Phaser.State {
 
   setEventHandlers() {
     clientSocket.on('move player', this.onMovePlayer.bind(this));
-    clientSocket.on('no opponents', this.onNoOpponents.bind(this));
+    clientSocket.on('player win', this.onPlayerWin.bind(this));
     clientSocket.on('show bomb', this.onShowBomb.bind(this));
     clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
     clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
@@ -160,8 +160,8 @@ class Play extends Phaser.State {
     this.player.frozen = false
   }
 
-  onNoOpponents() {
-    this.state.start('Win');
+  onPlayerWin(winner_color) {
+    this.state.start('Win', true, false, winner_color);
   }
 }
 

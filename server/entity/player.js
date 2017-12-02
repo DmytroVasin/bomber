@@ -8,6 +8,8 @@ class Player {
     this.spawn = spawn;
     this.spawnGrid = spawnGrid;
 
+    this.isAlive = true;
+
     this.power = INITIAL_POWER;
   }
 
@@ -15,6 +17,10 @@ class Player {
     if (spoil_type === POWER){
       this.power += STEP_POWER
     }
+  }
+
+  dead() {
+    this.isAlive = false;
   }
 
 }
