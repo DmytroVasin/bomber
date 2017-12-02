@@ -9,6 +9,10 @@
   <script src='/socket.io/socket.io.js'></script>
 
   <script src='bundle.js'></script>
+
+  <script>
+    window.clientSocket = io.connect();
+  </script>
 </head>
 <body>
   <div id='game-wrapper'>
@@ -20,3 +24,5 @@
 </html>
 
 <!-- https://github.com/Lotti/codemotion2015 -->
+
+<!-- https://devcenter.heroku.com/articles/node-websockets -->

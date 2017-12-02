@@ -33,6 +33,3 @@ io.sockets.socket(socketid).emit('eventClient', 'for your eyes only');
 https://www.pubnub.com/tutorials/javascript/multiplayer-game/
 
 https://learn.javascript.ru/set-map
-
-
-uuid

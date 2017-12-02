@@ -15,6 +15,9 @@
     "es6",
     "webpack"
   ],
+  "engines": {
+    "node": "8.9.1"
+  },
   "dependencies": {
     "express": "^4.16.2",
     "faker": "^4.1.0",
