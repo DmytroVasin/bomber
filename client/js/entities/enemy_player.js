@@ -1,5 +1,4 @@
 const PING = 100
-const INITIAL_SPEED = 150
 
 export default class EnemyPlayer extends Phaser.Sprite {
 
@@ -10,9 +9,6 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.id = id;
 
     this.currentPosition = spawn;
-
-    // TODO: we do not increate player speed! - CHECK THAT !!!!
-    this.speed = INITIAL_SPEED;
 
     this.lastMoveAt = 0;
 
