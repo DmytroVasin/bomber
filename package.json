@@ -4,8 +4,8 @@
   "description": "Bomberman like game",
   "main": "server.js",
   "scripts": {
-    "start": "node server/app.js",
-    "heroku-postbuild": "webpack -p --config ./webpack.config.js --progress"
+    "build": "webpack",
+    "start": "node server/app.js"
   },
   "author": "Dmytro Vasin",
   "repository": "github.com/DmytroVasin/bomber",
