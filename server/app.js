@@ -1,5 +1,7 @@
 const express = require('express');
 const socketIO = require('socket.io');
+const favicon = require('serve-favicon');
+
 const app = express();
 const server = require('http').createServer(app);
 const path = require('path');
@@ -7,6 +9,7 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, '..', 'client')));
+app.use(favicon(path.join(__dirname, '..', 'client', 'favicon.ico')));
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'index'));

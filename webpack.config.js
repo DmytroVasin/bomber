@@ -1,13 +1,19 @@
+const path = require('path')
+
 const config = {
+  devtool: 'source-map',
+
   entry: './client/js/app.js',
+
   resolve: {
     extensions: ['.js']
   },
+
   output: {
-    path: __dirname + '/client',
+    path: path.join(__dirname, 'client'),
     filename: 'bundle.js'
   },
-  devtool: 'source-map',
+
   module: {
     loaders: [
       {
