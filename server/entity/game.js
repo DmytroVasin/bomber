@@ -20,7 +20,8 @@ class Game {
     this.players      = {}
     this.playerColors = ['white', 'blue', 'black', 'red']
 
-    this.playerSpawns = this.layer_info.properties.spawns
+    // NOTE: Copy objct - not reference
+    this.playerSpawns = this.layer_info.properties.spawns.slice()
 
     this.shadow_map   = this.createMapData();
     this.spoils       = new Map();

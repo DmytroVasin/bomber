@@ -17,6 +17,6 @@ export  const characterSquareYDistance = 100;
 export  const characterOffsetX = 4.5;
 export  const characterOffsetY = 4.5;
 
-export const AVAILABLE_MAPS = ['small_map', 'big_map']
+export const AVAILABLE_MAPS = ['hot_map', 'cold_map']
 export const TILESET = 'tiles';
 export const LAYER   = 'Blocks';

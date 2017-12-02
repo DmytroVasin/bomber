@@ -37,10 +37,10 @@
         "balk": 4,
         "wall": 3,
         "spawns": [
-          { "row": 8,  "col": 2 },
-          { "row": 23, "col": 2 },
-          { "row": 3,  "col": 2 },
-          { "row": 12, "col": 6 }
+          { "row": 6,  "col": 4  },
+          { "row": 8,  "col": 13 },
+          { "row": 18, "col": 10 },
+          { "row": 16, "col": 1  }
         ]
       }
     }

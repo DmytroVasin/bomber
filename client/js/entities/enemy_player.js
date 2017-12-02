@@ -12,7 +12,6 @@ export default class EnemyPlayer extends Phaser.Sprite {
 
     this.lastMoveAt = 0;
 
-    this.game.add.existing(this);
     this.game.physics.arcade.enable(this);
     this.body.setSize(20, 20, 0, 0);
     this.body.immovable = true;

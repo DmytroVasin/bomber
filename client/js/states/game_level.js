@@ -44,6 +44,7 @@ class GameLevel extends Phaser.State {
     this.map.setCollision(this.blockLayer.layer.properties.collisionTiles)
 
     this.player  = null;
+    this.bones   = this.game.add.group();
     this.bombs   = this.game.add.group();
     this.spoils  = this.game.add.group();
     this.blasts  = this.game.add.group();
@@ -143,7 +144,7 @@ class GameLevel extends Phaser.State {
   }
 
   onShowBones({ player_id, col, row }) {
-    new Bone(this.game, col, row);
+    this.bones.add(new Bone(this.game, col, row));
 
     findAndDestroyFrom(player_id, this.enemies)
   }
