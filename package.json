@@ -17,7 +17,8 @@
     "webpack"
   ],
   "engines": {
-    "node": "8.9.1"
+    "node": "8.9.1",
+    "yarn": "0.23.2"
   },
   "dependencies": {
     "express": "^4.16.2",
