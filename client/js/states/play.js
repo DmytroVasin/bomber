@@ -1,4 +1,3 @@
-import { CountDown } from '../helpers/elements';
 import { findFrom, findAndDestroyFrom } from '../utils/utils';
 import { TILESET, LAYER } from '../utils/constants';
 
@@ -18,8 +17,6 @@ class Play extends Phaser.State {
     this.createMap();
     this.createPlayers();
     this.setEventHandlers();
-
-    // this.initCountDown(); // TODO: For DEV mode.
 
     this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
   }
@@ -147,17 +144,6 @@ class Play extends Phaser.State {
     this.bones.add(new Bone(this.game, col, row));
 
     findAndDestroyFrom(player_id, this.enemies)
-  }
-
-  initCountDown() {
-    new CountDown({
-      game: this.game,
-      callback: this.afterCountDown.bind(this)
-    })
-  }
-
-  afterCountDown() {
-    this.player.frozen = false
   }
 
   onPlayerWin(winner_color) {

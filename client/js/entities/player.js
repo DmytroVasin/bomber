@@ -26,7 +26,6 @@ export default class Player extends Phaser.Sprite {
   constructor({ game, id, spawn, color }) {
     super(game, spawn.x, spawn.y, 'bomberman_' + color);
 
-    this.frozen = false;  // TODO: For DEV mode. - TRUE.!
     this.game = game;
     this.id = id;
 
@@ -55,7 +54,7 @@ export default class Player extends Phaser.Sprite {
   }
 
   update() {
-    if (this.alive && !this.frozen) {
+    if (this.alive) {
       this.handleMoves()
       this.handleBombs()
     }
