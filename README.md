@@ -1,4 +1,4 @@
-yarn run webpack && yarn start
+yarn run server
 
 
 Game:
