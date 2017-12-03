@@ -471,8 +471,7 @@ function (_Phaser$Game) {
 
     _classCallCheck(this, Game);
 
-    // 960 / 600
-    _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, 875, 525, Phaser.AUTO, 'game-container'));
+    _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, 980, 630, Phaser.AUTO, 'game-container'));
 
     _this.state.add('Boot', _boot.default);
 
@@ -620,16 +619,16 @@ function (_Phaser$State) {
       this.load.spritesheet('bomberman_black', 'images/bomberman_black.png', 32, 64);
       this.load.spritesheet('bomberman_blue', 'images/bomberman_blue.png', 32, 64);
       this.load.spritesheet('bomberman_red', 'images/bomberman_red.png', 32, 64);
-      this.load.spritesheet('bomb', 'images/bomb.png', 35, 35);
-      this.load.spritesheet('explosion_center', 'images/explosion_center.png', 30, 30);
-      this.load.spritesheet('explosion_horizontal', 'images/explosion_horizontal.png', 30, 30);
-      this.load.spritesheet('explosion_vertical', 'images/explosion_vertical.png', 30, 30);
-      this.load.spritesheet('explosion_up', 'images/explosion_up.png', 30, 30);
-      this.load.spritesheet('explosion_right', 'images/explosion_right.png', 30, 30);
-      this.load.spritesheet('explosion_down', 'images/explosion_down.png', 30, 30);
-      this.load.spritesheet('explosion_left', 'images/explosion_left.png', 30, 30);
+      this.load.spritesheet('explosion_center', 'images/explosion_center.png', 35, 35);
+      this.load.spritesheet('explosion_horizontal', 'images/explosion_horizontal.png', 35, 35);
+      this.load.spritesheet('explosion_vertical', 'images/explosion_vertical.png', 35, 35);
+      this.load.spritesheet('explosion_up', 'images/explosion_up.png', 35, 35);
+      this.load.spritesheet('explosion_right', 'images/explosion_right.png', 35, 35);
+      this.load.spritesheet('explosion_down', 'images/explosion_down.png', 35, 35);
+      this.load.spritesheet('explosion_left', 'images/explosion_left.png', 35, 35);
       this.load.spritesheet('spoil_tiles', 'images/spoil_tiles.png', 35, 35);
       this.load.spritesheet('bone', 'images/bone.png', 35, 35);
+      this.load.spritesheet('bomb', 'images/bomb.png', 35, 35);
       this.load.image('speed_up_bonus', 'images/speed_up_bonus.png');
       this.load.image('speed_up_no_bonus', 'images/speed_up_bonus.png');
       this.load.image('delay_up_bonus', 'images/delay_up_bonus.png');
@@ -2072,7 +2071,7 @@ function (_Phaser$Sprite) {
     _this.animations.add('blast', [0, 1, 2, 3, 4]); // 15 - framerate, loop, kill_on_complete
 
 
-    _this.play('blast', 15, false, true);
+    _this.play('blast', 1, false, true);
 
     _this.game.physics.arcade.enable(_this);
 
