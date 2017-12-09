@@ -61,7 +61,3 @@ function onClientDisconnect() {
   Play.onDisconnectFromGame.call(this)
 }
 
-
-
-// HUD: https://github.com/geibi/phaser
-// https://nodejs.org/en/docs/inspector/

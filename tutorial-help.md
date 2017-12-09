@@ -37,5 +37,6 @@ LINKS????
 <!-- https://github.com/Lotti/codemotion2015 -->
 <!-- HEROKU DEPLOY: https://devcenter.heroku.com/articles/node-websockets -->
 <!-- ADD VIDEO TO MAIN PAGE: https://github.com/DmytroVasin/ListenChartsOnElectron -->
+<!-- NODE INSPECTOR: https://nodejs.org/en/docs/inspector/ -->
 
 
