@@ -1,7 +1,6 @@
 ## Bomberman with multiplayer.
 
-### Intro:
-Bomberman game with multiplayer based on Phaeser.js, Node.js, Socket.io.
+Bomberman game with multiplayer based on [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
 
 You can find tutorial of this game [not-ready](https://not-ready)
 
