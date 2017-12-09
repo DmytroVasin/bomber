@@ -537,11 +537,6 @@ function (_Phaser$State) {
   }
 
   _createClass(Boot, [{
-    key: "preload",
-    value: function preload() {
-      this.game.stage.backgroundColor = '#000';
-    }
-  }, {
     key: "create",
     value: function create() {
       // This is not mandatory, but useful, as it will make the game keep reacting to messages from the server even when the game window doesn’t have focus (which is a desired behavior for most games).

@@ -1,14 +1,3 @@
-TAGS:
-[
-  phaser-framework
-  node-js
-  socket-io
-  multiplayer-game
-  es6
-  webpack
-]
-
-
 ## Bomberman with multiplayer.
 
 ### Intro:
@@ -23,7 +12,7 @@ Demo of that app you can find on heroku: [Bomb Attack Demo](https://bomb-attack.
 Note: To test it, you should open page with two different windows. The game pauses when You open a new tab in the same window. Open game in different windows.
 
 ## Video: *Click to play*:
-not-ready
+[![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png)](https://player.vimeo.com/video/246595375?autoplay=1)
 
 ## Setup:
 Game is based on Node and Yarn (npm) package manager. Make sure that both already installed into your system.
