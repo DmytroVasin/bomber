@@ -56,7 +56,7 @@ class Play extends Phaser.State {
         game:   this.game,
         id:     player.id,
         spawn:  player.spawn,
-        color:  player.color
+        skin:   player.skin
       }
 
       if (player.id === clientSocket.id) {
@@ -147,10 +147,10 @@ class Play extends Phaser.State {
     findAndDestroyFrom(player_id, this.enemies)
   }
 
-  onPlayerWin(winner_color) {
+  onPlayerWin(winner_skin) {
     clientSocket.emit('leave game');
 
-    this.state.start('Win', true, false, winner_color);
+    this.state.start('Win', true, false, winner_skin);
   }
 
   onPlayerDisconnect({ player_id }) {

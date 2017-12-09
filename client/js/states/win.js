@@ -2,8 +2,8 @@ import { Text } from '../helpers/elements';
 
 class Win extends Phaser.State {
 
-  init(winner_color) {
-    this.color = winner_color
+  init(winner_skin) {
+    this.skin = winner_skin
   }
 
   create() {
@@ -30,8 +30,8 @@ class Win extends Phaser.State {
   }
 
   winnerText() {
-    if (this.color) {
-      return `Player with color: "${this.color}" won! Press Enter to return to main menu.`
+    if (this.skin) {
+      return `Player: "${this.skin}" won! Press Enter to return to main menu.`
     }
 
     return 'Opponent left! Press Enter to return to main menu.'

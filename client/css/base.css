@@ -1,7 +1,10 @@
 * {
   margin: 0;
   padding: 0;
-  background: grey;
+}
+
+html {
+  background: #DEDEDE;
 }
 
 html, body, #game-wrapper, #game-container {

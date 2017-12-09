@@ -2,10 +2,10 @@ const { POWER, INITIAL_POWER, STEP_POWER } = require('../constants');
 
 class Player {
 
-  constructor({ id, color, spawn, spawnOnGrid }) {
-    this.id = id;
-    this.color = color;
-    this.spawn = spawn;
+  constructor({ id, skin, spawn, spawnOnGrid }) {
+    this.id          = id;
+    this.skin        = skin;
+    this.spawn       = spawn;
     this.spawnOnGrid = spawnOnGrid;
 
     this.isAlive = true;

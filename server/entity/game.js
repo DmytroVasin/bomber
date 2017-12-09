@@ -1,4 +1,4 @@
-const { TILE_SIZE, EMPTY_CELL, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL } = require('../constants');
+const { TILE_SIZE, EMPTY_CELL, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SKINS } = require('../constants');
 
 var { Player } = require('./player');
 var { Bomb } = require('./bomb.js');
@@ -17,8 +17,8 @@ class Game {
     this.max_players  = this.layer_info.properties.max_players
 
     // NOTE: we can`t use new Map - because Socket.io do not support such format
-    this.players      = {}
-    this.playerColors = ['white', 'blue', 'black', 'red']
+    this.players     = {}
+    this.playerSkins = SKINS
 
     // NOTE: Copy objct - not reference
     this.playerSpawns = this.layer_info.properties.spawns.slice()
@@ -29,17 +29,17 @@ class Game {
   }
 
   addPlayer(id) {
-    let color = this.getAndRemoveColor()
+    let skin = this.getAndRemoveSkin()
     let [spawn, spawnOnGrid] = this.getAndRemoveSpawn()
 
-    let player = new Player({ id: id, color: color, spawn: spawn, spawnOnGrid: spawnOnGrid })
+    let player = new Player({ id: id, skin: skin, spawn: spawn, spawnOnGrid: spawnOnGrid })
     this.players[player.id] = player
   }
 
   removePlayer(id) {
     let player = this.players[id];
 
-    this.playerColors.push(player.color)
+    this.playerSkins.push(player.skin)
     this.playerSpawns.push(player.spawnOnGrid)
 
     delete this.players[id];
@@ -53,13 +53,13 @@ class Game {
     return Object.keys(this.players).length === this.max_players
   }
 
-  getAndRemoveColor() {
+  getAndRemoveSkin() {
     // NOTE: we can user here simple .pop()
-    let index = Math.floor(Math.random() * this.playerColors.length);
-    let randomColor = this.playerColors[index];
-    this.playerColors.splice(index, 1);
+    let index = Math.floor(Math.random() * this.playerSkins.length);
+    let randomSkin = this.playerSkins[index];
+    this.playerSkins.splice(index, 1);
 
-    return randomColor;
+    return randomSkin;
   }
 
   getAndRemoveSpawn() {
@@ -67,7 +67,7 @@ class Game {
     let spawnOnGrid = this.playerSpawns[index];
     this.playerSpawns.splice(index, 1);
 
-    let spawn = { x: spawnOnGrid.row * TILE_SIZE, y: spawnOnGrid.col * TILE_SIZE };
+    let spawn = { x: spawnOnGrid.col * TILE_SIZE, y: spawnOnGrid.row * TILE_SIZE };
     return [spawn, spawnOnGrid];
   }
 

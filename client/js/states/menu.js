@@ -1,48 +1,46 @@
-import { Text, TextButton, GameSlots, SpoilNotification } from '../helpers/elements';
-
-var slotXOffset = 155;
-var slotYOffset = 410;
-
-var textXOffset = 260;
-var textYOffset = 25;
-
-var slotsWithGame = null;
+import { Text, TextButton, GameSlots } from '../helpers/elements';
 
 class Menu extends Phaser.State {
 
   init() {
+    this.slotsWithGame = null;
+
     clientSocket.on('display pending games', this.displayPendingGames.bind(this));
   }
 
   create() {
-    this.add.sprite(0, 0, 'background');
+    let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+    background.anchor.setTo(0.5);
+
 
     new Text({
       game: this.game,
       x: this.game.world.centerX,
-      y: this.game.world.centerY,
-      text: 'new Start',
+      y: this.game.world.centerY - 215,
+      text: 'Main Menu',
       style: {
-        font: '50px Areal',
-        fill: '#FFFFFF'
+        font: '35px Areal',
+        fill: '#9ec0ba',
+        stroke: '#7f9995',
+        strokeThickness: 3
       }
     })
 
     new TextButton({
       game: this.game,
       x: this.game.world.centerX,
-      y: this.game.world.centerY + 100,
-      asset: 'game_slot',
+      y: this.game.world.centerY + 195,
+      asset: 'buttons',
       callback: this.hostGameAction,
       callbackContext: this,
-      overFrame: 0,
-      outFrame: 1,
+      overFrame: 1,
+      outFrame: 0,
       downFrame: 2,
-      upFrame: 1,
+      upFrame: 0,
       label: 'New Game',
       style: {
         font: '20px Areal',
-        fill: '#FFFFFF'
+        fill: '#000000'
       }
     });
 
@@ -62,25 +60,22 @@ class Menu extends Phaser.State {
     //       we should implement AddSlotToGroup, RemoveSlotFromGroup
 
     // I triying to care about readability, not about performance.
-    if (slotsWithGame) {
-      slotsWithGame.destroy()
+    if (this.slotsWithGame) {
+      this.slotsWithGame.destroy()
     }
 
-    slotsWithGame = new GameSlots({
+    this.slotsWithGame = new GameSlots({
       game: this.game,
       availableGames: availableGames,
       callback: this.joinGameAction,
       callbackContext: this,
-      x: this.game.world.centerX,
-      y: 50,
-      asset: 'game_number',
-      overFrame: 0,
-      outFrame: 1,
-      downFrame: 2,
-      upFrame: 1,
+      x: this.game.world.centerX - 220,
+      y: 160,
       style: {
-        font: '20px Areal',
-        fill: '#FFFFFF'
+        font: '35px Areal',
+        fill: '#efefef',
+        stroke: '#ae743a',
+        strokeThickness: 3
       }
     })
   }

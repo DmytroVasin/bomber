@@ -1,22 +1,20 @@
-export const xOffset = 180;
-export const yOffset = 25;
-
-export const thumbnailXOffset = 396;
-export const thumbnailYOffset = 125;
-export const stageNameYOffset = 320;
-
-export  const buttonXOffset = 345;
-export  const startGameButtonYOffset = 320;
-export  const leaveButtonYOffset = 370;
-
-export  const characterSquareStartingX = 345;
-export  const characterSquareStartingY = 80;
-export  const characterSquareXDistance = 105;
-export  const characterSquareYDistance = 100;
-
-export  const characterOffsetX = 4.5;
-export  const characterOffsetY = 4.5;
-
 export const AVAILABLE_MAPS = ['hot_map', 'cold_map']
 export const TILESET = 'tiles';
 export const LAYER   = 'Blocks';
+
+export const TILE_SIZE = 35;
+export const EXPLOSION_TIME = 2000;
+export const PING = 100;
+
+export const SPEED = 0
+export const POWER = 1
+export const DELAY = 2
+
+export const INITIAL_SPEED = 150
+export const STEP_SPEED = 50
+export const MAX_SPEED = 350
+export const INITIAL_DELAY = 2000
+export const STEP_DELAY = 500
+export const MIN_DELAY = 500
+export const INITIAL_POWER = 1
+export const STEP_POWER = 1

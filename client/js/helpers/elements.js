@@ -1,5 +1,3 @@
-// https://gist.github.com/woubuc/6ef002051aeef453a95b
-
 export class Text extends Phaser.Text {
 
   constructor({ game, x, y, text, style }) {
@@ -20,18 +18,6 @@ export class Button extends Phaser.Button {
     this.game.add.existing(this);
   }
 
-  disable() {
-    this.setFrames(2, 2);
-    this.inputEnabled = false;
-    this.input.useHandCursor = false;
-  }
-
-  enable() {
-    this.setFrames(1, 0);
-    this.inputEnabled = true;
-    this.input.useHandCursor = true;
-  }
-
 }
 
 export class TextButton extends Phaser.Button {
@@ -48,27 +34,41 @@ export class TextButton extends Phaser.Button {
     this.game.add.existing(this);
   }
 
+  disable() {
+    this.setFrames(3, 3);
+    this.inputEnabled = false;
+    this.input.useHandCursor = false;
+  }
+
+  enable() {
+    this.setFrames(1, 0, 2);
+    this.inputEnabled = true;
+    this.input.useHandCursor = true;
+  }
+
 }
 
 export class GameSlots extends Phaser.Group {
 
-  constructor({ game, availableGames, callback, callbackContext, x, y, asset, overFrame, outFrame, downFrame, upFrame, style }) {
+  constructor({ game, availableGames, callback, callbackContext, x, y, style }) {
     super(game);
+
+    let game_slot_asset = 'slot_backdrop'
+    let game_enter_asset = 'list_icon'
 
     let yOffset = y;
 
     for (let availableGame of availableGames) {
-      var slot = new Phaser.Button(this.game, x, yOffset, asset, callback.bind(callbackContext, { game_id: availableGame.id }), null, overFrame, outFrame, downFrame, upFrame);
-      slot.anchor.setTo(0.5);
+      let gameBox = new Phaser.Image(this.game, x, yOffset, game_slot_asset)
+      let button = new Phaser.Button(this.game, gameBox.width - 100, 12, game_enter_asset, callback.bind(callbackContext, { game_id: availableGame.id }), null, 1, 0, 2, 1);
+      let text = new Phaser.Text(this.game, 30, 25, `Join Game: ${availableGame.name}`, style);
 
-      slot.text = new Phaser.Text(this.game, 0, 0, `Join Game: ${availableGame.name}`, style);
-      slot.text.anchor.setTo(0.5);
+      gameBox.addChild(button);
+      gameBox.addChild(text);
 
-      slot.addChild(slot.text);
+      this.add(gameBox);
 
-      this.add(slot);
-
-      yOffset += 50;
+      yOffset += 105;
     }
   }
 
@@ -79,23 +79,27 @@ export class GameSlots extends Phaser.Group {
 
 export class PlayerSlots extends Phaser.Group {
 
-  constructor({ game, max_players, players, x, y, asset_box, asset_player }) {
+  constructor({ game, max_players, players, x, y, asset_empty, asset_player, style }) {
     super(game);
 
     let xOffset = x;
 
     for (let i = 0; i < max_players; i++) {
+      let slotBox
+      let slotName
       let _player = players[i]
 
-      let slotBox = new Phaser.Sprite(this.game, xOffset, y, asset_box, 0);
-
       if (_player) {
-        let slotPlayer = new Phaser.Image(this.game, 5, 5, asset_player+_player.color)
-        slotBox.addChild(slotPlayer)
+        slotBox = new Phaser.Image(this.game, xOffset, y, asset_player+_player.skin)
+        slotName = new Phaser.Text(this.game, slotBox.width/2, slotBox.height + 15, _player.skin, style);
+        slotName.anchor.setTo(0.5);
+        slotBox.addChild(slotName);
+      } else {
+        slotBox = new Phaser.Image(this.game, xOffset, y, asset_empty)
       }
 
       this.add(slotBox);
-      xOffset += 100;
+      xOffset += 170;
     }
   }
 

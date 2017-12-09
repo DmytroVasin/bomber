@@ -1,6 +1,5 @@
 import { AVAILABLE_MAPS } from '../utils/constants';
-
-import { Button, PlayerSlots } from '../helpers/elements';
+import { Text, Button } from '../helpers/elements';
 
 class SelectMap extends Phaser.State {
 
@@ -9,30 +8,47 @@ class SelectMap extends Phaser.State {
   }
 
   create() {
-    this.add.sprite(0, 0, 'background_select');
+    let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+    background.anchor.setTo(0.5);
 
-    let pinkBlock = this.add.image(0, 0, 'pinkBlock');
-    let blueBlock = this.add.image(0, 0, 'blueBlock');
+    new Text({
+      game: this.game,
+      x: this.game.world.centerX,
+      y: this.game.world.centerY - 215,
+      text: 'Select Map',
+      style: {
+        font: '35px Areal',
+        fill: '#9ec0ba',
+        stroke: '#6f7975',
+        strokeThickness: 3
+      }
+    });
+
 
     // WARN: https://github.com/netgfx/PhaseSlider/issues/1
+    let hotMapImage = new Phaser.Image(this.game, 0, 0, 'hot_map_preview');
+    let coldMapImage = new Phaser.Image(this.game, 0, 0, 'cold_map_preview');
+
     this.slider.createSlider({
-      x: this.game.world.centerX - pinkBlock.width / 2,
-      y: this.game.world.centerY - pinkBlock.height / 2,
+      x: this.game.world.centerX - hotMapImage.width / 2,
+      y: this.game.world.centerY - coldMapImage.height / 2,
+      width: hotMapImage.width,
+      height: hotMapImage.height,
       customHandlePrev: 'prev',
       customHandleNext: 'next',
-      objects: [pinkBlock, blueBlock]
+      objects: [hotMapImage, coldMapImage]
     });
 
     new Button({
       game: this.game,
       x: this.game.world.centerX,
-      y: 425,
-      asset: 'accept',
+      y: this.game.world.centerY + 195,
+      asset: 'check_icon',
       callback: this.confirmStageSelection,
       callbackContext: this,
       overFrame: 1,
       outFrame: 0,
-      downFrame: 1,
+      downFrame: 2,
       upFrame: 0,
     })
   }

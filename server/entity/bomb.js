@@ -1,7 +1,4 @@
-const {
-  EXPLOSION_TIME, TILE_SIZE, SPEED, POWER, DELAY,
-  DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SPOIL_CHANCE
-} = require('../constants');
+const { EXPLOSION_TIME, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SPOIL_CHANCE } = require('../constants');
 
 const { Spoil } = require('./spoil.js');
 

@@ -1,29 +1,31 @@
-const PING = 100
+import { TILE_SIZE, PING } from '../utils/constants';
+import { Text } from '../helpers/elements';
 
 export default class EnemyPlayer extends Phaser.Sprite {
 
-  constructor({ game, id, spawn, color }) {
-    super(game, spawn.x, spawn.y, 'bomberman_' + color);
+  constructor({ game, id, spawn, skin }) {
+    super(game, spawn.x, spawn.y, 'bomberman_' + skin);
 
     this.game = game
     this.id = id;
 
     this.currentPosition = spawn;
-
     this.lastMoveAt = 0;
 
     this.game.physics.arcade.enable(this);
-    this.body.setSize(20, 20, 0, 0);
+    this.body.setSize(20, 20, 6, 6);
     this.body.immovable = true;
 
-    this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
-    this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
-    this.animations.add('right', [16, 17, 18, 19, 20, 21, 22, 23], 15, true);
-    this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
+    this.animations.add('up', [9, 10, 11], 15, true);
+    this.animations.add('down', [0, 1, 2], 15, true);
+    this.animations.add('right', [6, 7, 8], 15, true);
+    this.animations.add('left', [3, 4, 5], 15, true);
+
+    this.defineSelf(skin)
   }
 
   update () {
-    this.game.debug.body(this);
+    // this.game.debug.body(this);
   }
 
   goTo(newPosition) {
@@ -51,5 +53,22 @@ export default class EnemyPlayer extends Phaser.Sprite {
 
     this.animations.play(face)
     this.currentPosition = newPosition;
+  }
+
+  defineSelf(name) {
+    let playerText = new Text({
+      game: this.game,
+      x: TILE_SIZE / 2,
+      y: -10,
+      text: name,
+      style: {
+        font: '14px Areal',
+        fill: '#FFFFFF',
+          stroke: '#000000',
+          strokeThickness: 3
+      }
+    })
+
+    this.addChild(playerText);
   }
 }

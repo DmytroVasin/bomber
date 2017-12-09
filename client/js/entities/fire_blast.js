@@ -1,4 +1,4 @@
-const TILE_SIZE = 35
+import { TILE_SIZE } from '../utils/constants';
 
 export default class FireBlast extends Phaser.Sprite {
 

@@ -1,5 +1,3 @@
-// https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
-
 import Boot from './states/boot';
 import Preload from './states/preload';
 import Menu from './states/menu';

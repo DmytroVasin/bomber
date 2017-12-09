@@ -76,11 +76,11 @@ var Play = {
     current_player.dead()
 
     let alivePlayersCount = 0
-    let alivePlayerColor = null
+    let alivePlayerSkin = null
     for (let player of Object.values(current_game.players)) {
       if ( !player.isAlive ) { continue }
 
-      alivePlayerColor = player.color
+      alivePlayerSkin = player.skin
       alivePlayersCount += 1
     }
 
@@ -89,7 +89,7 @@ var Play = {
     }
 
     setTimeout(function() {
-      serverSocket.sockets.to(game_id).emit('player win', alivePlayerColor);
+      serverSocket.sockets.to(game_id).emit('player win', alivePlayerSkin);
     }, 3000);
   }
 }

@@ -4,21 +4,21 @@ export default class Info {
     this.game = game;
     this.player = player;
 
-    this.style    = { font: '20px Arial', fill: '#ffffff', align: 'left' }
+    this.style    = { font: '14px Arial', fill: '#ffffff', align: 'left' }
     this.redStyle = { font: '30px Arial', fill: '#ff0044', align: 'center' };
 
-    let bootsIcon  = new Phaser.Image(this.game, 10, 10, 'speed');
-    this.speedText = new Phaser.Text(this.game, 37, 3, this.speedLabel(), this.style);
+    let bootsIcon  = new Phaser.Image(this.game, 5, 2, 'placeholder_speed');
+    this.speedText = new Phaser.Text(this.game, 35, 7, this.speedLabel(), this.style);
     bootsIcon.addChild(this.speedText)
     this.game.add.existing(bootsIcon);
 
-    let powerIcon  = new Phaser.Image(this.game, 110, 10, 'delay');
-    this.powerText = new Phaser.Text(this.game, 37, 3, this.powerLabel(), this.style);
+    let powerIcon  = new Phaser.Image(this.game, 110, 2, 'placeholder_power');
+    this.powerText = new Phaser.Text(this.game, 35, 7, this.powerLabel(), this.style);
     powerIcon.addChild(this.powerText)
     this.game.add.existing(powerIcon);
 
-    let delayIcon  = new Phaser.Image(this.game, 185, 10, 'power');
-    this.delayText = new Phaser.Text(this.game, 37, 3, this.delayLabel(), this.style);
+    let delayIcon  = new Phaser.Image(this.game, 215, 2, 'placeholder_time');
+    this.delayText = new Phaser.Text(this.game, 35, 7, this.delayLabel(), this.style);
     delayIcon.addChild(this.delayText)
     this.game.add.existing(delayIcon);
 
@@ -38,7 +38,7 @@ export default class Info {
   }
 
   speedLabel() {
-    return `x ${this.player.speed}`
+    return this.player.speed
   }
 
   powerLabel() {
@@ -46,6 +46,6 @@ export default class Info {
   }
 
   delayLabel() {
-    return `x ${this.player.delay / 1000} sec.`
+    return `${this.player.delay / 1000} sec.`
   }
 }

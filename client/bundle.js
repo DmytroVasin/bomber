@@ -73,6 +73,52 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.STEP_POWER = exports.INITIAL_POWER = exports.MIN_DELAY = exports.STEP_DELAY = exports.INITIAL_DELAY = exports.MAX_SPEED = exports.STEP_SPEED = exports.INITIAL_SPEED = exports.DELAY = exports.POWER = exports.SPEED = exports.PING = exports.EXPLOSION_TIME = exports.TILE_SIZE = exports.LAYER = exports.TILESET = exports.AVAILABLE_MAPS = void 0;
+var AVAILABLE_MAPS = ['hot_map', 'cold_map'];
+exports.AVAILABLE_MAPS = AVAILABLE_MAPS;
+var TILESET = 'tiles';
+exports.TILESET = TILESET;
+var LAYER = 'Blocks';
+exports.LAYER = LAYER;
+var TILE_SIZE = 35;
+exports.TILE_SIZE = TILE_SIZE;
+var EXPLOSION_TIME = 2000;
+exports.EXPLOSION_TIME = EXPLOSION_TIME;
+var PING = 100;
+exports.PING = PING;
+var SPEED = 0;
+exports.SPEED = SPEED;
+var POWER = 1;
+exports.POWER = POWER;
+var DELAY = 2;
+exports.DELAY = DELAY;
+var INITIAL_SPEED = 150;
+exports.INITIAL_SPEED = INITIAL_SPEED;
+var STEP_SPEED = 50;
+exports.STEP_SPEED = STEP_SPEED;
+var MAX_SPEED = 350;
+exports.MAX_SPEED = MAX_SPEED;
+var INITIAL_DELAY = 2000;
+exports.INITIAL_DELAY = INITIAL_DELAY;
+var STEP_DELAY = 500;
+exports.STEP_DELAY = STEP_DELAY;
+var MIN_DELAY = 500;
+exports.MIN_DELAY = MIN_DELAY;
+var INITIAL_POWER = 1;
+exports.INITIAL_POWER = INITIAL_POWER;
+var STEP_POWER = 1;
+exports.STEP_POWER = STEP_POWER;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.SpoilNotification = exports.PlayerSlots = exports.GameSlots = exports.TextButton = exports.Button = exports.Text = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -87,7 +133,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// https://gist.github.com/woubuc/6ef002051aeef453a95b
 var Text =
 /*#__PURE__*/
 function (_Phaser$Text) {
@@ -148,22 +193,6 @@ function (_Phaser$Button) {
     return _this2;
   }
 
-  _createClass(Button, [{
-    key: "disable",
-    value: function disable() {
-      this.setFrames(2, 2);
-      this.inputEnabled = false;
-      this.input.useHandCursor = false;
-    }
-  }, {
-    key: "enable",
-    value: function enable() {
-      this.setFrames(1, 0);
-      this.inputEnabled = true;
-      this.input.useHandCursor = true;
-    }
-  }]);
-
   return Button;
 }(Phaser.Button);
 
@@ -207,6 +236,22 @@ function (_Phaser$Button2) {
     return _this3;
   }
 
+  _createClass(TextButton, [{
+    key: "disable",
+    value: function disable() {
+      this.setFrames(3, 3);
+      this.inputEnabled = false;
+      this.input.useHandCursor = false;
+    }
+  }, {
+    key: "enable",
+    value: function enable() {
+      this.setFrames(1, 0, 2);
+      this.inputEnabled = true;
+      this.input.useHandCursor = true;
+    }
+  }]);
+
   return TextButton;
 }(Phaser.Button);
 
@@ -226,16 +271,13 @@ function (_Phaser$Group) {
         callbackContext = _ref4.callbackContext,
         x = _ref4.x,
         y = _ref4.y,
-        asset = _ref4.asset,
-        overFrame = _ref4.overFrame,
-        outFrame = _ref4.outFrame,
-        downFrame = _ref4.downFrame,
-        upFrame = _ref4.upFrame,
         style = _ref4.style;
 
     _classCallCheck(this, GameSlots);
 
     _this4 = _possibleConstructorReturn(this, (GameSlots.__proto__ || Object.getPrototypeOf(GameSlots)).call(this, game));
+    var game_slot_asset = 'slot_backdrop';
+    var game_enter_asset = 'list_icon';
     var yOffset = y;
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
@@ -244,17 +286,17 @@ function (_Phaser$Group) {
     try {
       for (var _iterator = availableGames[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var _availableGame = _step.value;
-        var slot = new Phaser.Button(_this4.game, x, yOffset, asset, callback.bind(callbackContext, {
+        var gameBox = new Phaser.Image(_this4.game, x, yOffset, game_slot_asset);
+        var button = new Phaser.Button(_this4.game, gameBox.width - 100, 12, game_enter_asset, callback.bind(callbackContext, {
           game_id: _availableGame.id
-        }), null, overFrame, outFrame, downFrame, upFrame);
-        slot.anchor.setTo(0.5);
-        slot.text = new Phaser.Text(_this4.game, 0, 0, "Join Game: ".concat(_availableGame.name), style);
-        slot.text.anchor.setTo(0.5);
-        slot.addChild(slot.text);
+        }), null, 1, 0, 2, 1);
+        var text = new Phaser.Text(_this4.game, 30, 25, "Join Game: ".concat(_availableGame.name), style);
+        gameBox.addChild(button);
+        gameBox.addChild(text);
 
-        _this4.add(slot);
+        _this4.add(gameBox);
 
-        yOffset += 50;
+        yOffset += 105;
       }
     } catch (err) {
       _didIteratorError = true;
@@ -299,8 +341,9 @@ function (_Phaser$Group2) {
         players = _ref5.players,
         x = _ref5.x,
         y = _ref5.y,
-        asset_box = _ref5.asset_box,
-        asset_player = _ref5.asset_player;
+        asset_empty = _ref5.asset_empty,
+        asset_player = _ref5.asset_player,
+        style = _ref5.style;
 
     _classCallCheck(this, PlayerSlots);
 
@@ -308,17 +351,22 @@ function (_Phaser$Group2) {
     var xOffset = x;
 
     for (var i = 0; i < max_players; i++) {
+      var slotBox = void 0;
+      var slotName = void 0;
       var _player = players[i];
-      var slotBox = new Phaser.Sprite(_this5.game, xOffset, y, asset_box, 0);
 
       if (_player) {
-        var slotPlayer = new Phaser.Image(_this5.game, 5, 5, asset_player + _player.color);
-        slotBox.addChild(slotPlayer);
+        slotBox = new Phaser.Image(_this5.game, xOffset, y, asset_player + _player.skin);
+        slotName = new Phaser.Text(_this5.game, slotBox.width / 2, slotBox.height + 15, _player.skin, style);
+        slotName.anchor.setTo(0.5);
+        slotBox.addChild(slotName);
+      } else {
+        slotBox = new Phaser.Image(_this5.game, xOffset, y, asset_empty);
       }
 
       _this5.add(slotBox);
 
-      xOffset += 100;
+      xOffset += 170;
     }
 
     return _this5;
@@ -383,52 +431,6 @@ function (_Phaser$Group3) {
 }(Phaser.Group);
 
 exports.SpoilNotification = SpoilNotification;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LAYER = exports.TILESET = exports.AVAILABLE_MAPS = exports.characterOffsetY = exports.characterOffsetX = exports.characterSquareYDistance = exports.characterSquareXDistance = exports.characterSquareStartingY = exports.characterSquareStartingX = exports.leaveButtonYOffset = exports.startGameButtonYOffset = exports.buttonXOffset = exports.stageNameYOffset = exports.thumbnailYOffset = exports.thumbnailXOffset = exports.yOffset = exports.xOffset = void 0;
-var xOffset = 180;
-exports.xOffset = xOffset;
-var yOffset = 25;
-exports.yOffset = yOffset;
-var thumbnailXOffset = 396;
-exports.thumbnailXOffset = thumbnailXOffset;
-var thumbnailYOffset = 125;
-exports.thumbnailYOffset = thumbnailYOffset;
-var stageNameYOffset = 320;
-exports.stageNameYOffset = stageNameYOffset;
-var buttonXOffset = 345;
-exports.buttonXOffset = buttonXOffset;
-var startGameButtonYOffset = 320;
-exports.startGameButtonYOffset = startGameButtonYOffset;
-var leaveButtonYOffset = 370;
-exports.leaveButtonYOffset = leaveButtonYOffset;
-var characterSquareStartingX = 345;
-exports.characterSquareStartingX = characterSquareStartingX;
-var characterSquareStartingY = 80;
-exports.characterSquareStartingY = characterSquareStartingY;
-var characterSquareXDistance = 105;
-exports.characterSquareXDistance = characterSquareXDistance;
-var characterSquareYDistance = 100;
-exports.characterSquareYDistance = characterSquareYDistance;
-var characterOffsetX = 4.5;
-exports.characterOffsetX = characterOffsetX;
-var characterOffsetY = 4.5;
-exports.characterOffsetY = characterOffsetY;
-var AVAILABLE_MAPS = ['hot_map', 'cold_map'];
-exports.AVAILABLE_MAPS = AVAILABLE_MAPS;
-var TILESET = 'tiles';
-exports.TILESET = TILESET;
-var LAYER = 'Blocks';
-exports.LAYER = LAYER;
 
 /***/ }),
 /* 2 */
@@ -509,6 +511,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _elements = __webpack_require__(1);
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -541,10 +545,17 @@ function (_Phaser$State) {
     key: "create",
     value: function create() {
       // This is not mandatory, but useful, as it will make the game keep reacting to messages from the server even when the game window doesn’t have focus (which is a desired behavior for most games).
+      // The game pauses when I open a new tab in the same window, but does not pause when I focus on another application
       this.game.stage.disableVisibilityChange = true;
-      this.add.text(80, 150, 'Loading...', {
-        font: '30px Courier',
-        fill: '#FFFFFF'
+      new _elements.Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY,
+        text: 'Loading...',
+        style: {
+          font: '30px Areal',
+          fill: '#FFFFFF'
+        }
       });
       this.state.start('Preload');
     }
@@ -594,49 +605,63 @@ function (_Phaser$State) {
   _createClass(Preload, [{
     key: "preload",
     value: function preload() {
-      this.load.image('background', "images/background.png");
-      this.load.spritesheet("game_slot", 'images/game_slot.png', 522, 48);
-      this.load.spritesheet("game_number", 'images/game_number.png', 522, 48);
-      this.load.image('background_select', 'images/Background_select.png');
-      this.load.image('select_stage', 'images/select_stage.png');
-      this.load.image('pending_game_backdrop', 'images/lobby_backdrop.png');
-      this.load.spritesheet('start_game_button', 'images/start_game_button.png', 202, 43);
-      this.load.spritesheet('leave_game_button', 'images/leave_game_button.png', 202, 43);
-      this.load.spritesheet('character_square', 'images/character_square.png', 89, 89);
-      this.load.image('pinkBlock', 'images/assets/pinkBlock.png');
-      this.load.image('blueBlock', 'images/assets/blueBlock.png');
-      this.load.spritesheet('accept', 'images/assets/accept.png', 80, 80);
-      this.load.image('prev', 'images/assets/prev.png');
-      this.load.image('next', 'images/assets/next.png');
-      this.load.image('bomberman_head_white', 'images/icon_white.png');
-      this.load.image('bomberman_head_blue', 'images/icon_blue.png');
-      this.load.image('bomberman_head_red', 'images/icon_red.png');
-      this.load.image('bomberman_head_black', 'images/icon_black.png');
+      // Menu:
+      this.load.image('main_menu', 'images/menu/main_menu.png');
+      this.load.image('slot_backdrop', 'images/menu/slot_backdrop.png');
+      this.load.spritesheet('buttons', 'images/menu/buttons.png', 200, 75);
+      this.load.spritesheet('check_icon', 'images/menu/accepts.png', 75, 75);
+      this.load.spritesheet('list_icon', 'images/menu/game_enter.png', 75, 75);
+      this.load.image('hot_map_preview', 'images/menu/hot_map_preview.png');
+      this.load.image('cold_map_preview', 'images/menu/cold_map_preview.png');
+      this.load.image('prev', 'images/menu/left_arrow.png');
+      this.load.image('next', 'images/menu/right_arrow.png'); // Map:
+
       this.load.image('tiles', 'maps/tileset.png');
       this.load.tilemap('hot_map', 'maps/hot_map.json', null, Phaser.Tilemap.TILED_JSON);
-      this.load.tilemap('cold_map', 'maps/cold_map.json', null, Phaser.Tilemap.TILED_JSON);
-      this.load.spritesheet('bomberman_white', 'images/bomberman_white.png', 32, 64);
-      this.load.spritesheet('bomberman_black', 'images/bomberman_black.png', 32, 64);
-      this.load.spritesheet('bomberman_blue', 'images/bomberman_blue.png', 32, 64);
-      this.load.spritesheet('bomberman_red', 'images/bomberman_red.png', 32, 64);
-      this.load.spritesheet('explosion_center', 'images/explosion_center.png', 35, 35);
-      this.load.spritesheet('explosion_horizontal', 'images/explosion_horizontal.png', 35, 35);
-      this.load.spritesheet('explosion_vertical', 'images/explosion_vertical.png', 35, 35);
-      this.load.spritesheet('explosion_up', 'images/explosion_up.png', 35, 35);
-      this.load.spritesheet('explosion_right', 'images/explosion_right.png', 35, 35);
-      this.load.spritesheet('explosion_down', 'images/explosion_down.png', 35, 35);
-      this.load.spritesheet('explosion_left', 'images/explosion_left.png', 35, 35);
-      this.load.spritesheet('spoil_tiles', 'images/spoil_tiles.png', 35, 35);
-      this.load.spritesheet('bone', 'images/bone.png', 35, 35);
-      this.load.spritesheet('bomb', 'images/bomb.png', 35, 35);
-      this.load.image('speed_up_bonus', 'images/speed_up_bonus.png');
-      this.load.image('speed_up_no_bonus', 'images/speed_up_bonus.png');
-      this.load.image('delay_up_bonus', 'images/delay_up_bonus.png');
-      this.load.image('delay_up_no_bonus', 'images/delay_up_bonus.png');
-      this.load.image('power_up_bonus', 'images/power_up_bonus.png');
-      this.load.image('speed', 'images/speed.png');
-      this.load.image('power', 'images/power.png');
-      this.load.image('delay', 'images/delay.png');
+      this.load.tilemap('cold_map', 'maps/cold_map.json', null, Phaser.Tilemap.TILED_JSON); // Game:
+
+      this.load.spritesheet('explosion_center', 'images/game/explosion_center.png', 35, 35);
+      this.load.spritesheet('explosion_horizontal', 'images/game/explosion_horizontal.png', 35, 35);
+      this.load.spritesheet('explosion_vertical', 'images/game/explosion_vertical.png', 35, 35);
+      this.load.spritesheet('explosion_up', 'images/game/explosion_up.png', 35, 35);
+      this.load.spritesheet('explosion_right', 'images/game/explosion_right.png', 35, 35);
+      this.load.spritesheet('explosion_down', 'images/game/explosion_down.png', 35, 35);
+      this.load.spritesheet('explosion_left', 'images/game/explosion_left.png', 35, 35);
+      this.load.spritesheet('spoil_tileset', 'images/game/spoil_tileset.png', 35, 35);
+      this.load.spritesheet('bone_tileset', 'images/game/bone_tileset.png', 35, 35);
+      this.load.spritesheet('bomb_tileset', 'images/game/bombs.png', 35, 35);
+      this.load.image('speed_up_bonus', 'images/game/speed_up_bonus.png');
+      this.load.image('speed_up_no_bonus', 'images/game/speed_up_no_bonus.png');
+      this.load.image('delay_up_bonus', 'images/game/delay_up_bonus.png');
+      this.load.image('delay_up_no_bonus', 'images/game/delay_up_no_bonus.png');
+      this.load.image('power_up_bonus', 'images/game/power_up_bonus.png');
+      this.load.image('placeholder_power', 'images/game/placeholder_power.png');
+      this.load.image('placeholder_speed', 'images/game/placeholder_speed.png');
+      this.load.image('placeholder_time', 'images/game/placeholder_time.png'); // Skins:
+
+      this.load.image('bomberman_head_blank', 'images/game/chars/0-face.png');
+      this.load.image('bomberman_head_Theodora', 'images/game/chars/1-face.png');
+      this.load.image('bomberman_head_Ringo', 'images/game/chars/2-face.png');
+      this.load.image('bomberman_head_Jeniffer', 'images/game/chars/3-face.png');
+      this.load.image('bomberman_head_Godard', 'images/game/chars/4-face.png');
+      this.load.image('bomberman_head_Biarid', 'images/game/chars/5-face.png');
+      this.load.image('bomberman_head_Solia', 'images/game/chars/6-face.png');
+      this.load.image('bomberman_head_Kedan', 'images/game/chars/7-face.png');
+      this.load.image('bomberman_head_Nigob', 'images/game/chars/8-face.png');
+      this.load.image('bomberman_head_Baradir', 'images/game/chars/9-face.png');
+      this.load.image('bomberman_head_Raviel', 'images/game/chars/10-face.png');
+      this.load.image('bomberman_head_Valpo', 'images/game/chars/11-face.png');
+      this.load.spritesheet('bomberman_Theodora', 'images/game/chars/1-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Ringo', 'images/game/chars/2-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Jeniffer', 'images/game/chars/3-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Godard', 'images/game/chars/4-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Biarid', 'images/game/chars/5-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Solia', 'images/game/chars/6-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Kedan', 'images/game/chars/7-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Nigob', 'images/game/chars/8-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Baradir', 'images/game/chars/9-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Raviel', 'images/game/chars/10-preview.png', 32, 32);
+      this.load.spritesheet('bomberman_Valpo', 'images/game/chars/11-preview.png', 32, 32);
     }
   }, {
     key: "create",
@@ -663,7 +688,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -676,12 +701,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var slotXOffset = 155;
-var slotYOffset = 410;
-var textXOffset = 260;
-var textYOffset = 25;
-var slotsWithGame = null;
 
 var Menu =
 /*#__PURE__*/
@@ -697,37 +716,41 @@ function (_Phaser$State) {
   _createClass(Menu, [{
     key: "init",
     value: function init() {
+      this.slotsWithGame = null;
       clientSocket.on('display pending games', this.displayPendingGames.bind(this));
     }
   }, {
     key: "create",
     value: function create() {
-      this.add.sprite(0, 0, 'background');
+      var background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
       new _elements.Text({
         game: this.game,
         x: this.game.world.centerX,
-        y: this.game.world.centerY,
-        text: 'new Start',
+        y: this.game.world.centerY - 215,
+        text: 'Main Menu',
         style: {
-          font: '50px Areal',
-          fill: '#FFFFFF'
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#7f9995',
+          strokeThickness: 3
         }
       });
       new _elements.TextButton({
         game: this.game,
         x: this.game.world.centerX,
-        y: this.game.world.centerY + 100,
-        asset: 'game_slot',
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
         callback: this.hostGameAction,
         callbackContext: this,
-        overFrame: 0,
-        outFrame: 1,
+        overFrame: 1,
+        outFrame: 0,
         downFrame: 2,
-        upFrame: 1,
+        upFrame: 0,
         label: 'New Game',
         style: {
           font: '20px Areal',
-          fill: '#FFFFFF'
+          fill: '#000000'
         }
       });
       clientSocket.emit('enter lobby', this.displayPendingGames.bind(this));
@@ -747,25 +770,22 @@ function (_Phaser$State) {
       // NOTE: That is not optimal way to preview slots,
       //       we should implement AddSlotToGroup, RemoveSlotFromGroup
       // I triying to care about readability, not about performance.
-      if (slotsWithGame) {
-        slotsWithGame.destroy();
+      if (this.slotsWithGame) {
+        this.slotsWithGame.destroy();
       }
 
-      slotsWithGame = new _elements.GameSlots({
+      this.slotsWithGame = new _elements.GameSlots({
         game: this.game,
         availableGames: availableGames,
         callback: this.joinGameAction,
         callbackContext: this,
-        x: this.game.world.centerX,
-        y: 50,
-        asset: 'game_number',
-        overFrame: 0,
-        outFrame: 1,
-        downFrame: 2,
-        upFrame: 1,
+        x: this.game.world.centerX - 220,
+        y: 160,
         style: {
-          font: '20px Areal',
-          fill: '#FFFFFF'
+          font: '35px Areal',
+          fill: '#efefef',
+          stroke: '#ae743a',
+          strokeThickness: 3
         }
       });
     }
@@ -796,9 +816,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -831,27 +851,42 @@ function (_Phaser$State) {
   }, {
     key: "create",
     value: function create() {
-      this.add.sprite(0, 0, 'background_select');
-      var pinkBlock = this.add.image(0, 0, 'pinkBlock');
-      var blueBlock = this.add.image(0, 0, 'blueBlock'); // WARN: https://github.com/netgfx/PhaseSlider/issues/1
+      var background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
+      new _elements.Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY - 215,
+        text: 'Select Map',
+        style: {
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#6f7975',
+          strokeThickness: 3
+        }
+      }); // WARN: https://github.com/netgfx/PhaseSlider/issues/1
 
+      var hotMapImage = new Phaser.Image(this.game, 0, 0, 'hot_map_preview');
+      var coldMapImage = new Phaser.Image(this.game, 0, 0, 'cold_map_preview');
       this.slider.createSlider({
-        x: this.game.world.centerX - pinkBlock.width / 2,
-        y: this.game.world.centerY - pinkBlock.height / 2,
+        x: this.game.world.centerX - hotMapImage.width / 2,
+        y: this.game.world.centerY - coldMapImage.height / 2,
+        width: hotMapImage.width,
+        height: hotMapImage.height,
         customHandlePrev: 'prev',
         customHandleNext: 'next',
-        objects: [pinkBlock, blueBlock]
+        objects: [hotMapImage, coldMapImage]
       });
       new _elements.Button({
         game: this.game,
         x: this.game.world.centerX,
-        y: 425,
-        asset: 'accept',
+        y: this.game.world.centerY + 195,
+        asset: 'check_icon',
         callback: this.confirmStageSelection,
         callbackContext: this,
         overFrame: 1,
         outFrame: 0,
-        downFrame: 1,
+        downFrame: 2,
         upFrame: 0
       });
     }
@@ -887,7 +922,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -929,41 +964,54 @@ function (_Phaser$State) {
   }, {
     key: "create",
     value: function create() {
-      this.add.sprite(0, 0, 'background_select');
+      var background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
       this.gameTitle = new _elements.Text({
         game: this.game,
         x: this.game.world.centerX,
-        y: this.game.world.centerY - 240,
+        y: this.game.world.centerY - 215,
         text: '',
         style: {
-          font: '24px Areal',
-          fill: '#FFFFFF'
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#6f7975',
+          strokeThickness: 3
         }
       });
-      this.startGameButton = new _elements.Button({
+      this.startGameButton = new _elements.TextButton({
         game: this.game,
-        x: this.game.world.centerX,
-        y: this.game.world.centerY + 100,
-        asset: 'start_game_button',
+        x: this.game.world.centerX + 105,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
         callback: this.startGameAction,
         callbackContext: this,
         overFrame: 1,
         outFrame: 0,
         downFrame: 2,
-        upFrame: 0
+        upFrame: 0,
+        label: 'Start Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
       });
       this.startGameButton.disable();
-      new _elements.Button({
+      new _elements.TextButton({
         game: this.game,
-        x: this.game.world.centerX,
-        y: this.game.world.centerY + 150,
-        asset: 'leave_game_button',
+        x: this.game.world.centerX - 105,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
         callback: this.leaveGameAction,
         callbackContext: this,
         overFrame: 1,
         outFrame: 0,
-        downFrame: 1,
-        upFrame: 0
+        downFrame: 2,
+        upFrame: 0,
+        label: 'Leave Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
       });
     }
   }, {
@@ -971,7 +1019,7 @@ function (_Phaser$State) {
     value: function displayGameInfo(_ref2) {
       var current_game = _ref2.current_game;
       var players = Object.values(current_game.players);
-      this.gameTitle.text = "Game name: ".concat(current_game.name);
+      this.gameTitle.text = current_game.name;
 
       if (this.slotsWithPlayer) {
         this.slotsWithPlayer.destroy();
@@ -981,10 +1029,14 @@ function (_Phaser$State) {
         game: this.game,
         max_players: current_game.max_players,
         players: players,
-        x: this.game.world.centerX - 150,
-        y: 100,
-        asset_box: 'character_square',
-        asset_player: 'bomberman_head_'
+        x: this.game.world.centerX - 245,
+        y: this.game.world.centerY - 80,
+        asset_empty: 'bomberman_head_blank',
+        asset_player: 'bomberman_head_',
+        style: {
+          font: '20px Areal',
+          fill: '#48291c'
+        }
       });
 
       if (players.length > 1) {
@@ -1031,7 +1083,7 @@ exports.default = void 0;
 
 var _utils = __webpack_require__(9);
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
 var _player = _interopRequireDefault(__webpack_require__(10));
 
@@ -1119,7 +1171,7 @@ function (_Phaser$State) {
           game: this.game,
           id: player.id,
           spawn: player.spawn,
-          color: player.color
+          skin: player.skin
         };
 
         if (player.id === clientSocket.id) {
@@ -1338,9 +1390,9 @@ function (_Phaser$State) {
     }
   }, {
     key: "onPlayerWin",
-    value: function onPlayerWin(winner_color) {
+    value: function onPlayerWin(winner_skin) {
       clientSocket.emit('leave game');
-      this.state.start('Win', true, false, winner_color);
+      this.state.start('Win', true, false, winner_skin);
     }
   }, {
     key: "onPlayerDisconnect",
@@ -1433,9 +1485,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _constants = __webpack_require__(0);
+
 var _info = _interopRequireDefault(__webpack_require__(11));
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1451,21 +1505,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PING = 100; // - Need to be depended on positionUpdaterLoop
-
-var TILE_SIZE = 35;
-var SPEED = 0;
-var POWER = 1;
-var DELAY = 2;
-var MAX_SPEED = 350;
-var STEP_SPEED = 50;
-var INITIAL_SPEED = 150;
-var MIN_DELAY = 500;
-var STEP_DELAY = 500;
-var INITIAL_DELAY = 2000;
-var INITIAL_POWER = 1;
-var STEP_POWER = 1;
-
 var Player =
 /*#__PURE__*/
 function (_Phaser$Sprite) {
@@ -1477,37 +1516,37 @@ function (_Phaser$Sprite) {
     var game = _ref.game,
         id = _ref.id,
         spawn = _ref.spawn,
-        color = _ref.color;
+        skin = _ref.skin;
 
     _classCallCheck(this, Player);
 
-    _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, game, spawn.x, spawn.y, 'bomberman_' + color));
+    _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, game, spawn.x, spawn.y, 'bomberman_' + skin));
     _this.game = game;
     _this.id = id;
     _this.prevPosition = {
       x: spawn.x,
       y: spawn.y
     };
-    _this.delay = INITIAL_DELAY;
-    _this.power = INITIAL_POWER;
-    _this.speed = INITIAL_SPEED;
+    _this.delay = _constants.INITIAL_DELAY;
+    _this.power = _constants.INITIAL_POWER;
+    _this.speed = _constants.INITIAL_SPEED;
     _this._lastBombTime = 0;
 
     _this.game.add.existing(_this);
 
     _this.game.physics.arcade.enable(_this);
 
-    _this.body.setSize(20, 20, 0, 0);
+    _this.body.setSize(20, 20, 6, 6);
 
-    game.time.events.loop(PING, _this.positionUpdaterLoop.bind(_this));
+    game.time.events.loop(_constants.PING, _this.positionUpdaterLoop.bind(_this));
 
-    _this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
+    _this.animations.add('up', [9, 10, 11], 15, true);
 
-    _this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
+    _this.animations.add('down', [0, 1, 2], 15, true);
 
-    _this.animations.add('right', [16, 17, 18, 19, 20, 21, 22, 23], 15, true);
+    _this.animations.add('right', [6, 7, 8], 15, true);
 
-    _this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
+    _this.animations.add('left', [3, 4, 5], 15, true);
 
     _this.info = new _info.default({
       game: _this.game,
@@ -1516,7 +1555,7 @@ function (_Phaser$Sprite) {
 
     _this.defineKeyboard();
 
-    _this.defineSelf();
+    _this.defineSelf(skin);
 
     return _this;
   }
@@ -1527,9 +1566,9 @@ function (_Phaser$Sprite) {
       if (this.alive) {
         this.handleMoves();
         this.handleBombs();
-      }
+      } // this.game.debug.body(this);
+      // this.game.debug.spriteInfo(this, 32, 32);
 
-      this.game.debug.body(this); // this.game.debug.spriteInfo(this, 32, 32);
     }
   }, {
     key: "defineKeyboard",
@@ -1589,12 +1628,12 @@ function (_Phaser$Sprite) {
   }, {
     key: "currentCol",
     value: function currentCol() {
-      return Math.floor(this.body.position.x / TILE_SIZE);
+      return Math.floor(this.body.position.x / _constants.TILE_SIZE);
     }
   }, {
     key: "currentRow",
     value: function currentRow() {
-      return Math.floor(this.body.position.y / TILE_SIZE);
+      return Math.floor(this.body.position.y / _constants.TILE_SIZE);
     }
   }, {
     key: "positionUpdaterLoop",
@@ -1618,26 +1657,25 @@ function (_Phaser$Sprite) {
   }, {
     key: "pickSpoil",
     value: function pickSpoil(spoil_type) {
-      if (spoil_type === SPEED) {
+      if (spoil_type === _constants.SPEED) {
         this.increaseSpeed();
       }
 
-      if (spoil_type === POWER) {
+      if (spoil_type === _constants.POWER) {
         this.increasePower();
       }
 
-      if (spoil_type === DELAY) {
+      if (spoil_type === _constants.DELAY) {
         this.increaseDelay();
-      } // Play something
-
+      }
     }
   }, {
     key: "increaseSpeed",
     value: function increaseSpeed() {
       var asset = 'speed_up_no_bonus';
 
-      if (this.speed < MAX_SPEED) {
-        this.speed = this.speed + STEP_SPEED;
+      if (this.speed < _constants.MAX_SPEED) {
+        this.speed = this.speed + _constants.STEP_SPEED;
         this.info.refreshStatistic();
         asset = 'speed_up_bonus';
       }
@@ -1654,8 +1692,8 @@ function (_Phaser$Sprite) {
     value: function increaseDelay() {
       var asset = 'delay_up_no_bonus';
 
-      if (this.delay > MIN_DELAY) {
-        this.delay -= STEP_DELAY;
+      if (this.delay > _constants.MIN_DELAY) {
+        this.delay -= _constants.STEP_DELAY;
         this.info.refreshStatistic();
         asset = 'delay_up_bonus';
       }
@@ -1671,7 +1709,7 @@ function (_Phaser$Sprite) {
     key: "increasePower",
     value: function increasePower() {
       var asset = 'power_up_bonus';
-      this.power += STEP_POWER;
+      this.power += _constants.STEP_POWER;
       this.info.refreshStatistic();
       new _elements.SpoilNotification({
         game: this.game,
@@ -1682,15 +1720,17 @@ function (_Phaser$Sprite) {
     }
   }, {
     key: "defineSelf",
-    value: function defineSelf() {
+    value: function defineSelf(name) {
       var playerText = new _elements.Text({
         game: this.game,
-        x: 10,
+        x: _constants.TILE_SIZE / 2,
         y: -10,
-        text: 'Me',
+        text: "\u272E ".concat(name, " \u272E"),
         style: {
           font: '15px Areal',
-          fill: '#FFFFFF'
+          fill: '#FFFFFF',
+          stroke: '#000000',
+          strokeThickness: 3
         }
       });
       this.addChild(playerText);
@@ -1732,7 +1772,7 @@ function () {
     this.game = game;
     this.player = player;
     this.style = {
-      font: '20px Arial',
+      font: '14px Arial',
       fill: '#ffffff',
       align: 'left'
     };
@@ -1741,16 +1781,16 @@ function () {
       fill: '#ff0044',
       align: 'center'
     };
-    var bootsIcon = new Phaser.Image(this.game, 10, 10, 'speed');
-    this.speedText = new Phaser.Text(this.game, 37, 3, this.speedLabel(), this.style);
+    var bootsIcon = new Phaser.Image(this.game, 5, 2, 'placeholder_speed');
+    this.speedText = new Phaser.Text(this.game, 35, 7, this.speedLabel(), this.style);
     bootsIcon.addChild(this.speedText);
     this.game.add.existing(bootsIcon);
-    var powerIcon = new Phaser.Image(this.game, 110, 10, 'delay');
-    this.powerText = new Phaser.Text(this.game, 37, 3, this.powerLabel(), this.style);
+    var powerIcon = new Phaser.Image(this.game, 110, 2, 'placeholder_power');
+    this.powerText = new Phaser.Text(this.game, 35, 7, this.powerLabel(), this.style);
     powerIcon.addChild(this.powerText);
     this.game.add.existing(powerIcon);
-    var delayIcon = new Phaser.Image(this.game, 185, 10, 'power');
-    this.delayText = new Phaser.Text(this.game, 37, 3, this.delayLabel(), this.style);
+    var delayIcon = new Phaser.Image(this.game, 215, 2, 'placeholder_time');
+    this.delayText = new Phaser.Text(this.game, 35, 7, this.delayLabel(), this.style);
     delayIcon.addChild(this.delayText);
     this.game.add.existing(delayIcon);
     this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
@@ -1773,7 +1813,7 @@ function () {
   }, {
     key: "speedLabel",
     value: function speedLabel() {
-      return "x ".concat(this.player.speed);
+      return this.player.speed;
     }
   }, {
     key: "powerLabel",
@@ -1783,7 +1823,7 @@ function () {
   }, {
     key: "delayLabel",
     value: function delayLabel() {
-      return "x ".concat(this.player.delay / 1000, " sec.");
+      return "".concat(this.player.delay / 1000, " sec.");
     }
   }]);
 
@@ -1804,6 +1844,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _constants = __webpack_require__(0);
+
+var _elements = __webpack_require__(1);
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1816,8 +1860,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PING = 100;
-
 var EnemyPlayer =
 /*#__PURE__*/
 function (_Phaser$Sprite) {
@@ -1829,11 +1871,11 @@ function (_Phaser$Sprite) {
     var game = _ref.game,
         id = _ref.id,
         spawn = _ref.spawn,
-        color = _ref.color;
+        skin = _ref.skin;
 
     _classCallCheck(this, EnemyPlayer);
 
-    _this = _possibleConstructorReturn(this, (EnemyPlayer.__proto__ || Object.getPrototypeOf(EnemyPlayer)).call(this, game, spawn.x, spawn.y, 'bomberman_' + color));
+    _this = _possibleConstructorReturn(this, (EnemyPlayer.__proto__ || Object.getPrototypeOf(EnemyPlayer)).call(this, game, spawn.x, spawn.y, 'bomberman_' + skin));
     _this.game = game;
     _this.id = id;
     _this.currentPosition = spawn;
@@ -1841,32 +1883,33 @@ function (_Phaser$Sprite) {
 
     _this.game.physics.arcade.enable(_this);
 
-    _this.body.setSize(20, 20, 0, 0);
+    _this.body.setSize(20, 20, 6, 6);
 
     _this.body.immovable = true;
 
-    _this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
+    _this.animations.add('up', [9, 10, 11], 15, true);
 
-    _this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
+    _this.animations.add('down', [0, 1, 2], 15, true);
 
-    _this.animations.add('right', [16, 17, 18, 19, 20, 21, 22, 23], 15, true);
+    _this.animations.add('right', [6, 7, 8], 15, true);
 
-    _this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
+    _this.animations.add('left', [3, 4, 5], 15, true);
+
+    _this.defineSelf(skin);
 
     return _this;
   }
 
   _createClass(EnemyPlayer, [{
     key: "update",
-    value: function update() {
-      this.game.debug.body(this);
+    value: function update() {// this.game.debug.body(this);
     }
   }, {
     key: "goTo",
     value: function goTo(newPosition) {
       this.lastMoveAt = this.game.time.now;
       this.animateFace(newPosition);
-      this.game.add.tween(this).to(newPosition, PING, Phaser.Easing.Linear.None, true);
+      this.game.add.tween(this).to(newPosition, _constants.PING, Phaser.Easing.Linear.None, true);
     }
   }, {
     key: "animateFace",
@@ -1888,6 +1931,23 @@ function (_Phaser$Sprite) {
       this.animations.play(face);
       this.currentPosition = newPosition;
     }
+  }, {
+    key: "defineSelf",
+    value: function defineSelf(name) {
+      var playerText = new _elements.Text({
+        game: this.game,
+        x: _constants.TILE_SIZE / 2,
+        y: -10,
+        text: name,
+        style: {
+          font: '14px Areal',
+          fill: '#FFFFFF',
+          stroke: '#000000',
+          strokeThickness: 3
+        }
+      });
+      this.addChild(playerText);
+    }
   }]);
 
   return EnemyPlayer;
@@ -1907,6 +1967,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _constants = __webpack_require__(0);
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1919,9 +1981,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var TILE_SIZE = 35;
-var explosion_time = 2000;
-
 var Bomb =
 /*#__PURE__*/
 function (_Phaser$Sprite) {
@@ -1932,9 +1991,9 @@ function (_Phaser$Sprite) {
 
     _classCallCheck(this, Bomb);
 
-    var centerCol = col * TILE_SIZE + TILE_SIZE / 2;
-    var centerRow = row * TILE_SIZE + TILE_SIZE / 2;
-    _this = _possibleConstructorReturn(this, (Bomb.__proto__ || Object.getPrototypeOf(Bomb)).call(this, game, centerCol, centerRow, 'bomb'));
+    var centerCol = col * _constants.TILE_SIZE + _constants.TILE_SIZE / 2;
+    var centerRow = row * _constants.TILE_SIZE + _constants.TILE_SIZE / 2;
+    _this = _possibleConstructorReturn(this, (Bomb.__proto__ || Object.getPrototypeOf(Bomb)).call(this, game, centerCol, centerRow, 'bomb_tileset'));
 
     _this.scale.setTo(0.7);
 
@@ -1948,11 +2007,11 @@ function (_Phaser$Sprite) {
     _this.game.add.tween(_this.scale).to({
       x: 1.2,
       y: 1.2
-    }, explosion_time, Phaser.Easing.Linear.None, true);
+    }, _constants.EXPLOSION_TIME, Phaser.Easing.Linear.None, true);
 
-    _this.body.immovable = true;
+    _this.body.immovable = true; // TODO: https://phaser.io/docs/2.4.4/Phaser.AnimationManager.html#add
 
-    _this.animations.add('bomb', [0, 1, 2], 3, true);
+    _this.animations.add('bomb', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 6, true);
 
     _this.animations.play('bomb');
 
@@ -1961,8 +2020,7 @@ function (_Phaser$Sprite) {
 
   _createClass(Bomb, [{
     key: "update",
-    value: function update() {
-      this.game.debug.body(this);
+    value: function update() {// this.game.debug.body(this);
     }
   }]);
 
@@ -1983,6 +2041,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _constants = __webpack_require__(0);
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1990,11 +2050,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SPEED = 0;
-var POWER = 1;
-var DELAY = 2;
-var TILE_SIZE = 35;
 
 var Spoil =
 /*#__PURE__*/
@@ -2008,19 +2063,19 @@ function (_Phaser$Sprite) {
 
     var spoil_type;
 
-    if (spoil.spoil_type === SPEED) {
+    if (spoil.spoil_type === _constants.DELAY) {
       spoil_type = 0;
     }
 
-    if (spoil.spoil_type === POWER) {
+    if (spoil.spoil_type === _constants.POWER) {
       spoil_type = 1;
     }
 
-    if (spoil.spoil_type === DELAY) {
+    if (spoil.spoil_type === _constants.SPEED) {
       spoil_type = 2;
     }
 
-    _this = _possibleConstructorReturn(this, (Spoil.__proto__ || Object.getPrototypeOf(Spoil)).call(this, game, spoil.col * TILE_SIZE, spoil.row * TILE_SIZE, 'spoil_tiles', spoil_type));
+    _this = _possibleConstructorReturn(this, (Spoil.__proto__ || Object.getPrototypeOf(Spoil)).call(this, game, spoil.col * _constants.TILE_SIZE, spoil.row * _constants.TILE_SIZE, 'spoil_tileset', spoil_type));
     _this.id = spoil.id;
 
     _this.game.physics.arcade.enable(_this);
@@ -2045,6 +2100,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _constants = __webpack_require__(0);
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2052,8 +2109,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var TILE_SIZE = 35;
 
 var FireBlast =
 /*#__PURE__*/
@@ -2065,13 +2120,13 @@ function (_Phaser$Sprite) {
 
     _classCallCheck(this, FireBlast);
 
-    _this = _possibleConstructorReturn(this, (FireBlast.__proto__ || Object.getPrototypeOf(FireBlast)).call(this, game, cell.col * TILE_SIZE, cell.row * TILE_SIZE, cell.type, 0));
+    _this = _possibleConstructorReturn(this, (FireBlast.__proto__ || Object.getPrototypeOf(FireBlast)).call(this, game, cell.col * _constants.TILE_SIZE, cell.row * _constants.TILE_SIZE, cell.type, 0));
     _this.game = game;
 
     _this.animations.add('blast', [0, 1, 2, 3, 4]); // 15 - framerate, loop, kill_on_complete
 
 
-    _this.play('blast', 1, false, true);
+    _this.play('blast', 15, false, true);
 
     _this.game.physics.arcade.enable(_this);
 
@@ -2095,6 +2150,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _constants = __webpack_require__(0);
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2102,8 +2159,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var TILE_SIZE = 35;
 
 var Bone =
 /*#__PURE__*/
@@ -2113,7 +2168,7 @@ function (_Phaser$Sprite) {
   function Bone(game, col, row) {
     _classCallCheck(this, Bone);
 
-    return _possibleConstructorReturn(this, (Bone.__proto__ || Object.getPrototypeOf(Bone)).call(this, game, col * TILE_SIZE, row * TILE_SIZE, 'bone', 0));
+    return _possibleConstructorReturn(this, (Bone.__proto__ || Object.getPrototypeOf(Bone)).call(this, game, col * _constants.TILE_SIZE, row * _constants.TILE_SIZE, 'bone_tileset'));
   }
 
   return Bone;
@@ -2133,7 +2188,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -2160,8 +2215,8 @@ function (_Phaser$State) {
 
   _createClass(Win, [{
     key: "init",
-    value: function init(winner_color) {
-      this.color = winner_color;
+    value: function init(winner_skin) {
+      this.skin = winner_skin;
     }
   }, {
     key: "create",
@@ -2192,8 +2247,8 @@ function (_Phaser$State) {
   }, {
     key: "winnerText",
     value: function winnerText() {
-      if (this.color) {
-        return "Player with color: \"".concat(this.color, "\" won! Press Enter to return to main menu.");
+      if (this.skin) {
+        return "Player: \"".concat(this.skin, "\" won! Press Enter to return to main menu.");
       }
 
       return 'Opponent left! Press Enter to return to main menu.';

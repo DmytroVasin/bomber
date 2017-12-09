@@ -1,30 +1,15 @@
-// https://github.com/cstuncsik/phaser-es6-demo/tree/master/src
+import {
+  PING, TILE_SIZE, MAX_SPEED, STEP_SPEED, INITIAL_SPEED, SPEED, POWER, DELAY,
+  MIN_DELAY, STEP_DELAY, INITIAL_DELAY, INITIAL_POWER, STEP_POWER
+} from '../utils/constants';
 
 import Info from './info';
 import { SpoilNotification, Text } from '../helpers/elements';
 
-const PING = 100 // - Need to be depended on positionUpdaterLoop
-const TILE_SIZE = 35
-
-const SPEED = 0
-const POWER = 1
-const DELAY = 2
-
-const MAX_SPEED = 350
-const STEP_SPEED = 50
-const INITIAL_SPEED = 150
-
-const MIN_DELAY = 500
-const STEP_DELAY = 500
-const INITIAL_DELAY = 2000
-
-const INITIAL_POWER = 1
-const STEP_POWER = 1
-
 export default class Player extends Phaser.Sprite {
 
-  constructor({ game, id, spawn, color }) {
-    super(game, spawn.x, spawn.y, 'bomberman_' + color);
+  constructor({ game, id, spawn, skin }) {
+    super(game, spawn.x, spawn.y, 'bomberman_' + skin);
 
     this.game = game;
     this.id = id;
@@ -38,19 +23,19 @@ export default class Player extends Phaser.Sprite {
 
     this.game.add.existing(this);
     this.game.physics.arcade.enable(this);
-    this.body.setSize(20, 20, 0, 0);
+    this.body.setSize(20, 20, 6, 6);
 
     game.time.events.loop(PING , this.positionUpdaterLoop.bind(this));
 
-    this.animations.add('up', [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
-    this.animations.add('down', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
-    this.animations.add('right', [16, 17, 18, 19, 20, 21, 22, 23], 15, true);
-    this.animations.add('left', [24, 25, 26, 27, 28, 29, 30, 31], 15, true);
+    this.animations.add('up', [9, 10, 11], 15, true);
+    this.animations.add('down', [0, 1, 2], 15, true);
+    this.animations.add('right', [6, 7, 8], 15, true);
+    this.animations.add('left', [3, 4, 5], 15, true);
 
     this.info = new Info({ game: this.game, player: this });
 
     this.defineKeyboard()
-    this.defineSelf()
+    this.defineSelf(skin)
   }
 
   update() {
@@ -59,7 +44,7 @@ export default class Player extends Phaser.Sprite {
       this.handleBombs()
     }
 
-    this.game.debug.body(this);
+    // this.game.debug.body(this);
     // this.game.debug.spriteInfo(this, 32, 32);
   }
 
@@ -138,8 +123,6 @@ export default class Player extends Phaser.Sprite {
     if ( spoil_type === SPEED ){ this.increaseSpeed() }
     if ( spoil_type === POWER ){ this.increasePower() }
     if ( spoil_type === DELAY ){ this.increaseDelay() }
-
-    // Play something
   }
 
   increaseSpeed(){
@@ -175,15 +158,17 @@ export default class Player extends Phaser.Sprite {
     new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
   }
 
-  defineSelf() {
+  defineSelf(name) {
     let playerText = new Text({
       game: this.game,
-      x: 10,
+      x: TILE_SIZE / 2,
       y: -10,
-      text: 'Me',
+      text: `\u272E ${name} \u272E`,
       style: {
         font: '15px Areal',
-        fill: '#FFFFFF'
+        fill: '#FFFFFF',
+          stroke: '#000000',
+          strokeThickness: 3
       }
     })
 
