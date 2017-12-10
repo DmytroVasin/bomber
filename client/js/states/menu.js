@@ -38,9 +38,9 @@ class Menu extends Phaser.State {
     });
   }
 
-  // hostGameAction() {
-  //   this.state.start('SelectMap');
-  // }
+  hostGameAction() {
+    this.state.start('SelectMap');
+  }
 }
 
 export default Menu;

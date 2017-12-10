@@ -73,9 +73,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.TextButton = exports.Text = void 0;
+exports.PlayerSlots = exports.TextButton = exports.Button = exports.Text = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -113,12 +117,12 @@ function (_Phaser$Text) {
 
 exports.Text = Text;
 
-var TextButton =
+var Button =
 /*#__PURE__*/
 function (_Phaser$Button) {
-  _inherits(TextButton, _Phaser$Button);
+  _inherits(Button, _Phaser$Button);
 
-  function TextButton(_ref2) {
+  function Button(_ref2) {
     var _this2;
 
     var game = _ref2.game,
@@ -130,31 +134,138 @@ function (_Phaser$Button) {
         overFrame = _ref2.overFrame,
         outFrame = _ref2.outFrame,
         downFrame = _ref2.downFrame,
-        upFrame = _ref2.upFrame,
-        label = _ref2.label,
-        style = _ref2.style;
+        upFrame = _ref2.upFrame;
 
-    _classCallCheck(this, TextButton);
+    _classCallCheck(this, Button);
 
-    _this2 = _possibleConstructorReturn(this, (TextButton.__proto__ || Object.getPrototypeOf(TextButton)).call(this, game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
+    _this2 = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this, game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
 
     _this2.anchor.setTo(0.5);
-
-    _this2.text = new Phaser.Text(_this2.game, 0, 0, label, style);
-
-    _this2.text.anchor.setTo(0.5);
-
-    _this2.addChild(_this2.text);
 
     _this2.game.add.existing(_this2);
 
     return _this2;
   }
 
+  return Button;
+}(Phaser.Button);
+
+exports.Button = Button;
+
+var TextButton =
+/*#__PURE__*/
+function (_Phaser$Button2) {
+  _inherits(TextButton, _Phaser$Button2);
+
+  function TextButton(_ref3) {
+    var _this3;
+
+    var game = _ref3.game,
+        x = _ref3.x,
+        y = _ref3.y,
+        asset = _ref3.asset,
+        callback = _ref3.callback,
+        callbackContext = _ref3.callbackContext,
+        overFrame = _ref3.overFrame,
+        outFrame = _ref3.outFrame,
+        downFrame = _ref3.downFrame,
+        upFrame = _ref3.upFrame,
+        label = _ref3.label,
+        style = _ref3.style;
+
+    _classCallCheck(this, TextButton);
+
+    _this3 = _possibleConstructorReturn(this, (TextButton.__proto__ || Object.getPrototypeOf(TextButton)).call(this, game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame));
+
+    _this3.anchor.setTo(0.5);
+
+    _this3.text = new Phaser.Text(_this3.game, 0, 0, label, style);
+
+    _this3.text.anchor.setTo(0.5);
+
+    _this3.addChild(_this3.text);
+
+    _this3.game.add.existing(_this3);
+
+    return _this3;
+  }
+
+  _createClass(TextButton, [{
+    key: "disable",
+    value: function disable() {
+      this.setFrames(3, 3);
+      this.inputEnabled = false;
+      this.input.useHandCursor = false;
+    }
+  }, {
+    key: "enable",
+    value: function enable() {
+      this.setFrames(1, 0, 2);
+      this.inputEnabled = true;
+      this.input.useHandCursor = true;
+    }
+  }]);
+
   return TextButton;
 }(Phaser.Button);
 
 exports.TextButton = TextButton;
+
+var PlayerSlots =
+/*#__PURE__*/
+function (_Phaser$Group) {
+  _inherits(PlayerSlots, _Phaser$Group);
+
+  function PlayerSlots(_ref4) {
+    var _this4;
+
+    var game = _ref4.game,
+        max_players = _ref4.max_players,
+        players = _ref4.players,
+        x = _ref4.x,
+        y = _ref4.y,
+        asset_empty = _ref4.asset_empty,
+        asset_player = _ref4.asset_player,
+        style = _ref4.style;
+
+    _classCallCheck(this, PlayerSlots);
+
+    _this4 = _possibleConstructorReturn(this, (PlayerSlots.__proto__ || Object.getPrototypeOf(PlayerSlots)).call(this, game));
+    var xOffset = x;
+
+    for (var i = 0; i < max_players; i++) {
+      var slotBox = void 0;
+      var slotName = void 0;
+      var _player = players[i];
+
+      if (_player) {
+        slotBox = new Phaser.Image(_this4.game, xOffset, y, asset_player + _player.skin);
+        slotName = new Phaser.Text(_this4.game, slotBox.width / 2, slotBox.height + 15, _player.skin, style);
+        slotName.anchor.setTo(0.5);
+        slotBox.addChild(slotName);
+      } else {
+        slotBox = new Phaser.Image(_this4.game, xOffset, y, asset_empty);
+      }
+
+      _this4.add(slotBox);
+
+      xOffset += 170;
+    }
+
+    return _this4;
+  }
+
+  _createClass(PlayerSlots, [{
+    key: "destroy",
+    value: function destroy() {
+      this.callAll('kill');
+    }
+  }]);
+
+  return PlayerSlots;
+}(Phaser.Group);
+
+exports.PlayerSlots = PlayerSlots;
 
 /***/ }),
 /* 1 */
@@ -169,6 +280,10 @@ var _preload = _interopRequireDefault(__webpack_require__(3));
 
 var _menu = _interopRequireDefault(__webpack_require__(4));
 
+var _select_map = _interopRequireDefault(__webpack_require__(5));
+
+var _pending_game = _interopRequireDefault(__webpack_require__(7));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -179,8 +294,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import SelectMap from './states/select_map';
-// import PendingGame from './states/pending_game';
 // import Play from './states/play';
 // import Win from './states/win';
 var Game =
@@ -200,6 +313,12 @@ function (_Phaser$Game) {
     _this.state.add('Preload', _preload.default);
 
     _this.state.add('Menu', _menu.default);
+
+    _this.state.add('SelectMap', _select_map.default);
+
+    _this.state.add('PendingGame', _pending_game.default); // this.state.add('Play',         Play);
+    // this.state.add('Win',          Win);
+
 
     _this.state.start('Boot');
 
@@ -312,8 +431,7 @@ function (_Phaser$State) {
   _createClass(Preload, [{
     key: "preload",
     value: function preload() {
-      debugger; // Menu:
-
+      // Menu:
       this.load.image('main_menu', 'images/menu/main_menu.png');
       this.load.image('slot_backdrop', 'images/menu/slot_backdrop.png');
       this.load.spritesheet('buttons', 'images/menu/buttons.png', 200, 75);
@@ -455,16 +573,325 @@ function (_Phaser$State) {
           fill: '#000000'
         }
       });
-    } // hostGameAction() {
-    //   this.state.start('SelectMap');
-    // }
-
+    }
+  }, {
+    key: "hostGameAction",
+    value: function hostGameAction() {
+      this.state.start('SelectMap');
+    }
   }]);
 
   return Menu;
 }(Phaser.State);
 
 var _default = Menu;
+exports.default = _default;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _constants = __webpack_require__(6);
+
+var _elements = __webpack_require__(0);
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SelectMap =
+/*#__PURE__*/
+function (_Phaser$State) {
+  _inherits(SelectMap, _Phaser$State);
+
+  function SelectMap() {
+    _classCallCheck(this, SelectMap);
+
+    return _possibleConstructorReturn(this, (SelectMap.__proto__ || Object.getPrototypeOf(SelectMap)).apply(this, arguments));
+  }
+
+  _createClass(SelectMap, [{
+    key: "init",
+    value: function init() {
+      this.slider = new phaseSlider(this);
+    }
+  }, {
+    key: "create",
+    value: function create() {
+      var background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
+      new _elements.Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY - 215,
+        text: 'Select Map',
+        style: {
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#6f7975',
+          strokeThickness: 3
+        }
+      }); // WARN: https://github.com/netgfx/PhaseSlider/issues/1
+
+      var hotMapImage = new Phaser.Image(this.game, 0, 0, 'hot_map_preview');
+      var coldMapImage = new Phaser.Image(this.game, 0, 0, 'cold_map_preview');
+      this.slider.createSlider({
+        x: this.game.world.centerX - hotMapImage.width / 2,
+        y: this.game.world.centerY - coldMapImage.height / 2,
+        width: hotMapImage.width,
+        height: hotMapImage.height,
+        customHandlePrev: 'prev',
+        customHandleNext: 'next',
+        objects: [hotMapImage, coldMapImage]
+      });
+      new _elements.Button({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY + 195,
+        asset: 'check_icon',
+        callback: this.confirmStageSelection,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0
+      });
+    }
+  }, {
+    key: "confirmStageSelection",
+    value: function confirmStageSelection() {
+      var map_name = _constants.AVAILABLE_MAPS[this.slider.getCurrentIndex()]; // https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start
+
+
+      this.state.start('PendingGame', true, false, map_name);
+    }
+  }]);
+
+  return SelectMap;
+}(Phaser.State);
+
+var _default = SelectMap;
+exports.default = _default;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.STEP_POWER = exports.INITIAL_POWER = exports.MIN_DELAY = exports.STEP_DELAY = exports.INITIAL_DELAY = exports.MAX_SPEED = exports.STEP_SPEED = exports.INITIAL_SPEED = exports.DELAY = exports.POWER = exports.SPEED = exports.PING = exports.EXPLOSION_TIME = exports.TILE_SIZE = exports.LAYER = exports.TILESET = exports.AVAILABLE_MAPS = void 0;
+var AVAILABLE_MAPS = ['hot_map', 'cold_map'];
+exports.AVAILABLE_MAPS = AVAILABLE_MAPS;
+var TILESET = 'tiles';
+exports.TILESET = TILESET;
+var LAYER = 'Blocks';
+exports.LAYER = LAYER;
+var TILE_SIZE = 35;
+exports.TILE_SIZE = TILE_SIZE;
+var EXPLOSION_TIME = 2000;
+exports.EXPLOSION_TIME = EXPLOSION_TIME;
+var PING = 100;
+exports.PING = PING;
+var SPEED = 0;
+exports.SPEED = SPEED;
+var POWER = 1;
+exports.POWER = POWER;
+var DELAY = 2;
+exports.DELAY = DELAY;
+var INITIAL_SPEED = 150;
+exports.INITIAL_SPEED = INITIAL_SPEED;
+var STEP_SPEED = 50;
+exports.STEP_SPEED = STEP_SPEED;
+var MAX_SPEED = 350;
+exports.MAX_SPEED = MAX_SPEED;
+var INITIAL_DELAY = 2000;
+exports.INITIAL_DELAY = INITIAL_DELAY;
+var STEP_DELAY = 500;
+exports.STEP_DELAY = STEP_DELAY;
+var MIN_DELAY = 500;
+exports.MIN_DELAY = MIN_DELAY;
+var INITIAL_POWER = 1;
+exports.INITIAL_POWER = INITIAL_POWER;
+var STEP_POWER = 1;
+exports.STEP_POWER = STEP_POWER;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _elements = __webpack_require__(0);
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PendingGame =
+/*#__PURE__*/
+function (_Phaser$State) {
+  _inherits(PendingGame, _Phaser$State);
+
+  function PendingGame() {
+    _classCallCheck(this, PendingGame);
+
+    return _possibleConstructorReturn(this, (PendingGame.__proto__ || Object.getPrototypeOf(PendingGame)).apply(this, arguments));
+  }
+
+  _createClass(PendingGame, [{
+    key: "init",
+    value: function init(_ref) {
+      var game_id = _ref.game_id;
+      this.slotsWithPlayer = null;
+    }
+  }, {
+    key: "create",
+    value: function create() {
+      var background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
+      this.gameTitle = new _elements.Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY - 215,
+        text: 'NONAME GAME',
+        style: {
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#6f7975',
+          strokeThickness: 3
+        }
+      });
+      this.startGameButton = new _elements.TextButton({
+        game: this.game,
+        x: this.game.world.centerX + 105,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
+        callback: this.startGameAction,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0,
+        label: 'Start Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
+      });
+      this.startGameButton.disable();
+      new _elements.TextButton({
+        game: this.game,
+        x: this.game.world.centerX - 105,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
+        callback: this.leaveGameAction,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0,
+        label: 'Leave Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
+      });
+      var dummy_game = {
+        name: 'Sun Game',
+        max_players: 3,
+        players: {
+          uuid_1: {
+            skin: 'Theodora'
+          },
+          uuid_2: {
+            skin: 'Biarid'
+          }
+        }
+      };
+      this.displayGameInfo({
+        current_game: dummy_game
+      });
+    }
+  }, {
+    key: "displayGameInfo",
+    value: function displayGameInfo(_ref2) {
+      var current_game = _ref2.current_game;
+      var players = Object.values(current_game.players);
+      this.gameTitle.text = current_game.name;
+
+      if (this.slotsWithPlayer) {
+        this.slotsWithPlayer.destroy();
+      }
+
+      this.slotsWithPlayer = new _elements.PlayerSlots({
+        game: this.game,
+        max_players: current_game.max_players,
+        players: players,
+        x: this.game.world.centerX - 245,
+        y: this.game.world.centerY - 80,
+        asset_empty: 'bomberman_head_blank',
+        asset_player: 'bomberman_head_',
+        style: {
+          font: '20px Areal',
+          fill: '#48291c'
+        }
+      });
+
+      if (players.length > 1) {
+        this.startGameButton.enable();
+      } else {
+        this.startGameButton.disable();
+      }
+    }
+  }, {
+    key: "leaveGameAction",
+    value: function leaveGameAction() {
+      this.state.start('Menu');
+    }
+  }, {
+    key: "startGameAction",
+    value: function startGameAction() {// Start Game Action...
+    }
+  }]);
+
+  return PendingGame;
+}(Phaser.State);
+
+var _default = PendingGame;
 exports.default = _default;
 
 /***/ })
