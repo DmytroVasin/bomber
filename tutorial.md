@@ -1,9 +1,12 @@
 TITLE: Bomberman Multiplayer game with Rooms based on Phaser.js Socket.io and Node.js
 
-Introudction
+https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png
 
-TODO: Demo available here: https://....
-TODO: Source code of the Demove Repository available here: https://...
+
+Introduction:
+
+Demo available here: [Bomb Attack Demo](https://bomb-attack.herokuapp.com/)
+Source code of the Demove Repository available here: [Github repo](https://github.com/DmytroVasin/bomber)
 
 This article will demonstrate how to build basic multiplayer game with several rooms where players can play with each outher.
 Server is writed on Node.js and Express.js. Client writed on Javascript framwork called Phaser.
@@ -12,11 +15,11 @@ The client and the server communicate by using Socket.io.
 
 Check out video below to see what exaclty we did. So you can open demo to play with a friend. Also check out the GitHub repo to for the entire source code.
 
-TODO: Video....
+https://player.vimeo.com/video/246595375
 
 
 
-Before we get started i will explane major topic:
+Before we get started I will explane major topic:
 
 Topics:
 
@@ -37,6 +40,7 @@ Third one: If you are not familiar with Node.js and Express or Socket.io - that 
 Little bit about `webpack`. We will use ES6 for our client side code, thats why I will use `webpack`. But I will show simple and dirty setup of the `webpack`.
 ( article is not webpack tutorial )
 
+# PART 1
 
 ## Setup app:
 Note: You can skip that step if you familiar with Node apps.
@@ -65,10 +69,7 @@ Lets read our server/app code:
 As we mentioned before we will user express to serve files to the clients:
 
 ```
-  ### => server/app.js
-
   const express = require('express');
-  const favicon = require('serve-favicon');
 
   const app = express();
   const server = require('http').createServer(app);
@@ -77,7 +78,6 @@ As we mentioned before we will user express to serve files to the clients:
   const PORT = process.env.PORT || 3000;
 
   app.use(express.static(path.join(__dirname, '..', 'client')));
-  app.use(favicon(path.join(__dirname, '..', 'client', 'favicon.ico')));
 
   app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'index'));
@@ -118,7 +118,7 @@ Step 1: Create entry point.
 ```
 
 Step 2: Add Phaser
-Download and add `phaser.min.js` into `lib` folder. And add `base.css` file to have simple styles for `#game-container`
+Download and add `phaser.min.js` into `client/lib` folder. And add `base.css` file to have simple styles for `#game-container`
 
 Step 3: Create Phaser Game
 
@@ -148,10 +148,6 @@ Lets create our game canvas that will be rendered to the `#game-container` block
 
   class Boot extends Phaser.State {
 
-    preload() {
-      this.game.stage.backgroundColor = '#000';
-    }
-
     create() {
       // This is not mandatory, but useful, as it will make the game keep reacting to messages from the server even when the game window doesn’t have focus (which is a desired behavior for most games).
       this.game.stage.disableVisibilityChange = true;
@@ -170,7 +166,6 @@ Lets create our game canvas that will be rendered to the `#game-container` block
   }
 
   export default Boot;
-
 ```
 
 ```
@@ -222,21 +217,20 @@ then
 This is not mandatory, but useful, as it will make the game keep reacting to messages from the server even when the game window doesn’t have focus (which is a desired behavior for most games).
 The game pauses when You open a new tab in the same window, but does not pause when you focus on another application.
 
-
 After setting this code you can:
 `yarn install` and `yarn run server`
 
+You can find current working code at the repo under branch [`step1`](https://github.com/DmytroVasin/bomber/tree/step1)
+
 And you will see next:
-
-TODO: Create screenshot ( video );
-TODO: Create new branch inside the app. || Also you can find current working code at the repo under branch `____-part-1`
+https://raw.githubusercontent.com/DmytroVasin/bomber/step1/_readme/step1/1.png
 
 
-
+# PART 2
 
 ## Part 2: Multi stage.
 
-You may previously see that in `Boot` State class we use: `preload`, `create`
+You may previously see that in `Boot` State class we use: `create`
 
 Let stop little bit: Whole stage devides on several "substages"
 
@@ -268,7 +262,30 @@ Inside Boot state at the end of create function we should add redirect to Preloa
 
 ```
 
-Lets create Preload stage:
+Lets add and create Preload and Manu stage:
+
+We import that stages and add them inside app.js.
+```
+  ### => js/app.js
+
+  import Boot from './states/boot';
+  import Preload from './states/preload';
+  import Menu from './states/menu';
+
+  class Game extends Phaser.Game {
+    constructor() {
+      super(980, 630, Phaser.AUTO, 'game-container');
+
+      this.state.add('Boot',         Boot);
+      this.state.add('Preload',      Preload);
+      this.state.add('Menu',         Menu);
+
+      this.state.start('Boot');
+    }
+  }
+
+  new Game();
+```
 
 ```
   ### => js/states/preload.js
@@ -291,25 +308,379 @@ Lets create Preload stage:
   export default Preload;
 ```
 
-NOTE: Whole this stage you may find at: [Preload State](https://github.com/DmytroVasin/bomber/blob/master/client/js/states/preload.js)
+NOTE:
+1. Whole this stage you may find at: [Preload Stage](https://github.com/DmytroVasin/bomber/blob/master/client/js/states/preload.js)
+2. Also you can see all pics that we will need [here](https://github.com/DmytroVasin/bomber/tree/master/client/images).
+2. You can find two maps and tileset [here](https://github.com/DmytroVasin/bomber/tree/master/client/maps).
 
-
-This state contains preload state where we load your assets.
+This state contains preload stage where we load your assets.
 Assets devides on two tipes:
 
 `spritesheet` and `image` - Image is just an simple image, sprite - that is banch of images. So, as you can see, we specify width: 35, height: 35 - that describe first image/frame from the banch.
 
+Also you will find there `tilemap`. That is pretty standart setup of tilemap in phaser. Except map properties ( inside json ) that we will you later.
+
+
+After all images will be loaded. The app will call menu stage.
+Lest create it:
+
 ```
   ### => js/states/menu.js
 
+  import { Text, TextButton } from '../helpers/elements';
+
   class Menu extends Phaser.State {
 
-    preload() {
-    }
-
     create() {
+      let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
+
+      new Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY - 215,
+        text: 'Main Menu',
+        style: {
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#7f9995',
+          strokeThickness: 3
+        }
+      })
+
+      new TextButton({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
+        callback: null,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0,
+        label: 'New Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
+      });
     }
   }
 
   export default Menu;
 ```
+
+As a background image we wil use `main_menu` image. Also we need title and button to click.
+
+To create button I will create new helper:
+
+```
+  ### => js/helpers/elements.js
+
+  export class TextButton extends Phaser.Button {
+
+    constructor({ game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame, label, style }) {
+      super(game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame);
+      this.anchor.setTo(0.5);
+
+      this.text = new Phaser.Text(this.game, 0, 0, label, style);
+      this.text.anchor.setTo(0.5);
+
+      this.addChild(this.text);
+
+      this.game.add.existing(this);
+    }
+
+  }
+```
+
+`TextButton` contains child text inside. Also we specify `overFrame`, `outFrame`, `downFrame`, `upFrame` frames - that something like: `hover`, `focus` events in CSS. That variable specify frame of the image that will be shown. Dimentions of the frame we specified inside `preload` state.
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step2/_readme/step2/1.png
+
+Start your server and you will see next:
+
+You can find current working code at the repo under branch [`step2`](https://github.com/DmytroVasin/bomber/tree/step2)
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step2/_readme/step2/2.png
+
+
+# PART 3
+
+## Part 3: Select map.
+
+Lest add select map stage and pending game stage:
+
+Before we start lets create `js/utils/constnats` plugin:
+
+Add full this file that you can find [here](https://github.com/DmytroVasin/bomber/blob/master/client/js/utils/constants.js)
+
+```
+  ### => js/utils/constants
+  export const AVAILABLE_MAPS = ['hot_map', 'cold_map']
+  ...
+```
+
+Inside select map we should chouse on which map we will play.
+At pending game stage we will waiting for another players before start.
+
+```
+  ### => client.js.app
+  ...
+  import SelectMap from './states/select_map';
+  import PendingGame from './states/pending_game';
+
+  class Game extends Phaser.Game {
+    constructor() {
+      ...
+      this.state.add('SelectMap',    SelectMap);
+      this.state.add('PendingGame',  PendingGame);
+      ...
+    }
+  }
+
+  new Game();
+```
+
+Lets add callback inside `menu` stage when user clicks on `New Game`
+
+```
+  ### => js/states/menu
+  ...
+  class Menu extends Phaser.State {
+
+    create() {
+      new TextButton({
+        ...
+        callback: this.hostGameAction,
+        ...
+      })
+    }
+    ...
+    hostGameAction() {
+      this.state.start('SelectMap');
+    }
+  }
+```
+
+For select game we will need `phase-slide` [phaser js plugin](https://github.com/netgfx/PhaseSlider).
+
+Lets download it inside `lib/phase-slide.js` and add `<script src='lib/phaser.min.js'></script>` in `index.html`
+
+
+Create `select_map` stage:
+
+```
+  ### => js/states/select_map.js
+
+  import { AVAILABLE_MAPS } from '../utils/constants';
+  import { Text, Button } from '../helpers/elements';
+
+  class SelectMap extends Phaser.State {
+
+    init() {
+      this.slider = new phaseSlider(this);
+    }
+
+    create() {
+      let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
+
+      new Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY - 215,
+        text: 'Select Map',
+        style: {
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#6f7975',
+          strokeThickness: 3
+        }
+      });
+
+      // WARN: https://github.com/netgfx/PhaseSlider/issues/1
+      let hotMapImage = new Phaser.Image(this.game, 0, 0, 'hot_map_preview');
+      let coldMapImage = new Phaser.Image(this.game, 0, 0, 'cold_map_preview');
+
+      this.slider.createSlider({
+        x: this.game.world.centerX - hotMapImage.width / 2,
+        y: this.game.world.centerY - coldMapImage.height / 2,
+        width: hotMapImage.width,
+        height: hotMapImage.height,
+        customHandlePrev: 'prev',
+        customHandleNext: 'next',
+        objects: [hotMapImage, coldMapImage]
+      });
+
+      new Button({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY + 195,
+        asset: 'check_icon',
+        callback: this.confirmStageSelection,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0,
+      })
+    }
+
+    confirmStageSelection() {
+      let map_name = AVAILABLE_MAPS[this.slider.getCurrentIndex()]
+
+      this.state.start('PendingGame', true, false, map_name);
+    }
+  }
+
+  export default SelectMap;
+
+```
+  Here we used additional helper: `Buttons` from `js/helpers/elements`
+```
+  ### => js/helpers/elements
+  export class Button extends Phaser.Button {
+
+    constructor({ game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame }) {
+      super(game, x, y, asset, callback, callbackContext, overFrame, outFrame, downFrame, upFrame);
+      this.anchor.setTo(0.5);
+
+      this.game.add.existing(this);
+    }
+
+  }
+```
+
+In that stage I did next:
+1. Create Background and title as we did before.
+2. Init slider according to plugin readme and `accept` button to confirm map picking.
+3. As a slider images I have added `hot_map_preview` and `cold_map_preview` from `images/menu/` folder.
+
+Inside `confirmStageSelection` w used `this.state.start('PendingGame', true, false, map_name)`. Only with such syntax you can sent variable to another stage.
+
+You can find more inside [official docs](https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start). But long story short: `true` and `false` that is default values for `clearWorld` and `clearCache`.
+
+
+Start your server and you will see next:
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step3/_readme/step3/1.png
+
+
+Lets add Pending game stage:
+
+```
+  ### => js/states/pending_game.js
+
+  import { Text, TextButton } from '../helpers/elements';
+
+  class PendingGame extends Phaser.State {
+
+    init({ game_id }) {
+
+    }
+
+    create() {
+      let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
+      background.anchor.setTo(0.5);
+
+      this.gameTitle = new Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY - 215,
+        text: 'NONAME GAME',
+        style: {
+          font: '35px Areal',
+          fill: '#9ec0ba',
+          stroke: '#6f7975',
+          strokeThickness: 3
+        }
+      })
+
+      this.startGameButton = new TextButton({
+        game: this.game,
+        x: this.game.world.centerX + 105,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
+        callback: this.startGameAction,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0,
+        label: 'Start Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
+      });
+
+      this.startGameButton.disable()
+
+      new TextButton({
+        game: this.game,
+        x: this.game.world.centerX - 105,
+        y: this.game.world.centerY + 195,
+        asset: 'buttons',
+        callback: this.leaveGameAction,
+        callbackContext: this,
+        overFrame: 1,
+        outFrame: 0,
+        downFrame: 2,
+        upFrame: 0,
+        label: 'Leave Game',
+        style: {
+          font: '20px Areal',
+          fill: '#000000'
+        }
+      });
+
+    }
+
+    leaveGameAction() {
+      this.state.start('Menu');
+    }
+
+    startGameAction() {
+      // Start Game Action...
+    }
+  }
+
+  export default PendingGame;
+```
+
+Here I added:
+1. Accepts game `Id` but we left it for the future.
+2. Background as always.
+3. Game Title with `NONAME GAME` text ( for now )
+4. `Leave Game` button that leads us to `Menu` Stage.
+5. `Start Game` button with `disabled` state.
+
+Lets add disable and enable functions:
+
+```
+  ### => js/helpers/elements
+
+  export class TextButton extends Phaser.Button {
+    ...
+    disable() {
+      this.setFrames(3, 3);
+      this.inputEnabled = false;
+      this.input.useHandCursor = false;
+    }
+
+    enable() {
+      this.setFrames(1, 0, 2);
+      this.inputEnabled = true;
+      this.input.useHandCursor = true;
+    }
+
+  }
+```
+
+Start your server and you will see next:
+
+You can find current working code at the repo under branch [`step3`](https://github.com/DmytroVasin/bomber/tree/step3)
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step3/_readme/step3/2.png
