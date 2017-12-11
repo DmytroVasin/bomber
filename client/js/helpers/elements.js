@@ -101,3 +101,32 @@ export class SpoilNotification extends Phaser.Group {
     this.callAll('kill')
   }
 }
+
+export class GameSlots extends Phaser.Group {
+
+  constructor({ game, availableGames, callback, callbackContext, x, y, style }) {
+    super(game);
+
+    let game_slot_asset = 'slot_backdrop'
+    let game_enter_asset = 'list_icon'
+
+    let yOffset = y;
+
+    for (let availableGame of availableGames) {
+      let gameBox = new Phaser.Image(this.game, x, yOffset, game_slot_asset)
+      let button = new Phaser.Button(this.game, gameBox.width - 100, 12, game_enter_asset, callback.bind(callbackContext, { game_id: availableGame.id }), null, 1, 0, 2, 1);
+      let text = new Phaser.Text(this.game, 30, 25, `Join Game: ${availableGame.name}`, style);
+
+      gameBox.addChild(button);
+      gameBox.addChild(text);
+
+      this.add(gameBox);
+
+      yOffset += 105;
+    }
+  }
+
+  destroy() {
+    this.callAll('kill') // destroy
+  }
+}

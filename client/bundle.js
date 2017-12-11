@@ -73,7 +73,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SpoilNotification = exports.PlayerSlots = exports.TextButton = exports.Button = exports.Text = void 0;
+exports.GameSlots = exports.SpoilNotification = exports.PlayerSlots = exports.TextButton = exports.Button = exports.Text = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -314,6 +314,77 @@ function (_Phaser$Group2) {
 }(Phaser.Group);
 
 exports.SpoilNotification = SpoilNotification;
+
+var GameSlots =
+/*#__PURE__*/
+function (_Phaser$Group3) {
+  _inherits(GameSlots, _Phaser$Group3);
+
+  function GameSlots(_ref6) {
+    var _this6;
+
+    var game = _ref6.game,
+        availableGames = _ref6.availableGames,
+        callback = _ref6.callback,
+        callbackContext = _ref6.callbackContext,
+        x = _ref6.x,
+        y = _ref6.y,
+        style = _ref6.style;
+
+    _classCallCheck(this, GameSlots);
+
+    _this6 = _possibleConstructorReturn(this, (GameSlots.__proto__ || Object.getPrototypeOf(GameSlots)).call(this, game));
+    var game_slot_asset = 'slot_backdrop';
+    var game_enter_asset = 'list_icon';
+    var yOffset = y;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = availableGames[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var _availableGame = _step.value;
+        var gameBox = new Phaser.Image(_this6.game, x, yOffset, game_slot_asset);
+        var button = new Phaser.Button(_this6.game, gameBox.width - 100, 12, game_enter_asset, callback.bind(callbackContext, {
+          game_id: _availableGame.id
+        }), null, 1, 0, 2, 1);
+        var text = new Phaser.Text(_this6.game, 30, 25, "Join Game: ".concat(_availableGame.name), style);
+        gameBox.addChild(button);
+        gameBox.addChild(text);
+
+        _this6.add(gameBox);
+
+        yOffset += 105;
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return != null) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    return _this6;
+  }
+
+  _createClass(GameSlots, [{
+    key: "destroy",
+    value: function destroy() {
+      this.callAll('kill'); // destroy
+    }
+  }]);
+
+  return GameSlots;
+}(Phaser.Group);
+
+exports.GameSlots = GameSlots;
 
 /***/ }),
 /* 1 */
@@ -638,6 +709,11 @@ function (_Phaser$State) {
   }
 
   _createClass(Menu, [{
+    key: "init",
+    value: function init() {
+      this.slotsWithGame = null;
+    }
+  }, {
     key: "create",
     value: function create() {
       var background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
@@ -671,7 +747,36 @@ function (_Phaser$State) {
           fill: '#000000'
         }
       });
+      clientSocket.emit('enter lobby', this.displayPendingGames.bind(this));
     }
+  }, {
+    key: "displayPendingGames",
+    value: function displayPendingGames(availableGames) {
+      // NOTE: That is not optimal way to preview slots,
+      //       we should implement AddSlotToGroup, RemoveSlotFromGroup
+      // I triying to care about readability, not about performance.
+      if (this.slotsWithGame) {
+        this.slotsWithGame.destroy();
+      }
+
+      this.slotsWithGame = new _elements.GameSlots({
+        game: this.game,
+        availableGames: availableGames,
+        callback: this.joinGameAction,
+        callbackContext: this,
+        x: this.game.world.centerX - 220,
+        y: 160,
+        style: {
+          font: '35px Areal',
+          fill: '#efefef',
+          stroke: '#ae743a',
+          strokeThickness: 3
+        }
+      });
+    }
+  }, {
+    key: "joinGameAction",
+    value: function joinGameAction() {}
   }, {
     key: "hostGameAction",
     value: function hostGameAction() {

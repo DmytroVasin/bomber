@@ -1,6 +1,10 @@
-import { Text, TextButton } from '../helpers/elements';
+import { Text, TextButton, GameSlots } from '../helpers/elements';
 
 class Menu extends Phaser.State {
+
+  init() {
+    this.slotsWithGame = null;
+  }
 
   create() {
     let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
@@ -36,6 +40,37 @@ class Menu extends Phaser.State {
         fill: '#000000'
       }
     });
+
+    clientSocket.emit('enter lobby', this.displayPendingGames.bind(this));
+  }
+
+  displayPendingGames(availableGames) {
+    // NOTE: That is not optimal way to preview slots,
+    //       we should implement AddSlotToGroup, RemoveSlotFromGroup
+
+    // I triying to care about readability, not about performance.
+    if (this.slotsWithGame) {
+      this.slotsWithGame.destroy()
+    }
+
+    this.slotsWithGame = new GameSlots({
+      game: this.game,
+      availableGames: availableGames,
+      callback: this.joinGameAction,
+      callbackContext: this,
+      x: this.game.world.centerX - 220,
+      y: 160,
+      style: {
+        font: '35px Areal',
+        fill: '#efefef',
+        stroke: '#ae743a',
+        strokeThickness: 3
+      }
+    })
+  }
+
+  joinGameAction() {
+
   }
 
   hostGameAction() {

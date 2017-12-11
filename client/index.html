@@ -6,8 +6,13 @@
 
     <script src='lib/phase-slide.js'></script>
     <script src='lib/phaser.min.js'></script>
+    <script src='/socket.io/socket.io.js'></script>
 
     <script src='bundle.js'></script>
+
+    <script>
+      window.clientSocket = io.connect();
+    </script>
   </head>
   <body>
     <div id='game-wrapper'>
