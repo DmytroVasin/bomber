@@ -78,3 +78,26 @@ export class PlayerSlots extends Phaser.Group {
     this.callAll('kill')
   }
 }
+
+export class SpoilNotification extends Phaser.Group {
+
+  constructor({ game, asset, x, y }) {
+    super(game)
+
+    this.picture = new Phaser.Image(this.game, x, y - 20, asset);
+    this.picture.anchor.setTo(0.5);
+
+    this.add(this.picture);
+
+    this.tween = this.game.add.tween(this.picture);
+    this.tween.to({ y: this.picture.y - 25, alpha: 0 }, 600);
+
+    this.tween.onComplete.add(this.finish, this);
+
+    this.tween.start()
+  }
+
+  finish() {
+    this.callAll('kill')
+  }
+}

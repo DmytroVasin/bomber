@@ -2,7 +2,8 @@ import { Text, TextButton, PlayerSlots } from '../helpers/elements';
 
 class PendingGame extends Phaser.State {
 
-  init({ game_id }) {
+  init(map_name) {
+    this.map_name = map_name;
     this.slotsWithPlayer = null;
   }
 
@@ -107,7 +108,7 @@ class PendingGame extends Phaser.State {
   }
 
   startGameAction() {
-    // Start Game Action...
+    this.state.start('Play', true, false, this.map_name);
   }
 }
 
