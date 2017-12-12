@@ -10,6 +10,9 @@ Demo of that app you can find on heroku: [Bomb Attack Demo](https://bomb-attack.
 
 Note: To test it, you should open page with two different windows. The game pauses when You open a new tab in the same window. Open game in different windows.
 
+## Preview:
+![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/menu.png)
+
 ## Video: *Click to play*:
 [![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png)](https://player.vimeo.com/video/246595375?autoplay=1)
 
@@ -23,3 +26,6 @@ Steps:
 4. You can access at [http://localhost:3000](http://localhost:3000)
 
 Be Happy!
+
+## Notes:
+You can use my code as a boilerplate if you want, but I would suggest you to change tiles size. I've picked tiles with 35 pixes ( width/height ) but you should pick tiles with 32 pixels. All free templates are based on this tile size, also it devided by 2.
