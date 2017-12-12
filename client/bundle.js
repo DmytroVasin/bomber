@@ -946,8 +946,6 @@ function (_Phaser$State) {
     key: "init",
     value: function init(_ref) {
       var game_id = _ref.game_id;
-      this.profileBoxes = [];
-      this.profileImages = [];
       this.slotsWithPlayer = null;
       this.game_id = game_id;
       clientSocket.on('update game', this.displayGameInfo.bind(this));

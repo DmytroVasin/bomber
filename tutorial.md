@@ -1708,8 +1708,7 @@ Lets update our `menu` state
       })
     }
 
-    joinGameAction() {
-
+    joinGameAction(game_id) {
     }
   }
 ```
@@ -1804,4 +1803,471 @@ And you will see next:
 https://raw.githubusercontent.com/DmytroVasin/bomber/step5/_readme/step5/1.png
 
 
+## Part 5.3: Create more Lobby events:
+
+Also we should implement `leave lobby` event. We will use it to left main menu and "on disconnect".
+
+```
+  ### => server/app.js
+
+  serverSocket.sockets.on('connection', function(client) {
+    ...
+    client.on('leave lobby', Lobby.onLeaveLobby);
+  });
+```
+
+```
+  ### => server/lobby.js
+
+  onLeaveLobby: function() {
+    this.leave(lobbyId);
+  }
+```
+
+`this` inside `onLeaveLobby` function is currrent socket connection.
+
+That is it! Very easy - we just left the room with 'lobby_room' id.
+
+We should add that event when we click `hostGameAction` ( Start picking new map ) and `joinGameAction` ( Join to existing game ).
+If we do not do that - we continue receive emits that belongs to lobby_room ( for now we do not have such events - but we will )
+
+```
+  ### => js/states/menu.js
+
+  class Menu extends Phaser.State {
+    ...
+    joinGameAction(game_id) {
+      clientSocket.emit('leave lobby');
+      this.state.start('PendingGame', true, false, 'hot_map');
+    }
+
+    hostGameAction() {
+      clientSocket.emit('leave lobby');
+      this.state.start('SelectMap');
+    }
+  }
+```
+
+I used `this.state.start('PendingGmae')` with 'hot_map' parameter - we just use dummy id, but we will fix it immidiatly.
+
+NOTE: We use `clientSocket.emit` and  `this.state.start`, but `emit` is async action - thats why it would be proper to use change state inside callback. But still - that is dummy app.
+
+
+Now inside `SelectMap` state we need emit `create game` inside `confirmStageSelection`
+
+So logic is next:
+1. When user pick map - I should sent event to the server with map_name
+2. User ( that pics map ) should be automatically added to that game.
+2. On server we create Game object and add it in AvailableGames.
+3. Sent event to all users ( in lobby ) with newly updated AvaiableGames array.
+4. Lobby Users rerender GameSlots in there view.
+
+Lets implment that:
+
+```
+  ### => js/states/select_map.js
+
+  confirmStageSelection() {
+    let map_name = AVAILABLE_MAPS[this.slider.getCurrentIndex()]
+
+    clientSocket.emit('create game', map_name, this.joinToNewGame.bind(this));
+  }
+
+  joinToNewGame(game_id) {
+    this.state.start('PendingGame', true, false, game_id);
+  }
+```
+
+```
+  ### => js/states/pending_game.js
+
+  class PendingGame extends Phaser.State {
+
+    init(game_id) {
+      this.game_id = game_id;
+      ...
+    }
+    ...
+    startGameAction() {
+      this.state.start('Play', true, false, this.game_id);
+    }
+  }
+
+```
+
+Here we rewrite `confirmStageSelection`, now we pick map and emit that map to the server, then as a server callback we receive `game_id` and change state with it.
+
+Also `PendingGame` now receive `game_id` not `map_name`
+
+Now we need to define: `create game` event:
+
+```
+  ### => server/app.js
+
+  serverSocket.sockets.on('connection', function(client) {
+    client.on('create game', Lobby.onCreateGame);
+  });
+```
+
+Next we need to define `onCreateGame` inside Lobby.
+
+```
+  ### => server/lobby.js
+
+  var { Game } = require('./entity/game');
+  var pendingGames = new Map();
+  ...
+  var Lobby = {
+    ...
+    onCreateGame: function(map_name, callback) {
+      var newGame = new Game({ map_name: map_name });
+      pendingGames.set(newGame.id, newGame);
+
+      Lobby.updateLobbyGames()
+
+      callback({ game_id: newGame.id });
+    },
+    ...
+    availablePendingGames: function() {
+      return [...pendingGames.values()].filter(item => item.isFull() === false );
+    },
+
+    updateLobbyGames: function() {
+      serverSocket.sockets.in(lobbyId).emit('display pending games', Lobby.availablePendingGames() );
+    }
+  }
+```
+
+Also we define `server/constants.js`. You can find all constants [here](https://github.com/DmytroVasin/bomber/blob/master/server/constants.js#L19)
+
+```
+  ### => server/entity/game.js
+
+  const { TILE_SIZE, EMPTY_CELL, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SKINS } = require('../constants');
+
+  var uuidv4 = require('uuid/v4');
+  var faker = require('faker');
+
+  class Game {
+    constructor({ map_name }) {
+      this.id           = uuidv4();
+      this.name         = faker.commerce.color()
+      this.map_name     = map_name;
+
+      this.layer_info   = require('../../client/maps/' + this.map_name + '.json').layers[0]
+      this.max_players  = this.layer_info.properties.max_players
+
+      this.players     = {}
+    }
+
+    isFull() {
+      return Object.keys(this.players).length === this.max_players
+    }
+  }
+
+  exports.Game = Game;
+```
+
+This function do next: It create new game object from `entity/game`. Object has dynamically generated `name` and `id` fields.
+Then we add this object to `Map` ( or hash, associative array - I personnaly prefer Map construction ) with `id` as a key.
+
+Then we should call `updateLobbyGame` function that will emit event that will warn all users that live inside `lobby_room` that new game was created.
+
+Also we rewrite `availablePendingGames` function - now it returns correct real games ( non full games )
+
+Lastly we call callback with newly created game id.
+
+New Game contains `id`, `name`, `map_name` property and has `isFull` function that returns 'true' or 'false' depending on count of players that it has. For now we keep players blank.
+
+Also please note `max_players` we pick [dirrectly from the map](https://github.com/DmytroVasin/bomber/blob/step5/client/maps/cold_map.json#L37). That is not good solution - but it works.
+
+Lets define `display pending games` inside Main menu:
+
+```
+  ### => js/states/menu.js
+
+  class Menu extends Phaser.State {
+    init() {
+      ...
+      clientSocket.on('display pending games', this.displayPendingGames.bind(this));
+    }
+    ...
+  }
+```
+
+NOTE: Do not forget to add `faker` and `uuid` as an yarn package.
+
+Lets start our server in two separate window
+
+And you will see next:
+https://raw.githubusercontent.com/DmytroVasin/bomber/step5/_readme/step5/3.png
+
+
+
+## Part 5.4: Add players to the game.
+
+Now we will add real players to our game.
+
+Player should be added when he visit `PendingGame` and should be removed when he left `PendingGame`
+
+```
+  ### => js/states/pending_game.js
+
+  class PendingGame extends Phaser.State {
+
+    init({ game_id }) {
+      ...
+      this.game_id = game_id
+      clientSocket.emit('enter pending game', { game_id: this.game_id });
+    }
+  }
+```
+```
+  ### => server/app.js
+
+  serverSocket.sockets.on('connection', function(client) {
+    ...
+    client.on('enter pending game', Lobby.onEnterPendingGame);
+  }
+```
+```
+  ### => server/lobby.js
+
+  ...
+  onEnterPendingGame: function ({ game_id }) {
+    let current_game = pendingGames.get(game_id);
+
+    this.join(current_game.id);
+
+    this.socket_game_id = current_game.id;
+
+    current_game.addPlayer(this.id);
+
+    if ( current_game.isFull() ){
+      Lobby.updateLobbyGames();
+    }
+
+    Lobby.updateCurrentGame(current_game)
+  }
+
+  updateCurrentGame: function(game) {
+    serverSocket.sockets.in(game.id).emit('update game', { current_game: game });
+  }
+```
+
+Inside init state with emit event 'enter pending game'. On emit from the client we should call onEnterPendignGame, where we:
+
+1. Find current game
+2. Join current socket to that game
+3. Store game id inside socket connection `socket_game_id`, because we should have ability to find it on disconnect.
+4. Add player to the game
+5. Sent event to all users that are inside lobby game when game is full ( something like remove game from the list )
+6. Sent event to all users that are inside current game ( update player slots )
+
+In point 6 we notify all users that are exist inside game, that will allows them to update Player Slots.
+Lets subscribe on this event:
+
+```
+  ### => js/states/pending_game.js
+
+  init({ game_id }) {
+    ...
+    clientSocket.on('update game', this.displayGameInfo.bind(this));
+  }
+
+  create() {
+    // Remove Dummny display game call.
+  }
+  ...
+```
+
+```
+  ### => js/state/menu.js
+
+  joinGameAction() {
+    ...
+    <!-- Now our game has id, so we can change `map_name` to `game_id` -->
+    this.state.start('PendingGame', true, false, game_id);
+  }
+```
+
+Do not forget to remove Dummny display game call at the end of `create` stage.
+
+When user open pending game stage, he subscribes to `update game` event and call `enter pending game` that add ( on server ) current player to that game ( update players ) and call `update game` event, that rerender `displayGameInfo` for each user that exist inside game.
+
+Now we only need to add `addPlayer` to our Game.
+
+
+```
+  ### => server/entity/game.js
+
+  var { Player } = require('./player');
+
+  class Game {
+    constructor({ map_name }) {
+      ...
+      this.players     = {}
+      this.playerSkins = SKINS
+
+      this.playerSpawns = this.layer_info.properties.spawns.slice()
+    }
+
+    addPlayer(id) {
+      let skin = this.getAndRemoveSkin()
+      let [spawn, spawnOnGrid] = this.getAndRemoveSpawn()
+
+      let player = new Player({ id: id, skin: skin, spawn: spawn, spawnOnGrid: spawnOnGrid })
+      this.players[player.id] = player
+    }
+
+    getAndRemoveSkin() {
+      let index = Math.floor(Math.random() * this.playerSkins.length);
+      let randomSkin = this.playerSkins[index];
+      this.playerSkins.splice(index, 1);
+
+      return randomSkin;
+    }
+
+    getAndRemoveSpawn() {
+      let index = Math.floor(Math.random() * this.playerSpawns.length);
+      let spawnOnGrid = this.playerSpawns[index];
+      this.playerSpawns.splice(index, 1);
+
+      let spawn = { x: spawnOnGrid.col * TILE_SIZE, y: spawnOnGrid.row * TILE_SIZE };
+      return [spawn, spawnOnGrid];
+    }
+  }
+```
+
+```
+  ### => server/entity/player.js
+
+  const { POWER, INITIAL_POWER, STEP_POWER } = require('../constants');
+
+  class Player {
+
+    constructor({ id, skin, spawn, spawnOnGrid }) {
+      this.id          = id;
+      this.skin        = skin;
+      this.spawn       = spawn;
+      this.spawnOnGrid = spawnOnGrid;
+
+      this.isAlive = true;
+
+      this.power = INITIAL_POWER;
+    }
+  }
+
+  exports.Player = Player;
+```
+
+Player will be defined like separate class. But game will contain function that add that player.
+
+Function lloks complicated but everything wat they do is Pick random Skin ( from the constant ) and Spawn ( from the object that defined inside [map.json](https://github.com/DmytroVasin/bomber/blob/master/client/maps/hot_map.json#L42) )
+
+Several Warnings:
+1. For players and playerSkings we should use Object ( hash ), not Map, WeekMap etc. because Socket.io do not uderstand such types.
+2. `playerSpawns` should be copied as an object not reference to the object, because properties.wpawns global object so we can't change it
+
+That is it!
+
+Start your server and you will see next:
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step5/_readme/step5/4.gif
+
+
+NOTE: If you want to debug server side - just add `--inspect` to `package.json`
+
+```
+  ### => package.json
+  "server": "webpack && node --inspect server/app.js",
+```
+
+## Part 5.4: Remove players from the game.
+
+Let add ability to left the game:
+
+```
+  ### => pending_game.js
+
+  leaveGameAction() {
+    clientSocket.emit('leave pending game');
+    ...
+  }
+```
+
+When user clicks `leaveGameAction` we should emit action 'leave pending game'
+
+Lets define it:
+
+```
+  ### => server/app.js
+  ...
+  client.on('leave pending game', Lobby.onLeavePendingGame);
+```
+
+```
+  ### => server/lobby.js
+
+  onLeavePendingGame: function() {
+    let current_game = pendingGames.get(this.socket_game_id);
+
+    if (current_game) {
+      this.leave(current_game.id);
+      this.socket_game_id = null;
+
+      current_game.removePlayer(this.id);
+
+      if( current_game.isEmpty() ){
+        pendingGames.delete(current_game.id);
+        Lobby.updateLobbyGames();
+        return
+      }
+
+      if ( !current_game.isFull() ){
+        Lobby.updateLobbyGames();
+      }
+
+      Lobby.updateCurrentGame(current_game)
+    }
+  },
+```
+
+```
+  ### => server/entity/game.js
+  ...
+  removePlayer(id) {
+    let player = this.players[id];
+
+    this.playerSkins.push(player.skin)
+    this.playerSpawns.push(player.spawnOnGrid)
+
+    delete this.players[id];
+  }
+
+  isEmpty() {
+    return Object.keys(this.players).length === 0
+  }
+```
+
+That was easy:
+1. We should delete the game if game do not contain any players.
+2. Update lobby meny if the game is full
+3. Update current game view.
+
+Inside `game.js` we defind removePlayer function that return skin and spawn back to the game
+
+NOTE: I know that is not perfect way of implementing spawn and naming system - but still, that is dummy app.
+
+Now we can left the game properly.
+
+
+Start your server and you will see next:
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step5/_readme/step5/5.gif
+
+You can find current working code at the repo under branch [`step5`](https://github.com/DmytroVasin/bomber/tree/step5)
+
+
+## Part 6: Start Play
 

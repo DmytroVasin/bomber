@@ -38,7 +38,7 @@ var Lobby = {
     current_game.addPlayer(this.id);
 
     if ( current_game.isFull() ){
-     Lobby.updateLobbyGames();
+      Lobby.updateLobbyGames();
     }
 
     Lobby.updateCurrentGame(current_game)
