@@ -2,9 +2,12 @@ import { Text, TextButton, PlayerSlots } from '../helpers/elements';
 
 class PendingGame extends Phaser.State {
 
-  init(map_name) {
-    this.map_name = map_name;
+  init({ game_id }) {
+    this.game_id = game_id;
     this.slotsWithPlayer = null;
+
+    clientSocket.on('update game', this.displayGameInfo.bind(this));
+    clientSocket.emit('enter pending game', { game_id: this.game_id });
   }
 
   create() {
@@ -61,16 +64,6 @@ class PendingGame extends Phaser.State {
         fill: '#000000'
       }
     });
-
-    let dummy_game = {
-      name: 'Sun Game',
-      max_players: 3,
-      players: {
-        uuid_1: { skin: 'Theodora' },
-        uuid_2: { skin: 'Biarid' }
-      }
-    }
-    this.displayGameInfo({ current_game: dummy_game })
   }
 
   displayGameInfo({ current_game }) {
@@ -108,7 +101,7 @@ class PendingGame extends Phaser.State {
   }
 
   startGameAction() {
-    this.state.start('Play', true, false, this.map_name);
+    this.state.start('Play', true, false, this.game_id);
   }
 }
 

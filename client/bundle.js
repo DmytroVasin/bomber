@@ -712,6 +712,7 @@ function (_Phaser$State) {
     key: "init",
     value: function init() {
       this.slotsWithGame = null;
+      clientSocket.on('display pending games', this.displayPendingGames.bind(this));
     }
   }, {
     key: "create",
@@ -776,10 +777,14 @@ function (_Phaser$State) {
     }
   }, {
     key: "joinGameAction",
-    value: function joinGameAction() {}
+    value: function joinGameAction(game_id) {
+      clientSocket.emit('leave lobby');
+      this.state.start('PendingGame', true, false, game_id);
+    }
   }, {
     key: "hostGameAction",
     value: function hostGameAction() {
+      clientSocket.emit('leave lobby');
       this.state.start('SelectMap');
     }
   }]);
@@ -879,10 +884,14 @@ function (_Phaser$State) {
   }, {
     key: "confirmStageSelection",
     value: function confirmStageSelection() {
-      var map_name = _constants.AVAILABLE_MAPS[this.slider.getCurrentIndex()]; // https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start
+      var map_name = _constants.AVAILABLE_MAPS[this.slider.getCurrentIndex()];
 
-
-      this.state.start('PendingGame', true, false, map_name);
+      clientSocket.emit('create game', map_name, this.joinToNewGame.bind(this));
+    }
+  }, {
+    key: "joinToNewGame",
+    value: function joinToNewGame(game_id) {
+      this.state.start('PendingGame', true, false, game_id);
     }
   }]);
 
@@ -931,9 +940,14 @@ function (_Phaser$State) {
 
   _createClass(PendingGame, [{
     key: "init",
-    value: function init(map_name) {
-      this.map_name = map_name;
+    value: function init(_ref) {
+      var game_id = _ref.game_id;
+      this.game_id = game_id;
       this.slotsWithPlayer = null;
+      clientSocket.on('update game', this.displayGameInfo.bind(this));
+      clientSocket.emit('enter pending game', {
+        game_id: this.game_id
+      });
     }
   }, {
     key: "create",
@@ -987,26 +1001,11 @@ function (_Phaser$State) {
           fill: '#000000'
         }
       });
-      var dummy_game = {
-        name: 'Sun Game',
-        max_players: 3,
-        players: {
-          uuid_1: {
-            skin: 'Theodora'
-          },
-          uuid_2: {
-            skin: 'Biarid'
-          }
-        }
-      };
-      this.displayGameInfo({
-        current_game: dummy_game
-      });
     }
   }, {
     key: "displayGameInfo",
-    value: function displayGameInfo(_ref) {
-      var current_game = _ref.current_game;
+    value: function displayGameInfo(_ref2) {
+      var current_game = _ref2.current_game;
       var players = Object.values(current_game.players);
       this.gameTitle.text = current_game.name;
 
@@ -1042,7 +1041,7 @@ function (_Phaser$State) {
   }, {
     key: "startGameAction",
     value: function startGameAction() {
-      this.state.start('Play', true, false, this.map_name);
+      this.state.start('Play', true, false, this.game_id);
     }
   }]);
 

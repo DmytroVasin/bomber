@@ -26,4 +26,9 @@ serverSocket.sockets.on('connection', function(client) {
   console.log('New player has connected: ' + client.id);
 
   client.on('enter lobby', Lobby.onEnterLobby);
+  client.on('leave lobby', Lobby.onLeaveLobby);
+  client.on('create game', Lobby.onCreateGame);
+
+  client.on('enter pending game', Lobby.onEnterPendingGame);
+  // client.on('leave pending game', Lobby.onLeavePendingGame);
 });

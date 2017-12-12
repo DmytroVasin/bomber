@@ -4,7 +4,7 @@
   "description": "Bomberman like game",
   "main": "server.js",
   "scripts": {
-    "server": "webpack && node server/app.js",
+    "server": "webpack && node --inspect server/app.js",
     "start": "node server/app.js"
   },
   "author": "Dmytro Vasin",

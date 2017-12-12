@@ -4,6 +4,7 @@ class Menu extends Phaser.State {
 
   init() {
     this.slotsWithGame = null;
+    clientSocket.on('display pending games', this.displayPendingGames.bind(this));
   }
 
   create() {
@@ -69,11 +70,13 @@ class Menu extends Phaser.State {
     })
   }
 
-  joinGameAction() {
-
+  joinGameAction(game_id) {
+    clientSocket.emit('leave lobby');
+    this.state.start('PendingGame', true, false, game_id);
   }
 
   hostGameAction() {
+    clientSocket.emit('leave lobby');
     this.state.start('SelectMap');
   }
 }

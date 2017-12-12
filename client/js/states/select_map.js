@@ -54,8 +54,12 @@ class SelectMap extends Phaser.State {
 
   confirmStageSelection() {
     let map_name = AVAILABLE_MAPS[this.slider.getCurrentIndex()]
-    // https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start
-    this.state.start('PendingGame', true, false, map_name);
+
+    clientSocket.emit('create game', map_name, this.joinToNewGame.bind(this));
+  }
+
+  joinToNewGame(game_id) {
+    this.state.start('PendingGame', true, false, game_id);
   }
 }
 
