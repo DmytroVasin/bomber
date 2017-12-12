@@ -30,6 +30,19 @@ class Game {
     this.players[player.id] = player
   }
 
+  removePlayer(id) {
+    let player = this.players[id];
+
+    this.playerSkins.push(player.skin)
+    this.playerSpawns.push(player.spawnOnGrid)
+
+    delete this.players[id];
+  }
+
+  isEmpty() {
+    return Object.keys(this.players).length === 0
+  }
+
   getAndRemoveSkin() {
     // NOTE: we can user here simple .pop()
     let index = Math.floor(Math.random() * this.playerSkins.length);

@@ -18,7 +18,7 @@ class PendingGame extends Phaser.State {
       game: this.game,
       x: this.game.world.centerX,
       y: this.game.world.centerY - 215,
-      text: 'NONAME GAME',
+      text: '',
       style: {
         font: '35px Areal',
         fill: '#9ec0ba',
@@ -97,6 +97,8 @@ class PendingGame extends Phaser.State {
   }
 
   leaveGameAction() {
+    clientSocket.emit('leave pending game');
+
     this.state.start('Menu');
   }
 

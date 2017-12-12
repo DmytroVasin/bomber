@@ -30,5 +30,5 @@ serverSocket.sockets.on('connection', function(client) {
   client.on('create game', Lobby.onCreateGame);
 
   client.on('enter pending game', Lobby.onEnterPendingGame);
-  // client.on('leave pending game', Lobby.onLeavePendingGame);
+  client.on('leave pending game', Lobby.onLeavePendingGame);
 });

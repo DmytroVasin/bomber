@@ -958,7 +958,7 @@ function (_Phaser$State) {
         game: this.game,
         x: this.game.world.centerX,
         y: this.game.world.centerY - 215,
-        text: 'NONAME GAME',
+        text: '',
         style: {
           font: '35px Areal',
           fill: '#9ec0ba',
@@ -1036,6 +1036,7 @@ function (_Phaser$State) {
   }, {
     key: "leaveGameAction",
     value: function leaveGameAction() {
+      clientSocket.emit('leave pending game');
       this.state.start('Menu');
     }
   }, {

@@ -43,6 +43,29 @@ var Lobby = {
     Lobby.updateCurrentGame(current_game)
   },
 
+  onLeavePendingGame: function() {
+    let current_game = pendingGames.get(this.socket_game_id);
+
+    if (current_game) {
+      this.leave(current_game.id);
+      this.socket_game_id = null;
+
+      current_game.removePlayer(this.id);
+
+      if( current_game.isEmpty() ){
+        pendingGames.delete(current_game.id);
+        Lobby.updateLobbyGames();
+        return
+      }
+
+      if ( !current_game.isFull() ){
+        Lobby.updateLobbyGames();
+      }
+
+      Lobby.updateCurrentGame(current_game)
+    }
+  },
+
   availablePendingGames: function() {
     return [...pendingGames.values()].filter(item => item.isFull() === false );
   },
