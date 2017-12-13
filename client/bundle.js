@@ -945,6 +945,7 @@ function (_Phaser$State) {
       this.game_id = game_id;
       this.slotsWithPlayer = null;
       clientSocket.on('update game', this.displayGameInfo.bind(this));
+      clientSocket.on('launch game', this.launchGame.bind(this));
       clientSocket.emit('enter pending game', {
         game_id: this.game_id
       });
@@ -1042,7 +1043,15 @@ function (_Phaser$State) {
   }, {
     key: "startGameAction",
     value: function startGameAction() {
-      this.state.start('Play', true, false, this.game_id);
+      clientSocket.emit('start game');
+    }
+  }, {
+    key: "launchGame",
+    value: function launchGame(game) {
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+      console.log(game);
+      console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+      this.state.start('Play', true, false, game);
     }
   }]);
 
@@ -1105,29 +1114,8 @@ function (_Phaser$State) {
 
   _createClass(Play, [{
     key: "init",
-    value: function init(map_name) {
-      this.clientPlayerId = 1;
-      this.currentGame = {
-        map_name: map_name,
-        players: {
-          uuid_1: {
-            id: 1,
-            skin: 'Theodora',
-            spawn: {
-              x: 6 * 35,
-              y: 4 * 35
-            }
-          },
-          uuid_2: {
-            id: 2,
-            skin: 'Biarid',
-            spawn: {
-              x: 7 * 35,
-              y: 15 * 35
-            }
-          }
-        }
-      };
+    value: function init(game) {
+      this.currentGame = game;
     }
   }, {
     key: "create",
@@ -1197,7 +1185,7 @@ function (_Phaser$State) {
           play: this
         };
 
-        if (player.id === this.clientPlayerId) {
+        if (player.id === clientSocket.id) {
           this.player = new _player.default(setup);
         } else {
           this.enemies.add(new _enemy_player.default(setup));

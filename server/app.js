@@ -18,6 +18,7 @@ server.listen(PORT, function(){
 });
 
 
+const Play     = require('./play');
 const Lobby    = require('./lobby');
 
 serverSocket = socketIO(server);
@@ -31,4 +32,6 @@ serverSocket.sockets.on('connection', function(client) {
 
   client.on('enter pending game', Lobby.onEnterPendingGame);
   client.on('leave pending game', Lobby.onLeavePendingGame);
+
+  client.on('start game', Play.onStartGame);
 });

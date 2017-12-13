@@ -7,6 +7,8 @@ class PendingGame extends Phaser.State {
     this.slotsWithPlayer = null;
 
     clientSocket.on('update game', this.displayGameInfo.bind(this));
+    clientSocket.on('launch game', this.launchGame.bind(this));
+
     clientSocket.emit('enter pending game', { game_id: this.game_id });
   }
 
@@ -103,7 +105,14 @@ class PendingGame extends Phaser.State {
   }
 
   startGameAction() {
-    this.state.start('Play', true, false, this.game_id);
+    clientSocket.emit('start game');
+  }
+
+  launchGame(game) {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    console.log(game)
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    this.state.start('Play', true, false, game);
   }
 }
 

@@ -9,16 +9,8 @@ import Spoil from '../entities/spoil';
 // import Bone from '../entities/bone';
 
 class Play extends Phaser.State {
-  init(map_name) {
-    this.clientPlayerId = 1
-
-    this.currentGame = {
-      map_name: map_name,
-      players: {
-        uuid_1: { id: 1, skin: 'Theodora', spawn: { x: 6*35,  y: 4*35  }},
-        uuid_2: { id: 2, skin: 'Biarid', spawn: { x: 7*35,  y: 15*35 }}
-      }
-    }
+  init(game) {
+    this.currentGame = game
   }
 
   create() {
@@ -77,7 +69,7 @@ class Play extends Phaser.State {
         play:   this
       }
 
-      if (player.id === this.clientPlayerId) {
+      if (player.id === clientSocket.id) {
         this.player = new Player(setup);
       } else {
         this.enemies.add(new EnemyPlayer(setup))

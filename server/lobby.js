@@ -66,6 +66,15 @@ var Lobby = {
     }
   },
 
+  deletePendingGame: function(game_id) {
+    let game = pendingGames.get(game_id);
+
+    pendingGames.delete(game.id);
+    Lobby.updateLobbyGames();
+
+    return game
+  },
+
   availablePendingGames: function() {
     return [...pendingGames.values()].filter(item => item.isFull() === false );
   },
