@@ -1,48 +1,48 @@
-## Bomberman with multiplayer.
+## A Bomberman-style game with multiplayer option.
 
-Bomberman game with multiplayer based on [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
+A Bomberman-style game with multiplayer option made with [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
 
 ### Game description:
 
-The game is designed for a play with multiple players.
+The game is designed for up to three players.
 
-You can starn new game on 2 different maps.
+Games can be played on one of two maps.
 
 ![Maps](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/maps.png)
 
-Max players is "3"
+Player models user will receive randomly when he will enter the game.
 
-The winner is the one who will be the last.
+The winning player is the last one standing.
 
-While the game player can increase there skils:
+Within the game, players can upgrade skills like:
+( Change to drop - 50% when player break the block )
 
-* ![Speed Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/speed.png) Speed Up ( till 3 )
-* ![Bomb setting time](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/time.png) Bomb setting time ( till 0.5 seconds )
-* ![Power Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/power.png) Power Up ( endless )
+* ![Speed Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/speed.png) Speed: can increase to 3
+* ![Bomb setting time](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/time.png) Bomb setting time: can be reduced to 0.5 seconds
+* ![Power Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/power.png) Power: no limit
 
 ## Demo:
-You can find tutorial of this game [not-ready](https://not-ready)
+You can find a tutorial on how to make Bomberman-style games here: [not-ready](https://not-ready)
 
-Demo of that app you can find on heroku: [Bomb Attack Demo](https://bomb-attack.herokuapp.com/)
+A demo of this game can be found on Heroku: [Bomberman with multiplayer - Demo](https://bomb-attack.herokuapp.com/)
 
-Note: To test it, you should open page with two different windows. The game pauses when You open a new tab in the same window. Open game in different windows.
+Note: To play the game, you should open the browser in two separate windows. The game pauses when You open a new tab in the same window. Open game in different windows.
 
 ## Game: *Click to play*:
-[![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/menu.png)](https://player.vimeo.com/video/247095838?autoplay=1)
+[![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/menu.png)](https://player.vimeo.com/video/246595375?autoplay=1)
 
 ## Menu: *Click to play*:
-[![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png)](https://player.vimeo.com/video/246595375?autoplay=1)
+[![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png)](https://player.vimeo.com/video/247095838?autoplay=1)
 
 ## Setup:
-Game is based on Node and Yarn (npm) package manager. Make sure that both already installed into your system.
+The game requires Node and Yarn (npm) package manager. Make sure that you already have both installed on your system before trying to launch it.
 
 Steps:
 1. Clone the repository.
-2. Inside newly created directory run `yarn install`
-3. Then run `yarn run server` - that command described inside package.json file. It launch `webpack` in your dev env and then starts `node` server.
-4. You can access at [http://localhost:3000](http://localhost:3000)
-
-Be Happy!
+2. Run `yarn install` inside a newly created directory.
+3. Start the server with the command `yarn run server` ( defined in the `package.json` file ). This will launch `webpack` in your development environment and then start the `node` server.
+4. Check out the game at [http://localhost:3000](http://localhost:3000)
+5. Enjoy!
 
 ## Notes:
-You can use my code as a boilerplate if you want, but I would suggest you to change tiles size. I've picked tiles with 35 pixes ( width/height ) but you should pick tiles with 32 pixels. All free templates are based on this tile size, also it devided by 2.
+You can use my code as a boilerplate if you want, but I would suggest you change the tile sizes. I've picked tiles that are 35x35 pixels, but tiles that are 32x32 would be more ideal. All free templates are based on this tile size, and it is also handily divisible by 2.

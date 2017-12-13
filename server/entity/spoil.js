@@ -1,6 +1,4 @@
-const {
-  SPEED, POWER, DELAY
-} = require('../constants');
+const { SPEED, POWER, DELAY } = require('../constants');
 
 var uuidv4 = require('uuid/v4');
 

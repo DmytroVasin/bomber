@@ -36,7 +36,24 @@ http://gojasonyang.com/post/phaserMultiplayerGamePart1.html
 LINKS????
 <!-- https://github.com/Lotti/codemotion2015 -->
 <!-- HEROKU DEPLOY: https://devcenter.heroku.com/articles/node-websockets -->
-<!-- ADD VIDEO TO MAIN PAGE: https://github.com/DmytroVasin/ListenChartsOnElectron -->
 <!-- NODE INSPECTOR: https://nodejs.org/en/docs/inspector/ -->
 
 
+
+
+
+
+
+
+
+
+Game has alot of disadvanteges:
+
+- Non optimized algorithm of re-render menu and pending games
+- Non secure connections and broadcasting events
+- PING has big influence, because if we have alot of games it would not work well
+- Menu that will overlap start play button if we will have more then 3 pending game
+- Enemy interpolation. Enemy should have interpolation that depends on frame rate not base on simple ping variable.
+- Player dith should be defined on server, client should not sent event about that.
+
+But that is simple pet project to show ability of the Phaser + Socket.io.
