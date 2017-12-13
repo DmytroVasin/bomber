@@ -16,7 +16,12 @@ var Play = {
     runningGames.set(game.id, game)
 
     serverSocket.sockets.in(game.id).emit('launch game', game);
-  }
+  },
+
+  updatePlayerPosition: function (coordinates) {
+    // NOTE: We broadcast only for opponents.
+    this.broadcast.to(this.socket_game_id).emit('move player', Object.assign({}, { player_id: this.id }, coordinates));
+  },
 }
 
 module.exports = Play;

@@ -26,7 +26,7 @@ export default class Player extends Phaser.Sprite {
     this.game.physics.arcade.enable(this);
     this.body.setSize(20, 20, 6, 6);
 
-    // game.time.events.loop(PING , this.positionUpdaterLoop.bind(this));
+    game.time.events.loop(PING , this.positionUpdaterLoop.bind(this));
 
     this.animations.add('up', [9, 10, 11], 15, true);
     this.animations.add('down', [0, 1, 2], 15, true);
@@ -106,14 +106,14 @@ export default class Player extends Phaser.Sprite {
     return Math.floor(this.body.position.y / TILE_SIZE)
   }
 
-//   positionUpdaterLoop() {
-//     let newPosition = { x: this.position.x, y: this.position.y }
+  positionUpdaterLoop() {
+    let newPosition = { x: this.position.x, y: this.position.y }
 
-//     if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
-//       clientSocket.emit('update player position', newPosition);
-//       this.prevPosition = newPosition;
-//     }
-//   }
+    if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
+      clientSocket.emit('update player position', newPosition);
+      this.prevPosition = newPosition;
+    }
+  }
 
 //   becomesDead() {
 //     this.info.showDeadInfo()

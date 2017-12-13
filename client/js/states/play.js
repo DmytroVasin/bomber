@@ -16,9 +16,9 @@ class Play extends Phaser.State {
   create() {
     this.createMap();
     this.createPlayers();
-    // this.setEventHandlers();
+    this.setEventHandlers();
 
-    // this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
+    this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
   }
 
   update() {
@@ -77,15 +77,15 @@ class Play extends Phaser.State {
     }
   }
 
-  // setEventHandlers() {
-  //   clientSocket.on('move player', this.onMovePlayer.bind(this));
-  //   clientSocket.on('player win', this.onPlayerWin.bind(this));
-  //   clientSocket.on('show bomb', this.onShowBomb.bind(this));
-  //   clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
-  //   clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
-  //   clientSocket.on('show bones', this.onShowBones.bind(this));
-  //   clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
-  // }
+  setEventHandlers() {
+    clientSocket.on('move player', this.onMovePlayer.bind(this));
+    // clientSocket.on('player win', this.onPlayerWin.bind(this));
+    // clientSocket.on('show bomb', this.onShowBomb.bind(this));
+    // clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
+    // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+    // clientSocket.on('show bones', this.onShowBones.bind(this));
+    // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+  }
 
   onPlayerVsSpoil(player, spoil) {
     this.player.pickSpoil(spoil.spoil_type)
@@ -101,20 +101,20 @@ class Play extends Phaser.State {
   //   }
   // }
 
-  // onMovePlayer({ player_id, x, y }) {
-  //   let enemy = findFrom(player_id, this.enemies);
-  //   if (!enemy) { return }
+  onMovePlayer({ player_id, x, y }) {
+    let enemy = findFrom(player_id, this.enemies);
+    if (!enemy) { return }
 
-  //   enemy.goTo({ x: x, y: y })
-  // }
+    enemy.goTo({ x: x, y: y })
+  }
 
-  // stopAnimationLoop() {
-  //   for (let enemy of this.enemies.children) {
-  //     if (enemy.lastMoveAt < this.game.time.now - 200) {
-  //       enemy.animations.stop();
-  //     }
-  //   }
-  // }
+  stopAnimationLoop() {
+    for (let enemy of this.enemies.children) {
+      if (enemy.lastMoveAt < this.game.time.now - 200) {
+        enemy.animations.stop();
+      }
+    }
+  }
 
   onShowBomb({ bomb_id, col, row }) {
     this.bombs.add(new Bomb(this.game, bomb_id, col, row));

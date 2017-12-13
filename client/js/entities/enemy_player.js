@@ -16,10 +16,10 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.body.setSize(20, 20, 6, 6);
     this.body.immovable = true;
 
-    // this.animations.add('up', [9, 10, 11], 15, true);
-    // this.animations.add('down', [0, 1, 2], 15, true);
-    // this.animations.add('right', [6, 7, 8], 15, true);
-    // this.animations.add('left', [3, 4, 5], 15, true);
+    this.animations.add('up', [9, 10, 11], 15, true);
+    this.animations.add('down', [0, 1, 2], 15, true);
+    this.animations.add('right', [6, 7, 8], 15, true);
+    this.animations.add('left', [3, 4, 5], 15, true);
 
     this.defineSelf(skin)
   }
@@ -28,32 +28,32 @@ export default class EnemyPlayer extends Phaser.Sprite {
     this.game.debug.body(this);
   }
 
-  // goTo(newPosition) {
-  //   this.lastMoveAt = this.game.time.now;
+  goTo(newPosition) {
+    this.lastMoveAt = this.game.time.now;
 
-  //   this.animateFace(newPosition);
+    this.animateFace(newPosition);
 
-  //   this.game.add.tween(this).to(newPosition, PING, Phaser.Easing.Linear.None, true);
-  // }
+    this.game.add.tween(this).to(newPosition, PING, Phaser.Easing.Linear.None, true);
+  }
 
-  // animateFace(newPosition) {
-  //   let face = 'down';
-  //   let diffX = newPosition.x - this.currentPosition.x;
-  //   let diffY = newPosition.y - this.currentPosition.y;
+  animateFace(newPosition) {
+    let face = 'down';
+    let diffX = newPosition.x - this.currentPosition.x;
+    let diffY = newPosition.y - this.currentPosition.y;
 
-  //   if (diffX < 0) {
-  //     face = 'left'
-  //   } else if (diffX > 0) {
-  //     face = 'right'
-  //   } else if (diffY < 0) {
-  //     face = 'up'
-  //   } else if (diffY > 0) {
-  //     face = 'down'
-  //   }
+    if (diffX < 0) {
+      face = 'left'
+    } else if (diffX > 0) {
+      face = 'right'
+    } else if (diffY < 0) {
+      face = 'up'
+    } else if (diffY > 0) {
+      face = 'down'
+    }
 
-  //   this.animations.play(face)
-  //   this.currentPosition = newPosition;
-  // }
+    this.animations.play(face)
+    this.currentPosition = newPosition;
+  }
 
   defineSelf(name) {
     let playerText = new Text({

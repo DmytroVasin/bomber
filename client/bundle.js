@@ -1121,8 +1121,9 @@ function (_Phaser$State) {
     key: "create",
     value: function create() {
       this.createMap();
-      this.createPlayers(); // this.setEventHandlers();
-      // this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
+      this.createPlayers();
+      this.setEventHandlers();
+      this.game.time.events.loop(400, this.stopAnimationLoop.bind(this));
     }
   }, {
     key: "update",
@@ -1191,16 +1192,17 @@ function (_Phaser$State) {
           this.enemies.add(new _enemy_player.default(setup));
         }
       }
-    } // setEventHandlers() {
-    //   clientSocket.on('move player', this.onMovePlayer.bind(this));
-    //   clientSocket.on('player win', this.onPlayerWin.bind(this));
-    //   clientSocket.on('show bomb', this.onShowBomb.bind(this));
-    //   clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
-    //   clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
-    //   clientSocket.on('show bones', this.onShowBones.bind(this));
-    //   clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
-    // }
-
+    }
+  }, {
+    key: "setEventHandlers",
+    value: function setEventHandlers() {
+      clientSocket.on('move player', this.onMovePlayer.bind(this)); // clientSocket.on('player win', this.onPlayerWin.bind(this));
+      // clientSocket.on('show bomb', this.onShowBomb.bind(this));
+      // clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
+      // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+      // clientSocket.on('show bones', this.onShowBones.bind(this));
+      // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+    }
   }, {
     key: "onPlayerVsSpoil",
     value: function onPlayerVsSpoil(player, spoil) {
@@ -1213,25 +1215,60 @@ function (_Phaser$State) {
     //     player.becomesDead()
     //   }
     // }
-    // onMovePlayer({ player_id, x, y }) {
-    //   let enemy = findFrom(player_id, this.enemies);
-    //   if (!enemy) { return }
-    //   enemy.goTo({ x: x, y: y })
-    // }
-    // stopAnimationLoop() {
-    //   for (let enemy of this.enemies.children) {
-    //     if (enemy.lastMoveAt < this.game.time.now - 200) {
-    //       enemy.animations.stop();
-    //     }
-    //   }
-    // }
 
   }, {
+    key: "onMovePlayer",
+    value: function onMovePlayer(_ref) {
+      var player_id = _ref.player_id,
+          x = _ref.x,
+          y = _ref.y;
+      var enemy = (0, _utils.findFrom)(player_id, this.enemies);
+
+      if (!enemy) {
+        return;
+      }
+
+      enemy.goTo({
+        x: x,
+        y: y
+      });
+    }
+  }, {
+    key: "stopAnimationLoop",
+    value: function stopAnimationLoop() {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.enemies.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var _enemy = _step.value;
+
+          if (_enemy.lastMoveAt < this.game.time.now - 200) {
+            _enemy.animations.stop();
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }, {
     key: "onShowBomb",
-    value: function onShowBomb(_ref) {
-      var bomb_id = _ref.bomb_id,
-          col = _ref.col,
-          row = _ref.row;
+    value: function onShowBomb(_ref2) {
+      var bomb_id = _ref2.bomb_id,
+          col = _ref2.col,
+          row = _ref2.row;
       this.bombs.add(new _bomb.default(this.game, bomb_id, col, row));
     } // onDetonateBomb({ bomb_id, blastedCells }) {
     //   // Remove Bomb:
@@ -1405,8 +1442,9 @@ function (_Phaser$Sprite) {
 
     _this.game.physics.arcade.enable(_this);
 
-    _this.body.setSize(20, 20, 6, 6); // game.time.events.loop(PING , this.positionUpdaterLoop.bind(this));
+    _this.body.setSize(20, 20, 6, 6);
 
+    game.time.events.loop(_constants.PING, _this.positionUpdaterLoop.bind(_this));
 
     _this.animations.add('up', [9, 10, 11], 15, true);
 
@@ -1504,14 +1542,20 @@ function (_Phaser$Sprite) {
     key: "currentRow",
     value: function currentRow() {
       return Math.floor(this.body.position.y / _constants.TILE_SIZE);
-    } //   positionUpdaterLoop() {
-    //     let newPosition = { x: this.position.x, y: this.position.y }
-    //     if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
-    //       clientSocket.emit('update player position', newPosition);
-    //       this.prevPosition = newPosition;
-    //     }
-    //   }
-    //   becomesDead() {
+    }
+  }, {
+    key: "positionUpdaterLoop",
+    value: function positionUpdaterLoop() {
+      var newPosition = {
+        x: this.position.x,
+        y: this.position.y
+      };
+
+      if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
+        clientSocket.emit('update player position', newPosition);
+        this.prevPosition = newPosition;
+      }
+    } //   becomesDead() {
     //     this.info.showDeadInfo()
     //     this.kill();
     //   }
@@ -1733,17 +1777,21 @@ function (_Phaser$Sprite) {
     _this = _possibleConstructorReturn(this, (EnemyPlayer.__proto__ || Object.getPrototypeOf(EnemyPlayer)).call(this, game, spawn.x, spawn.y, 'bomberman_' + skin));
     _this.game = game;
     _this.id = id;
-    _this.currentPosition = spawn;
-    _this.lastMoveAt = 0;
+    _this.currentPosition = spawn; // this.lastMoveAt = 0;
 
     _this.game.physics.arcade.enable(_this);
 
     _this.body.setSize(20, 20, 6, 6);
 
-    _this.body.immovable = true; // this.animations.add('up', [9, 10, 11], 15, true);
-    // this.animations.add('down', [0, 1, 2], 15, true);
-    // this.animations.add('right', [6, 7, 8], 15, true);
-    // this.animations.add('left', [3, 4, 5], 15, true);
+    _this.body.immovable = true;
+
+    _this.animations.add('up', [9, 10, 11], 15, true);
+
+    _this.animations.add('down', [0, 1, 2], 15, true);
+
+    _this.animations.add('right', [6, 7, 8], 15, true);
+
+    _this.animations.add('left', [3, 4, 5], 15, true);
 
     _this.defineSelf(skin);
 
@@ -1754,28 +1802,34 @@ function (_Phaser$Sprite) {
     key: "update",
     value: function update() {
       this.game.debug.body(this);
-    } // goTo(newPosition) {
-    //   this.lastMoveAt = this.game.time.now;
-    //   this.animateFace(newPosition);
-    //   this.game.add.tween(this).to(newPosition, PING, Phaser.Easing.Linear.None, true);
-    // }
-    // animateFace(newPosition) {
-    //   let face = 'down';
-    //   let diffX = newPosition.x - this.currentPosition.x;
-    //   let diffY = newPosition.y - this.currentPosition.y;
-    //   if (diffX < 0) {
-    //     face = 'left'
-    //   } else if (diffX > 0) {
-    //     face = 'right'
-    //   } else if (diffY < 0) {
-    //     face = 'up'
-    //   } else if (diffY > 0) {
-    //     face = 'down'
-    //   }
-    //   this.animations.play(face)
-    //   this.currentPosition = newPosition;
-    // }
+    }
+  }, {
+    key: "goTo",
+    value: function goTo(newPosition) {
+      this.lastMoveAt = this.game.time.now;
+      this.animateFace(newPosition);
+      this.game.add.tween(this).to(newPosition, _constants.PING, Phaser.Easing.Linear.None, true);
+    }
+  }, {
+    key: "animateFace",
+    value: function animateFace(newPosition) {
+      var face = 'down';
+      var diffX = newPosition.x - this.currentPosition.x;
+      var diffY = newPosition.y - this.currentPosition.y;
 
+      if (diffX < 0) {
+        face = 'left';
+      } else if (diffX > 0) {
+        face = 'right';
+      } else if (diffY < 0) {
+        face = 'up';
+      } else if (diffY > 0) {
+        face = 'down';
+      }
+
+      this.animations.play(face);
+      this.currentPosition = newPosition;
+    }
   }, {
     key: "defineSelf",
     value: function defineSelf(name) {

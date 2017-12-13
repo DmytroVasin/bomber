@@ -34,4 +34,5 @@ serverSocket.sockets.on('connection', function(client) {
   client.on('leave pending game', Lobby.onLeavePendingGame);
 
   client.on('start game', Play.onStartGame);
+  client.on('update player position', Play.updatePlayerPosition);
 });
