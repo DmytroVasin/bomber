@@ -1,6 +1,7 @@
 const { TILE_SIZE, EMPTY_CELL, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SKINS } = require('../constants');
 
 var { Player } = require('./player');
+var { Bomb } = require('./bomb.js');
 
 var uuidv4 = require('uuid/v4');
 var faker = require('faker');
@@ -20,6 +21,8 @@ class Game {
 
     // NOTE: Copy objct - not reference
     this.playerSpawns = this.layer_info.properties.spawns.slice()
+
+    this.bombs        = new Map();
   }
 
   addPlayer(id) {
@@ -50,6 +53,15 @@ class Game {
     this.playerSkins.splice(index, 1);
 
     return randomSkin;
+  }
+
+  addBomb({ col, row, power }) {
+    let bomb = new Bomb({ game: this, col: col, row: row, power: power });
+    if ( this.bombs.get(bomb.id) ) {
+      return false
+    }
+    this.bombs.set(bomb.id, bomb);
+    return bomb
   }
 
   getAndRemoveSpawn() {

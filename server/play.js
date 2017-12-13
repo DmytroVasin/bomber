@@ -22,6 +22,24 @@ var Play = {
     // NOTE: We broadcast only for opponents.
     this.broadcast.to(this.socket_game_id).emit('move player', Object.assign({}, { player_id: this.id }, coordinates));
   },
+
+  createBomb: function({ col, row }) {
+    let game_id = this.socket_game_id;
+    let current_game = runningGames.get(game_id);
+    let current_player = current_game.players[this.id];
+
+    let bomb = current_game.addBomb({ col: col, row: row, power: current_player.power })
+
+    if ( bomb ){
+      setTimeout(function() {
+        // let blastedCells = bomb.detonate()
+
+        serverSocket.sockets.to(game_id).emit('detonate bomb', { bomb_id: bomb.id });
+      }, bomb.explosion_time);
+
+      serverSocket.sockets.to(game_id).emit('show bomb', { bomb_id: bomb.id, col: bomb.col, row: bomb.row });
+    }
+  }
 }
 
 module.exports = Play;

@@ -1197,9 +1197,9 @@ function (_Phaser$State) {
     key: "setEventHandlers",
     value: function setEventHandlers() {
       clientSocket.on('move player', this.onMovePlayer.bind(this)); // clientSocket.on('player win', this.onPlayerWin.bind(this));
-      // clientSocket.on('show bomb', this.onShowBomb.bind(this));
-      // clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
-      // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+
+      clientSocket.on('show bomb', this.onShowBomb.bind(this));
+      clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this)); // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
       // clientSocket.on('show bones', this.onShowBones.bind(this));
       // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
     }
@@ -1270,10 +1270,15 @@ function (_Phaser$State) {
           col = _ref2.col,
           row = _ref2.row;
       this.bombs.add(new _bomb.default(this.game, bomb_id, col, row));
-    } // onDetonateBomb({ bomb_id, blastedCells }) {
-    //   // Remove Bomb:
-    //   findAndDestroyFrom(bomb_id, this.bombs)
-    //   // Render Blast:
+    }
+  }, {
+    key: "onDetonateBomb",
+    value: function onDetonateBomb(_ref3) {
+      var bomb_id = _ref3.bomb_id,
+          blastedCells = _ref3.blastedCells;
+      // Remove Bomb:
+      (0, _utils.findAndDestroyFrom)(bomb_id, this.bombs);
+    } //   // Render Blast:
     //   for (let cell of blastedCells) {
     //     this.blasts.add(new FireBlast(this.game, cell));
     //   };
@@ -1525,8 +1530,7 @@ function (_Phaser$Sprite) {
 
         if (now > this._lastBombTime) {
           this._lastBombTime = now + this.delay;
-          this.play.onShowBomb({
-            bomb_id: 'xxx',
+          clientSocket.emit('create bomb', {
             col: this.currentCol(),
             row: this.currentRow()
           });
@@ -1777,7 +1781,8 @@ function (_Phaser$Sprite) {
     _this = _possibleConstructorReturn(this, (EnemyPlayer.__proto__ || Object.getPrototypeOf(EnemyPlayer)).call(this, game, spawn.x, spawn.y, 'bomberman_' + skin));
     _this.game = game;
     _this.id = id;
-    _this.currentPosition = spawn; // this.lastMoveAt = 0;
+    _this.currentPosition = spawn;
+    _this.lastMoveAt = 0;
 
     _this.game.physics.arcade.enable(_this);
 

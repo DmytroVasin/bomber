@@ -80,8 +80,8 @@ class Play extends Phaser.State {
   setEventHandlers() {
     clientSocket.on('move player', this.onMovePlayer.bind(this));
     // clientSocket.on('player win', this.onPlayerWin.bind(this));
-    // clientSocket.on('show bomb', this.onShowBomb.bind(this));
-    // clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
+    clientSocket.on('show bomb', this.onShowBomb.bind(this));
+    clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
     // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
     // clientSocket.on('show bones', this.onShowBones.bind(this));
     // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
@@ -120,9 +120,10 @@ class Play extends Phaser.State {
     this.bombs.add(new Bomb(this.game, bomb_id, col, row));
   }
 
-  // onDetonateBomb({ bomb_id, blastedCells }) {
-  //   // Remove Bomb:
-  //   findAndDestroyFrom(bomb_id, this.bombs)
+  onDetonateBomb({ bomb_id, blastedCells }) {
+    // Remove Bomb:
+    findAndDestroyFrom(bomb_id, this.bombs)
+  }
 
   //   // Render Blast:
   //   for (let cell of blastedCells) {

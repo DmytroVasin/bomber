@@ -93,7 +93,7 @@ export default class Player extends Phaser.Sprite {
       if (now > this._lastBombTime) {
         this._lastBombTime = now + this.delay;
 
-        this.play.onShowBomb({ bomb_id: 'xxx', col: this.currentCol(), row: this.currentRow() })
+        clientSocket.emit('create bomb', { col: this.currentCol(), row: this.currentRow() });
       }
     }
   }

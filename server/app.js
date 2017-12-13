@@ -35,4 +35,5 @@ serverSocket.sockets.on('connection', function(client) {
 
   client.on('start game', Play.onStartGame);
   client.on('update player position', Play.updatePlayerPosition);
+  client.on('create bomb', Play.createBomb);
 });
