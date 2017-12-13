@@ -2,18 +2,35 @@
 
 Bomberman game with multiplayer based on [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
 
-You can find tutorial of this game [not-ready](https://not-ready)
+### Game description:
+
+The game is designed for a play with multiple players.
+
+You can starn new game on 2 different maps.
+
+![Maps](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/maps.png)
+
+Max players is "3"
+
+The winner is the one who will be the last.
+
+While the game player can increase there skils:
+
+* ![Speed Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/speed.png) Speed Up ( till 3 )
+* ![Bomb setting time](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/time.png) Bomb setting time ( till 0.5 seconds )
+* ![Power Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/power.png) Power Up ( endless )
 
 ## Demo:
+You can find tutorial of this game [not-ready](https://not-ready)
 
 Demo of that app you can find on heroku: [Bomb Attack Demo](https://bomb-attack.herokuapp.com/)
 
 Note: To test it, you should open page with two different windows. The game pauses when You open a new tab in the same window. Open game in different windows.
 
-## Preview:
-![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/menu.png)
+## Game: *Click to play*:
+[![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/menu.png)](https://player.vimeo.com/video/247095838?autoplay=1)
 
-## Video: *Click to play*:
+## Menu: *Click to play*:
 [![Preview](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png)](https://player.vimeo.com/video/246595375?autoplay=1)
 
 ## Setup:

@@ -1585,6 +1585,49 @@ To do that we defind `enter` event handler inside our `play.js` and create new s
 
 ```
   ### => js/states/win.js
+
+  import { Text } from '../helpers/elements';
+
+  class Win extends Phaser.State {
+
+    init(winner_skin) {
+      this.skin = winner_skin
+    }
+
+    create() {
+      new Text({
+        game: this.game,
+        x: this.game.world.centerX,
+        y: this.game.world.centerY,
+        text: this.winnerText(),
+        style: {
+          font: '30px Areal',
+          fill: '#FFFFFF'
+        }
+      })
+    }
+
+    update() {
+      if( this.game.input.keyboard.isDown(Phaser.Keyboard.ENTER) ) {
+        this.returnToMenu();
+      }
+    }
+
+    returnToMenu() {
+      this.state.start('Menu');
+    }
+
+    winnerText() {
+      if (this.skin) {
+        return `Player: "${this.skin}" won! Press Enter to return to main menu.`
+      }
+
+      return 'Opponent left! Press Enter to return to main menu.'
+    }
+  }
+
+  export default Win;
+
 ```
 
 We just created new state like we did before.
@@ -1592,7 +1635,7 @@ We just created new state like we did before.
 This state receives one attribute - `skin`. That mean we will show the name of the winner.
 Inside `Win` stage I define wining text and create keyboard event handler that transfer us to main menu when we press `Enter` again.
 
-NOTE: For now we call onPlayerWin without any attributes because `Win` stage should works even when quit the game by close browser window.
+NOTE: You can call onPlayerWin without any attributes because `Win` stage should works even when opponen quit the game via close browser window.
 
 
 Start your server and you will see next:
@@ -2271,3 +2314,120 @@ You can find current working code at the repo under branch [`step5`](https://git
 
 ## Part 6: Start Play
 
+To start play, game must have 2 or more players connected to one room.
+
+Then game will allows you to click 'Start Game' button.
+
+Any player can start the game:
+
+1. Player click on "Start the game" button
+2. We sent event to the server,
+3. On server side we convert "pending game" to "game"
+4. Server sent notification to all users that belongs to that game about game init.
+5. All users change the state to "Play"
+
+
+## Part 6: Start the game:
+
+Let implement that logic step by step:
+
+First of all we need to chagne `pendingGame` state
+
+```
+  ### =>js/states/pending_game.js
+  ...
+  startGameAction() {
+    clientSocket.emit('start game');
+  }
+```
+
+```
+  ### => server/app.js
+
+  const Play     = require('./play');
+
+  serverSocket.sockets.on('connection', function(client) {
+    ...
+    client.on('start game', Play.onStartGame);
+  }
+```
+
+```
+  ### => server/play.js
+
+  var Lobby    = require('./lobby');
+  var { Game } = require('./entity/game');
+
+  var runningGames = new Map();
+
+  var Play = {
+    onStartGame: function() {
+      let game = Lobby.deletePendingGame(this.socket_game_id);
+      runningGames.set(game.id, game)
+
+      serverSocket.sockets.in(game.id).emit('launch game', game);
+    }
+  }
+
+  module.exports = Play;
+```
+
+```
+  ### => server/lobby.js
+  ...
+  deletePendingGame: function(game_id) {
+    let game = pendingGames.get(game_id);
+
+    pendingGames.delete(game.id);
+    Lobby.updateLobbyGames();
+
+    return game
+  }
+  ...
+```
+
+```
+  js/states/pending_game.js
+
+  class PendingGame extends Phaser.State {
+
+    init({ game_id }) {
+      ...
+      clientSocket.on('launch game', this.launchGame.bind(this));
+    },
+
+    launchGame(game) {
+      this.state.start('Play', true, false, game);
+    }
+  }
+```
+
+
+
+DEEEEE SCRIPTION!!!!!!!!!
+
+
+
+Also we should change `Play` state, because we stub it previously. But now we can ue real data:
+
+```
+  ### => js/states/play.js
+
+  class Play extends Phaser.State {
+    init(game) {
+      this.currentGame = game
+    }
+    ...
+    createPlayers() {
+      ...
+      if (player.id === clientSocket.id) {
+        this.player = new Player(setup);
+      } else {
+      ...
+    }
+  }
+```
+
+Start your server and you will see next:
+
+https://raw.githubusercontent.com/DmytroVasin/bomber/step6/_readme/step6/1.gif
