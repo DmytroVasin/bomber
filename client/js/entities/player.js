@@ -115,10 +115,10 @@ export default class Player extends Phaser.Sprite {
     }
   }
 
-//   becomesDead() {
-//     this.info.showDeadInfo()
-//     this.kill();
-//   }
+  becomesDead() {
+    this.info.showDeadInfo()
+    this.kill();
+  }
 
   pickSpoil( spoil_type ){
     if ( spoil_type === SPEED ){ this.increaseSpeed() }

@@ -5,7 +5,7 @@ export default class Info {
     this.player = player;
 
     this.style    = { font: '14px Arial', fill: '#ffffff', align: 'left' }
-    // this.redStyle = { font: '30px Arial', fill: '#ff0044', align: 'center' };
+    this.redStyle = { font: '30px Arial', fill: '#ff0044', align: 'center' };
 
     let bootsIcon  = new Phaser.Image(this.game, 5, 2, 'placeholder_speed');
     this.speedText = new Phaser.Text(this.game, 35, 7, this.speedLabel(), this.style);
@@ -22,9 +22,9 @@ export default class Info {
     delayIcon.addChild(this.delayText)
     this.game.add.existing(delayIcon);
 
-    // this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
-    // this.deadText.anchor.set(0.5);
-    // this.deadText.visible = false
+    this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
+    this.deadText.anchor.set(0.5);
+    this.deadText.visible = false
   }
 
   refreshStatistic() {
@@ -33,9 +33,9 @@ export default class Info {
     this.delayText.text = this.delayLabel();
   }
 
-  // showDeadInfo() {
-  //   this.deadText.visible = true
-  // }
+  showDeadInfo() {
+    this.deadText.visible = true
+  }
 
   speedLabel() {
     return this.player.speed

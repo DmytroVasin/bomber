@@ -73,6 +73,52 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.STEP_POWER = exports.INITIAL_POWER = exports.MIN_DELAY = exports.STEP_DELAY = exports.INITIAL_DELAY = exports.MAX_SPEED = exports.STEP_SPEED = exports.INITIAL_SPEED = exports.DELAY = exports.POWER = exports.SPEED = exports.PING = exports.EXPLOSION_TIME = exports.TILE_SIZE = exports.LAYER = exports.TILESET = exports.AVAILABLE_MAPS = void 0;
+var AVAILABLE_MAPS = ['hot_map', 'cold_map'];
+exports.AVAILABLE_MAPS = AVAILABLE_MAPS;
+var TILESET = 'tiles';
+exports.TILESET = TILESET;
+var LAYER = 'Blocks';
+exports.LAYER = LAYER;
+var TILE_SIZE = 35;
+exports.TILE_SIZE = TILE_SIZE;
+var EXPLOSION_TIME = 2000;
+exports.EXPLOSION_TIME = EXPLOSION_TIME;
+var PING = 100;
+exports.PING = PING;
+var SPEED = 0;
+exports.SPEED = SPEED;
+var POWER = 1;
+exports.POWER = POWER;
+var DELAY = 2;
+exports.DELAY = DELAY;
+var INITIAL_SPEED = 150;
+exports.INITIAL_SPEED = INITIAL_SPEED;
+var STEP_SPEED = 50;
+exports.STEP_SPEED = STEP_SPEED;
+var MAX_SPEED = 350;
+exports.MAX_SPEED = MAX_SPEED;
+var INITIAL_DELAY = 2000;
+exports.INITIAL_DELAY = INITIAL_DELAY;
+var STEP_DELAY = 500;
+exports.STEP_DELAY = STEP_DELAY;
+var MIN_DELAY = 500;
+exports.MIN_DELAY = MIN_DELAY;
+var INITIAL_POWER = 1;
+exports.INITIAL_POWER = INITIAL_POWER;
+var STEP_POWER = 1;
+exports.STEP_POWER = STEP_POWER;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.GameSlots = exports.SpoilNotification = exports.PlayerSlots = exports.TextButton = exports.Button = exports.Text = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -387,52 +433,6 @@ function (_Phaser$Group3) {
 exports.GameSlots = GameSlots;
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.STEP_POWER = exports.INITIAL_POWER = exports.MIN_DELAY = exports.STEP_DELAY = exports.INITIAL_DELAY = exports.MAX_SPEED = exports.STEP_SPEED = exports.INITIAL_SPEED = exports.DELAY = exports.POWER = exports.SPEED = exports.PING = exports.EXPLOSION_TIME = exports.TILE_SIZE = exports.LAYER = exports.TILESET = exports.AVAILABLE_MAPS = void 0;
-var AVAILABLE_MAPS = ['hot_map', 'cold_map'];
-exports.AVAILABLE_MAPS = AVAILABLE_MAPS;
-var TILESET = 'tiles';
-exports.TILESET = TILESET;
-var LAYER = 'Blocks';
-exports.LAYER = LAYER;
-var TILE_SIZE = 35;
-exports.TILE_SIZE = TILE_SIZE;
-var EXPLOSION_TIME = 2000;
-exports.EXPLOSION_TIME = EXPLOSION_TIME;
-var PING = 100;
-exports.PING = PING;
-var SPEED = 0;
-exports.SPEED = SPEED;
-var POWER = 1;
-exports.POWER = POWER;
-var DELAY = 2;
-exports.DELAY = DELAY;
-var INITIAL_SPEED = 150;
-exports.INITIAL_SPEED = INITIAL_SPEED;
-var STEP_SPEED = 50;
-exports.STEP_SPEED = STEP_SPEED;
-var MAX_SPEED = 350;
-exports.MAX_SPEED = MAX_SPEED;
-var INITIAL_DELAY = 2000;
-exports.INITIAL_DELAY = INITIAL_DELAY;
-var STEP_DELAY = 500;
-exports.STEP_DELAY = STEP_DELAY;
-var MIN_DELAY = 500;
-exports.MIN_DELAY = MIN_DELAY;
-var INITIAL_POWER = 1;
-exports.INITIAL_POWER = INITIAL_POWER;
-var STEP_POWER = 1;
-exports.STEP_POWER = STEP_POWER;
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -451,7 +451,7 @@ var _pending_game = _interopRequireDefault(__webpack_require__(7));
 
 var _play = _interopRequireDefault(__webpack_require__(8));
 
-var _win = _interopRequireDefault(__webpack_require__(16));
+var _win = _interopRequireDefault(__webpack_require__(17));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -511,7 +511,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -683,7 +683,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -807,9 +807,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -913,7 +913,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1075,7 +1075,7 @@ exports.default = void 0;
 
 var _utils = __webpack_require__(9);
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
 var _player = _interopRequireDefault(__webpack_require__(10));
 
@@ -1086,6 +1086,8 @@ var _bomb = _interopRequireDefault(__webpack_require__(13));
 var _spoil = _interopRequireDefault(__webpack_require__(14));
 
 var _fire_blast = _interopRequireDefault(__webpack_require__(15));
+
+var _bone = _interopRequireDefault(__webpack_require__(16));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1101,7 +1103,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import Bone from '../entities/bone';
 var Play =
 /*#__PURE__*/
 function (_Phaser$State) {
@@ -1132,11 +1133,8 @@ function (_Phaser$State) {
       this.game.physics.arcade.collide(this.player, this.blockLayer);
       this.game.physics.arcade.collide(this.player, this.enemies);
       this.game.physics.arcade.collide(this.player, this.bombs);
-      this.game.physics.arcade.overlap(this.player, this.spoils, this.onPlayerVsSpoil, null, this); // this.game.physics.arcade.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
-
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
-        this.onPlayerWin();
-      }
+      this.game.physics.arcade.overlap(this.player, this.spoils, this.onPlayerVsSpoil, null, this);
+      this.game.physics.arcade.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
     }
   }, {
     key: "createMap",
@@ -1146,31 +1144,12 @@ function (_Phaser$State) {
       this.blockLayer = this.map.createLayer(_constants.LAYER);
       this.blockLayer.resizeWorld();
       this.map.setCollision(this.blockLayer.layer.properties.collisionTiles);
-      this.player = null; // this.bones   = this.game.add.group();
-
+      this.player = null;
+      this.bones = this.game.add.group();
       this.bombs = this.game.add.group();
       this.spoils = this.game.add.group();
       this.blasts = this.game.add.group();
       this.enemies = this.game.add.group(); // this.game.physics.arcade.enable(this.blockLayer);
-
-      this.spoils.add(new _spoil.default(this.game, {
-        id: 1,
-        col: 10,
-        row: 7,
-        spoil_type: 0
-      }));
-      this.spoils.add(new _spoil.default(this.game, {
-        id: 2,
-        col: 7,
-        row: 5,
-        spoil_type: 2
-      }));
-      this.spoils.add(new _spoil.default(this.game, {
-        id: 4,
-        col: 9,
-        row: 7,
-        spoil_type: 1
-      }));
     }
   }, {
     key: "createPlayers",
@@ -1197,26 +1176,34 @@ function (_Phaser$State) {
   }, {
     key: "setEventHandlers",
     value: function setEventHandlers() {
-      clientSocket.on('move player', this.onMovePlayer.bind(this)); // clientSocket.on('player win', this.onPlayerWin.bind(this));
-
+      clientSocket.on('move player', this.onMovePlayer.bind(this));
+      clientSocket.on('player win', this.onPlayerWin.bind(this));
       clientSocket.on('show bomb', this.onShowBomb.bind(this));
-      clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this)); // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
-      // clientSocket.on('show bones', this.onShowBones.bind(this));
-      // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+      clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
+      clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+      clientSocket.on('show bones', this.onShowBones.bind(this)); // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
     }
   }, {
     key: "onPlayerVsSpoil",
     value: function onPlayerVsSpoil(player, spoil) {
-      this.player.pickSpoil(spoil.spoil_type);
-      (0, _utils.findAndDestroyFrom)(spoil.id, this.spoils);
-      spoil.kill();
-    } // onPlayerVsBlast(player, blast) {
-    //   if (player.alive) {
-    //     clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
-    //     player.becomesDead()
-    //   }
-    // }
+      clientSocket.emit('pick up spoil', {
+        spoil_id: spoil.id
+      }); // this.player.pickSpoil(spoil.spoil_type)
+      // findAndDestroyFrom(spoil.id, this.spoils);
 
+      spoil.kill();
+    }
+  }, {
+    key: "onPlayerVsBlast",
+    value: function onPlayerVsBlast(player, blast) {
+      if (player.alive) {
+        clientSocket.emit('player died', {
+          col: player.currentCol(),
+          row: player.currentRow()
+        });
+        player.becomesDead();
+      }
+    }
   }, {
     key: "onMovePlayer",
     value: function onMovePlayer(_ref) {
@@ -1286,8 +1273,8 @@ function (_Phaser$State) {
 
       try {
         for (var _iterator2 = blastedCells[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var _cell2 = _step2.value;
-          this.blasts.add(new _fire_blast.default(this.game, _cell2));
+          var _cell3 = _step2.value;
+          this.blasts.add(new _fire_blast.default(this.game, _cell3));
         }
       } catch (err) {
         _didIteratorError2 = true;
@@ -1312,13 +1299,13 @@ function (_Phaser$State) {
 
       try {
         for (var _iterator3 = blastedCells[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var _cell3 = _step3.value;
+          var _cell4 = _step3.value;
 
-          if (!_cell3.destroyed) {
+          if (!_cell4.destroyed) {
             continue;
           }
 
-          this.map.putTile(this.blockLayer.layer.properties.empty, _cell3.col, _cell3.row, this.blockLayer);
+          this.map.putTile(this.blockLayer.layer.properties.empty, _cell4.col, _cell4.row, this.blockLayer);
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -1335,23 +1322,65 @@ function (_Phaser$State) {
         }
       }
 
-      ; //   // Add Spoils:
-      //   for (let cell of blastedCells) {
-      //     if (!cell.destroyed) { continue }
-      //     if (!cell.spoil) { continue }
-      //     this.spoils.add(new Spoil(this.game, cell.spoil));
-      //   };
-    } // onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
-    //   if (player_id === this.player.id){
-    //     this.player.pickSpoil(spoil_type)
-    //   }
-    //   findAndDestroyFrom(spoil_id, this.spoils)
-    // }
-    // onShowBones({ player_id, col, row }) {
-    //   this.bones.add(new Bone(this.game, col, row));
-    //   findAndDestroyFrom(player_id, this.enemies)
-    // }
+      ; // Add Spoils:
 
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = blastedCells[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var _cell5 = _step4.value;
+
+          if (!_cell5.destroyed) {
+            continue;
+          }
+
+          if (!_cell5.spoil) {
+            continue;
+          }
+
+          this.spoils.add(new _spoil.default(this.game, _cell5.spoil));
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+
+      ;
+    }
+  }, {
+    key: "onSpoilWasPicked",
+    value: function onSpoilWasPicked(_ref4) {
+      var player_id = _ref4.player_id,
+          spoil_id = _ref4.spoil_id,
+          spoil_type = _ref4.spoil_type;
+
+      if (player_id === this.player.id) {
+        this.player.pickSpoil(spoil_type);
+      }
+
+      (0, _utils.findAndDestroyFrom)(spoil_id, this.spoils);
+    }
+  }, {
+    key: "onShowBones",
+    value: function onShowBones(_ref5) {
+      var player_id = _ref5.player_id,
+          col = _ref5.col,
+          row = _ref5.row;
+      this.bones.add(new _bone.default(this.game, col, row));
+      (0, _utils.findAndDestroyFrom)(player_id, this.enemies);
+    }
   }, {
     key: "onPlayerWin",
     value: function onPlayerWin(winner_skin) {
@@ -1441,11 +1470,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
 var _info = _interopRequireDefault(__webpack_require__(11));
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1606,11 +1635,13 @@ function (_Phaser$Sprite) {
         clientSocket.emit('update player position', newPosition);
         this.prevPosition = newPosition;
       }
-    } //   becomesDead() {
-    //     this.info.showDeadInfo()
-    //     this.kill();
-    //   }
-
+    }
+  }, {
+    key: "becomesDead",
+    value: function becomesDead() {
+      this.info.showDeadInfo();
+      this.kill();
+    }
   }, {
     key: "pickSpoil",
     value: function pickSpoil(spoil_type) {
@@ -1731,8 +1762,12 @@ function () {
     this.style = {
       font: '14px Arial',
       fill: '#ffffff',
-      align: 'left' // this.redStyle = { font: '30px Arial', fill: '#ff0044', align: 'center' };
-
+      align: 'left'
+    };
+    this.redStyle = {
+      font: '30px Arial',
+      fill: '#ff0044',
+      align: 'center'
     };
     var bootsIcon = new Phaser.Image(this.game, 5, 2, 'placeholder_speed');
     this.speedText = new Phaser.Text(this.game, 35, 7, this.speedLabel(), this.style);
@@ -1745,9 +1780,10 @@ function () {
     var delayIcon = new Phaser.Image(this.game, 215, 2, 'placeholder_time');
     this.delayText = new Phaser.Text(this.game, 35, 7, this.delayLabel(), this.style);
     delayIcon.addChild(this.delayText);
-    this.game.add.existing(delayIcon); // this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
-    // this.deadText.anchor.set(0.5);
-    // this.deadText.visible = false
+    this.game.add.existing(delayIcon);
+    this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
+    this.deadText.anchor.set(0.5);
+    this.deadText.visible = false;
   }
 
   _createClass(Info, [{
@@ -1756,10 +1792,12 @@ function () {
       this.speedText.text = this.speedLabel();
       this.powerText.text = this.powerLabel();
       this.delayText.text = this.delayLabel();
-    } // showDeadInfo() {
-    //   this.deadText.visible = true
-    // }
-
+    }
+  }, {
+    key: "showDeadInfo",
+    value: function showDeadInfo() {
+      this.deadText.visible = true;
+    }
   }, {
     key: "speedLabel",
     value: function speedLabel() {
@@ -1794,9 +1832,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
-var _elements = __webpack_require__(0);
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1918,7 +1956,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1993,7 +2031,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -2053,7 +2091,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _constants = __webpack_require__(1);
+var _constants = __webpack_require__(0);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -2103,7 +2141,45 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _elements = __webpack_require__(0);
+var _constants = __webpack_require__(0);
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bone =
+/*#__PURE__*/
+function (_Phaser$Sprite) {
+  _inherits(Bone, _Phaser$Sprite);
+
+  function Bone(game, col, row) {
+    _classCallCheck(this, Bone);
+
+    return _possibleConstructorReturn(this, (Bone.__proto__ || Object.getPrototypeOf(Bone)).call(this, game, col * _constants.TILE_SIZE, row * _constants.TILE_SIZE, 'bone_tileset'));
+  }
+
+  return Bone;
+}(Phaser.Sprite);
+
+exports.default = Bone;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _elements = __webpack_require__(1);
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 

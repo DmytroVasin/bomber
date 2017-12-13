@@ -6,7 +6,7 @@ import EnemyPlayer from '../entities/enemy_player';
 import Bomb from '../entities/bomb';
 import Spoil from '../entities/spoil';
 import FireBlast from '../entities/fire_blast';
-// import Bone from '../entities/bone';
+import Bone from '../entities/bone';
 
 class Play extends Phaser.State {
   init(game) {
@@ -27,11 +27,7 @@ class Play extends Phaser.State {
     this.game.physics.arcade.collide(this.player, this.bombs);
 
     this.game.physics.arcade.overlap(this.player, this.spoils, this.onPlayerVsSpoil, null, this);
-    // this.game.physics.arcade.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
-
-    if( this.game.input.keyboard.isDown(Phaser.Keyboard.ENTER) ) {
-      this.onPlayerWin()
-    }
+    this.game.physics.arcade.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
   }
 
   createMap() {
@@ -45,18 +41,13 @@ class Play extends Phaser.State {
     this.map.setCollision(this.blockLayer.layer.properties.collisionTiles)
 
     this.player  = null;
-    // this.bones   = this.game.add.group();
+    this.bones   = this.game.add.group();
     this.bombs   = this.game.add.group();
     this.spoils  = this.game.add.group();
     this.blasts  = this.game.add.group();
     this.enemies = this.game.add.group();
 
     // this.game.physics.arcade.enable(this.blockLayer);
-
-
-    this.spoils.add(new Spoil(this.game, { id: 1, col: 10, row: 7, spoil_type: 0 } ));
-    this.spoils.add(new Spoil(this.game, { id: 2, col: 7, row: 5, spoil_type: 2 } ));
-    this.spoils.add(new Spoil(this.game, { id: 4, col: 9, row: 7, spoil_type: 1 } ));
   }
 
   createPlayers() {
@@ -79,27 +70,29 @@ class Play extends Phaser.State {
 
   setEventHandlers() {
     clientSocket.on('move player', this.onMovePlayer.bind(this));
-    // clientSocket.on('player win', this.onPlayerWin.bind(this));
+    clientSocket.on('player win', this.onPlayerWin.bind(this));
     clientSocket.on('show bomb', this.onShowBomb.bind(this));
     clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
-    // clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
-    // clientSocket.on('show bones', this.onShowBones.bind(this));
+    clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+    clientSocket.on('show bones', this.onShowBones.bind(this));
     // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
   }
 
   onPlayerVsSpoil(player, spoil) {
-    this.player.pickSpoil(spoil.spoil_type)
-    findAndDestroyFrom(spoil.id, this.spoils);
+    clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
+
+    // this.player.pickSpoil(spoil.spoil_type)
+    // findAndDestroyFrom(spoil.id, this.spoils);
 
     spoil.kill();
   }
 
-  // onPlayerVsBlast(player, blast) {
-  //   if (player.alive) {
-  //     clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
-  //     player.becomesDead()
-  //   }
-  // }
+  onPlayerVsBlast(player, blast) {
+    if (player.alive) {
+      clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
+      player.becomesDead()
+    }
+  }
 
   onMovePlayer({ player_id, x, y }) {
     let enemy = findFrom(player_id, this.enemies);
@@ -136,28 +129,28 @@ class Play extends Phaser.State {
       this.map.putTile(this.blockLayer.layer.properties.empty, cell.col, cell.row, this.blockLayer);
     };
 
-  //   // Add Spoils:
-  //   for (let cell of blastedCells) {
-  //     if (!cell.destroyed) { continue }
-  //     if (!cell.spoil) { continue }
+    // Add Spoils:
+    for (let cell of blastedCells) {
+      if (!cell.destroyed) { continue }
+      if (!cell.spoil) { continue }
 
-  //     this.spoils.add(new Spoil(this.game, cell.spoil));
-  //   };
+      this.spoils.add(new Spoil(this.game, cell.spoil));
+    };
   }
 
-  // onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
-  //   if (player_id === this.player.id){
-  //     this.player.pickSpoil(spoil_type)
-  //   }
+  onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
+    if (player_id === this.player.id){
+      this.player.pickSpoil(spoil_type)
+    }
 
-  //   findAndDestroyFrom(spoil_id, this.spoils)
-  // }
+    findAndDestroyFrom(spoil_id, this.spoils)
+  }
 
-  // onShowBones({ player_id, col, row }) {
-  //   this.bones.add(new Bone(this.game, col, row));
+  onShowBones({ player_id, col, row }) {
+    this.bones.add(new Bone(this.game, col, row));
 
-  //   findAndDestroyFrom(player_id, this.enemies)
-  // }
+    findAndDestroyFrom(player_id, this.enemies)
+  }
 
   onPlayerWin(winner_skin) {
     this.state.start('Win', true, false, winner_skin);

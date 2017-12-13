@@ -23,6 +23,7 @@ class Game {
     this.playerSpawns = this.layer_info.properties.spawns.slice()
 
     this.shadow_map   = this.createMapData();
+    this.spoils       = new Map();
     this.bombs        = new Map();
   }
 
@@ -114,6 +115,18 @@ class Game {
 
   isFull() {
     return Object.keys(this.players).length === this.max_players
+  }
+
+  findSpoil(spoil_id){
+    return this.spoils.get(spoil_id)
+  }
+
+  addSpoil(spoil) {
+    this.spoils.set(spoil.id, spoil);
+  }
+
+  deleteSpoil(spoil_id){
+    this.spoils.delete(spoil_id)
   }
 }
 

@@ -1,6 +1,6 @@
 const { EXPLOSION_TIME, DESTRUCTIBLE_CELL, NON_DESTRUCTIBLE_CELL, SPOIL_CHANCE } = require('../constants');
 
-// const { Spoil } = require('./spoil.js');
+const { Spoil } = require('./spoil.js');
 
 var uuidv4 = require('uuid/v4');
 
@@ -62,28 +62,28 @@ class Bomb {
   }
 
   addToBlasted(row, col, direction, destroyed) {
-    // let spoil = this.craftSpoil(row, col);
+    let spoil = this.craftSpoil(row, col);
 
     this.blastedCells.push({
       row: row,
       col: col,
       type: 'explosion_'+direction,
       destroyed: destroyed,
-      // spoil: spoil
+      spoil: spoil
     })
   }
 
-  // craftSpoil(row, col) {
-  //   var randomNumber = Math.floor(Math.random() * 100)
+  craftSpoil(row, col) {
+    var randomNumber = Math.floor(Math.random() * 100)
 
-  //   if (randomNumber < SPOIL_CHANCE) {
-  //     let spoil = new Spoil(row, col)
-  //     this.game.addSpoil(spoil)
-  //     return spoil
-  //   }
+    if (randomNumber < SPOIL_CHANCE) {
+      let spoil = new Spoil(row, col)
+      this.game.addSpoil(spoil)
+      return spoil
+    }
 
-  //   return null;
-  // }
+    return null;
+  }
 }
 
 exports.Bomb = Bomb;

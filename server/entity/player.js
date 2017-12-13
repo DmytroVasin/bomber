@@ -13,15 +13,15 @@ class Player {
     this.power = INITIAL_POWER;
   }
 
-  // pickSpoil(spoil_type) {
-  //   if (spoil_type === POWER){
-  //     this.power += STEP_POWER
-  //   }
-  // }
+  pickSpoil(spoil_type) {
+    if (spoil_type === POWER){
+      this.power += STEP_POWER
+    }
+  }
 
-  // dead() {
-  //   this.isAlive = false;
-  // }
+  dead() {
+    this.isAlive = false;
+  }
 
 }
 

@@ -39,6 +39,49 @@ var Play = {
 
       serverSocket.sockets.to(game_id).emit('show bomb', { bomb_id: bomb.id, col: bomb.col, row: bomb.row });
     }
+  },
+
+  onPickUpSpoil: function({ spoil_id }) {
+    let game_id = this.socket_game_id;
+    let current_game = runningGames.get(game_id);
+    let current_player = current_game.players[this.id];
+
+    let spoil = current_game.findSpoil(spoil_id)
+
+    if (spoil) {
+      current_game.deleteSpoil(spoil.id)
+
+      current_player.pickSpoil(spoil.spoil_type)
+
+      serverSocket.sockets.to(game_id).emit('spoil was picked', { player_id: current_player.id, spoil_id: spoil.id, spoil_type: spoil.spoil_type });
+    }
+  },
+
+  onPlayerDied: function(coordinates) {
+    serverSocket.sockets.to(this.socket_game_id).emit('show bones', Object.assign({}, { player_id: this.id }, coordinates));
+
+    let game_id = this.socket_game_id;
+    let current_game = runningGames.get(game_id);
+    let current_player = current_game.players[this.id]
+
+    current_player.dead()
+
+    let alivePlayersCount = 0
+    let alivePlayerSkin = null
+    for (let player of Object.values(current_game.players)) {
+      if ( !player.isAlive ) { continue }
+
+      alivePlayerSkin = player.skin
+      alivePlayersCount += 1
+    }
+
+    if (alivePlayersCount >= 2) {
+      return
+    }
+
+    setTimeout(function() {
+      serverSocket.sockets.to(game_id).emit('player win', alivePlayerSkin);
+    }, 3000);
   }
 }
 
