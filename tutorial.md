@@ -3271,7 +3271,6 @@ Also we call `becomeDead` function that will destroy model ( skin ) of the playe
   }
 ```
 
-
 Once player died - we should mark him `isAlive = false` to stop receive event from him and react on keys.
 Then we should calculate active players count, when active players count less then '2'.
 Server should broadcast 'player win' event to everybody.
@@ -3332,11 +3331,14 @@ On player die we should broadcast event to all user to show bone sprite.
   }
 ```
 
-Lets run our server:
+Lets run our server and try to kill yourself.
 
-https://raw.githubusercontent.com/DmytroVasin/bomber/step6/_readme/step7/5.gif
+https://raw.githubusercontent.com/DmytroVasin/bomber/step7/_readme/step7/5.png
 
 
+That is it for this step.
+
+You can find current working code at the repo under branch [`step7`](https://github.com/DmytroVasin/bomber/tree/step7)
 
 
 
