@@ -5,7 +5,7 @@ import Player from '../entities/player';
 import EnemyPlayer from '../entities/enemy_player';
 import Bomb from '../entities/bomb';
 import Spoil from '../entities/spoil';
-// import FireBlast from '../entities/fire_blast';
+import FireBlast from '../entities/fire_blast';
 // import Bone from '../entities/bone';
 
 class Play extends Phaser.State {
@@ -48,7 +48,7 @@ class Play extends Phaser.State {
     // this.bones   = this.game.add.group();
     this.bombs   = this.game.add.group();
     this.spoils  = this.game.add.group();
-    // this.blasts  = this.game.add.group();
+    this.blasts  = this.game.add.group();
     this.enemies = this.game.add.group();
 
     // this.game.physics.arcade.enable(this.blockLayer);
@@ -123,19 +123,18 @@ class Play extends Phaser.State {
   onDetonateBomb({ bomb_id, blastedCells }) {
     // Remove Bomb:
     findAndDestroyFrom(bomb_id, this.bombs)
-  }
 
-  //   // Render Blast:
-  //   for (let cell of blastedCells) {
-  //     this.blasts.add(new FireBlast(this.game, cell));
-  //   };
+    // Render Blast:
+    for (let cell of blastedCells) {
+      this.blasts.add(new FireBlast(this.game, cell));
+    };
 
-  //   // Destroy Tiles:
-  //   for (let cell of blastedCells) {
-  //     if (!cell.destroyed) { continue }
+    // Destroy Tiles:
+    for (let cell of blastedCells) {
+      if (!cell.destroyed) { continue }
 
-  //     this.map.putTile(this.blockLayer.layer.properties.empty, cell.col, cell.row, this.blockLayer);
-  //   };
+      this.map.putTile(this.blockLayer.layer.properties.empty, cell.col, cell.row, this.blockLayer);
+    };
 
   //   // Add Spoils:
   //   for (let cell of blastedCells) {
@@ -144,7 +143,7 @@ class Play extends Phaser.State {
 
   //     this.spoils.add(new Spoil(this.game, cell.spoil));
   //   };
-  // }
+  }
 
   // onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
   //   if (player_id === this.player.id){

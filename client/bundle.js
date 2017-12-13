@@ -451,7 +451,7 @@ var _pending_game = _interopRequireDefault(__webpack_require__(7));
 
 var _play = _interopRequireDefault(__webpack_require__(8));
 
-var _win = _interopRequireDefault(__webpack_require__(15));
+var _win = _interopRequireDefault(__webpack_require__(16));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1085,6 +1085,8 @@ var _bomb = _interopRequireDefault(__webpack_require__(13));
 
 var _spoil = _interopRequireDefault(__webpack_require__(14));
 
+var _fire_blast = _interopRequireDefault(__webpack_require__(15));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -1099,7 +1101,6 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import FireBlast from '../entities/fire_blast';
 // import Bone from '../entities/bone';
 var Play =
 /*#__PURE__*/
@@ -1148,8 +1149,8 @@ function (_Phaser$State) {
       this.player = null; // this.bones   = this.game.add.group();
 
       this.bombs = this.game.add.group();
-      this.spoils = this.game.add.group(); // this.blasts  = this.game.add.group();
-
+      this.spoils = this.game.add.group();
+      this.blasts = this.game.add.group();
       this.enemies = this.game.add.group(); // this.game.physics.arcade.enable(this.blockLayer);
 
       this.spoils.add(new _spoil.default(this.game, {
@@ -1277,24 +1278,70 @@ function (_Phaser$State) {
       var bomb_id = _ref3.bomb_id,
           blastedCells = _ref3.blastedCells;
       // Remove Bomb:
-      (0, _utils.findAndDestroyFrom)(bomb_id, this.bombs);
-    } //   // Render Blast:
-    //   for (let cell of blastedCells) {
-    //     this.blasts.add(new FireBlast(this.game, cell));
-    //   };
-    //   // Destroy Tiles:
-    //   for (let cell of blastedCells) {
-    //     if (!cell.destroyed) { continue }
-    //     this.map.putTile(this.blockLayer.layer.properties.empty, cell.col, cell.row, this.blockLayer);
-    //   };
-    //   // Add Spoils:
-    //   for (let cell of blastedCells) {
-    //     if (!cell.destroyed) { continue }
-    //     if (!cell.spoil) { continue }
-    //     this.spoils.add(new Spoil(this.game, cell.spoil));
-    //   };
-    // }
-    // onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
+      (0, _utils.findAndDestroyFrom)(bomb_id, this.bombs); // Render Blast:
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = blastedCells[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _cell2 = _step2.value;
+          this.blasts.add(new _fire_blast.default(this.game, _cell2));
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      ; // Destroy Tiles:
+
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = blastedCells[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var _cell3 = _step3.value;
+
+          if (!_cell3.destroyed) {
+            continue;
+          }
+
+          this.map.putTile(this.blockLayer.layer.properties.empty, _cell3.col, _cell3.row, this.blockLayer);
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+
+      ; //   // Add Spoils:
+      //   for (let cell of blastedCells) {
+      //     if (!cell.destroyed) { continue }
+      //     if (!cell.spoil) { continue }
+      //     this.spoils.add(new Spoil(this.game, cell.spoil));
+      //   };
+    } // onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
     //   if (player_id === this.player.id){
     //     this.player.pickSpoil(spoil_type)
     //   }
@@ -1996,6 +2043,56 @@ exports.default = Spoil;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _constants = __webpack_require__(1);
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FireBlast =
+/*#__PURE__*/
+function (_Phaser$Sprite) {
+  _inherits(FireBlast, _Phaser$Sprite);
+
+  function FireBlast(game, cell) {
+    var _this;
+
+    _classCallCheck(this, FireBlast);
+
+    _this = _possibleConstructorReturn(this, (FireBlast.__proto__ || Object.getPrototypeOf(FireBlast)).call(this, game, cell.col * _constants.TILE_SIZE, cell.row * _constants.TILE_SIZE, cell.type, 0));
+    _this.game = game;
+
+    _this.animations.add('blast', [0, 1, 2, 3, 4]); // 15 - framerate, loop, kill_on_complete
+
+
+    _this.play('blast', 15, false, true);
+
+    _this.game.physics.arcade.enable(_this);
+
+    return _this;
+  }
+
+  return FireBlast;
+}(Phaser.Sprite);
+
+exports.default = FireBlast;
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

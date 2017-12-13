@@ -22,6 +22,7 @@ class Game {
     // NOTE: Copy objct - not reference
     this.playerSpawns = this.layer_info.properties.spawns.slice()
 
+    this.shadow_map   = this.createMapData();
     this.bombs        = new Map();
   }
 
@@ -73,6 +74,43 @@ class Game {
     return [spawn, spawnOnGrid];
   }
 
+  createMapData() {
+    let tiles  = this.layer_info.data
+    let width  = this.layer_info.width
+    let height = this.layer_info.height
+    let empty  = this.layer_info.properties.empty
+    let wall   = this.layer_info.properties.wall
+    let balk   = this.layer_info.properties.balk
+
+    let mapMatrix = [];
+    let i = 0;
+
+    for(let row = 0; row < height; row++) {
+      mapMatrix.push([]);
+
+      for(let col = 0; col < width; col++) {
+        mapMatrix[row][col] = EMPTY_CELL;
+
+        if(tiles[i] == balk) {
+          mapMatrix[row][col] = DESTRUCTIBLE_CELL;
+        } else if(tiles[i] == wall) {
+          mapMatrix[row][col] = NON_DESTRUCTIBLE_CELL;
+        }
+
+        i++;
+      }
+    }
+
+    return mapMatrix;
+  }
+
+  getMapCell(row, col) {
+    return this.shadow_map[row][col]
+  }
+
+  nullifyMapCell(row, col) {
+    this.shadow_map[row][col] = EMPTY_CELL
+  }
 
   isFull() {
     return Object.keys(this.players).length === this.max_players
