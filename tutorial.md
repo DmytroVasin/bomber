@@ -2,26 +2,24 @@ TITLE: Bomberman Multiplayer game with Rooms based on Phaser.js Socket.io and No
 
 https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/intro.png
 
-
 Introduction:
 
 Demo available here: [Bomb Attack Demo](https://bomb-attack.herokuapp.com/)
-Source code of the Demove Repository available here: [Github repo](https://github.com/DmytroVasin/bomber)
+Source code of the Demo Repository available here: [Github repo](https://github.com/DmytroVasin/bomber)
 
-This article will demonstrate how to build basic multiplayer game with several rooms where players can play with each outher.
-Server is writed on Node.js and Express.js. Client writed on Javascript framwork called Phaser.
-The client and the server communicate by using Socket.io.
-
+This article will demonstrate how to build basic multiplayer game with several rooms where players can play with each others.
+Server is writed on Node.js and Express.js. Client writed on Javascript framework called Phaser.
+The client and the server communicate by using Socket.io via Websocket protocol.
 
 Check out video below to see what exaclty we did. So you can open demo to play with a friend. Also check out the GitHub repo to for the entire source code.
 
 https://player.vimeo.com/video/246595375
 
+Full description of the game you can find [here](https://github.com/DmytroVasin/bomber)
 
+Before we get started I will explain major topics:
 
-Before we get started I will explane major topic:
-
-Topics:
+Major Topics:
 
 1. Introduction:
 2. Part 1: Setup app
@@ -32,8 +30,27 @@ Topics:
 3.2. Add pending stage.
 4. Battle arena
 4.1: Display map
+...
+8. Part 8 Log Out.
+8.1. Part 8.1 Game is over.
+8.2. Part 8.2 Leave the game ( Close browser/tab )
+9. Part 9. Deploy:
+10. Wrapping Up
 
+WARN: If you are familiar with Phaser.js - you should skip first 4 points and start from "Point 5"
 
+Game has alot of disadvanteges:
+
+- Non optimized algorithm of re-render menu and pending games
+- Non secure connections and broadcasting events
+- PING has big influence, because if we have alot of games it would not work well
+- Menu that will overlap start play button if we will have more then 3 pending game
+- Enemy interpolation. Enemy should have interpolation that depends on frame rate not base on simple ping variable.
+- Player dith should be defined on server, client should not sent event about that.
+
+But that is simple pet project to show ability of the Phaser + Socket.io.
+
+--
 
 ## Inroduction:
 First of all: In this article I will not describe each line of code. I assume that code is more redable than my explanation. I will just show some special moment and hints that helps me while working on this project.
@@ -1647,24 +1664,55 @@ You can find current working code at the repo under branch [`step4`](https://git
 
 ## Part 5: Add Socket.io
 
-Previously we implement pretty standard phaser.js app.
+Previously we implement pretty standard Phaser.js app.
 
-Let provide to our users way to communicate.
+But now lets add real-time communication. So when player perform some action ( moving, picking room or ets ) we sent that event to server. Server also can notify users about some changes in any time. To achive this I will use [socket.io](https://socket.io/) library. This small library enables real-time bidirectional event-based communication between server and client via [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API).
+
+Socket.io - is easy to understand and use:
+
+Our app splitted on two part: Server and Client.
+
+Client will iterract only with server via sending events through socket object like:
+
+```
+clientSocket.emit('some event', 'this is a test');
+```
+
+This message will have the label 'some event'. A second argument will contain additional data that client want to sent to the server or we can sent a callback function to it.
 
 
-I picked [socket.io](https://socket.io/) to do that. Socket.IO enables real-time bidirectional event-based communication.
+Server should has handlers on all clients events like:
 
-It is easy to understand and use it:
+```
+  serverSocket.sockets.on('connection', function(socket) {
+    socket.on('some event', onEventHandler);
+  }
+```
 
-NOTE: Little bit information about what we will do under next steps:
+Also server can broadcast events to any client or group that connected to it:
 
-I will implement multy room structure, when all players connect to one lobby(main menu) room and sit there until left (quit the app) or pick some dirrect room.
-While they live inside the lobby room - they receive events ( notifications ) from another users about new room creation ( Add new "Game Slot" ) and about game start/full ( Hide "Game Slot" )
-When they pick or create new room, they stop receving notification from lobby and start receving events from current room. Notifications about "Player joined" ( Create new player slot ) and "Player Left" ( Empty Player slot )
+```
+  # Sent to all client that belongs to the room with id: 'game_id'
+  serverSocket.sockets.in('game_id').emit('playerCoordinates', '...');
 
-Such setup really simmular to chat where you have common chat with all users and private chat with specific users.
+  # Sent to all client that belongs to the room with id: 'game_id' except sender.
+  serverSocket.sockets.to('game_id').emit('startGame', '...');
+```
+
+Find out [more here](https://socket.io/docs/)
+
+
+Little bit information about what we will do under next steps:
+
+I will implement multy room structure. All players connect to one lobby(main menu) room and sit there until left (quit the app) or pick some dirrect room.
+While they live inside the lobby room they will receive events ( notifications ) from the server about new rooms initiated by another users.
+
+When they pick or create new room, they stop receving notification from lobby and start subscribe to events from current room. User that already joined to the romm will receive notifications about "Player joined" and "Player Left"
+
+Such setup really simmular to chat where you have common chat ( with all users ) and private chat ( with specific users ).
 
 Lets start:
+
 
 ## Part 5.1: Setup Socket.io
 
@@ -1681,8 +1729,12 @@ Then we need to improve our `server/app.js` file
   serverSocket = socketIO(server);
   serverSocket.sockets.on('connection', function(client) {
     console.log('New player has connected: ' + client.id);
+
+    // client.on('enter lobby', Lobby.onEnterLobby);
   });
 ```
+
+Here we tell `socket.io` to listen `connection` event which will be fired each time when new user connect to the server ( open the page ). When new user open the page, socket.io will call function that defined as a second argument of sockets.on event. As an argument function will receive socket (client) used to establish the connection.
 
 Also we need to update our `index.html` to include js file to the app.
 
@@ -1787,9 +1839,9 @@ Lets update our `menu` state
       this.callAll('kill') // destroy
     }
   }
-
 ```
-As you can see on `create` stage we emit `enter lobby` event and as a callback we insert our `displayPendingGames` function that is bind to this ( Menu ). If we will not set that - this will be defined as `socket`.
+
+As you can see on `create` stage we emit `enter lobby` event and as a second argument we insert our `displayPendingGames` function that is bind to this ( Menu ). If we will not set that - this will be defined as `socket`.
 
 `displayPendingGames` as an attributes receives array with the games from the server and creates `GameSlots` based on it.
 
@@ -1835,6 +1887,10 @@ To keep our app.js neat and clean lets create `lobby.js` namespace.
 
   module.exports = Lobby;
 ```
+
+NOTE: We add `client.on` method that will handle different messages (not only enter lobby). So each time when client send some message through his socket, server will call apropriate callback for that request.
+
+In this case we define handler to `enter lobby` event and specify what should we do when this event happen.
 
 Inside lobby.js we just join our current socket connection ( current player ) to common room: 'lobby_room'. Add return dummy array with the games.
 
@@ -2460,7 +2516,6 @@ To implement that we will use Phaser's `events.loop` function:
       this.prevPosition = newPosition;
     }
   }
-
 ```
 
 ```
@@ -3342,9 +3397,129 @@ You can find current working code at the repo under branch [`step7`](https://git
 
 
 
+## Part 8 Log Out.
+
+At the end we need to do proper disconnect.
+
+## Part 8.1 Game is over.
+
+In current implementation we have one problem:
+When game is over, we still exist inside the game. So we should disconnect from running game when game is over. Also we should remove running game from the array and nullify game_id in socket connection.
+
+Lets fix that:
+
+```
+  ### => js/states/play.js
+
+  onPlayerWin(winner_skin) {
+    clientSocket.emit('leave game');
+    ...
+  }
+```
+
+```
+  ### => server/app.js
+  ...
+  client.on('leave game', Play.onLeaveGame);
+```
+```
+  ### => server/play.js
+
+  onLeaveGame: function (data) {
+    runningGames.delete(this.socket_game_id);
+
+    this.leave(this.socket_game_id);
+    this.socket_game_id = null;
+  },
+```
+
+## Part 8.2 Leave the game ( Close browser/tab )
+
+Lastly we should implment `disconnect` state this handler will be called when user close tab or browser unexpectedly.
+
+We need to do that, because if user close his tab inside the game, player sprite still remain on the screen of the other players.
+
+This event can be handled like any other:
+```
+  ### => server/app.js
+  ...
+  client.on('disconnect', onClientDisconnect);
+```
+
+Disconnect can happen hen user live insed lobby, inside pending game and inside running game, so we should support proper disconnect for all these stagaes.
+
+```
+  ### => server/app.js
+
+  function onClientDisconnect() {
+    if (this.socket_game_id == null) {
+      console.log('Player was not be inside any game...');
+      return
+    }
+    console.log('Player was inside game...');
+
+    // If game is pending then use Lobby.
+    Lobby.onLeavePendingGame.call(this)
+
+    // If game is non-pending then use Play.
+    Play.onDisconnectFromGame.call(this)
+  }
+```
+
+When user lives inside lobby - we do nothing. For rest connections we call `onLeavePendingGame` (already implemented) and `onDisconnectFromGame`.
+
+```
+  ### => server/play.js
+
+  var Play = {
+    ...
+    onDisconnectFromGame: function() {
+      let current_game = runningGames.get(this.socket_game_id);
+
+      if (current_game) {
+        serverSocket.sockets.in(this.socket_game_id).emit('player disconnect', {player_id: this.id } );
+      }
+    },
+  }
+```
+
+```
+  ### => js/states/play.js
+
+  setEventHandlers() {
+    ...
+    clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+  },
+
+  onPlayerDisconnect({ player_id }) {
+    findAndDestroyFrom(player_id, this.enemies);
+
+    if (this.enemies.children.length >= 1) { return }
+
+    this.onPlayerWin()
+  }
+```
+
+When player disconnect from running game and no enemies exist - we just call `onPlayerWin` without parameters that will call `Win` stage with text "Opponent left! Press Enter to return to main menu."
 
 
+Lets run our server
 
-## Part 6.2 Leave the game ( Close browser/tab )
+https://raw.githubusercontent.com/DmytroVasin/bomber/step8/_readme/step8/1.png
 
 
+That is it for this step.
+
+You can find current working code at the repo under branch [`step8`](https://github.com/DmytroVasin/bomber/tree/step8)
+
+
+## Part 9. Deploy:
+
+I would not tell you how to deploy this app, because official guide is very good: [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
+
+One note: do not forget to disable 'inspect' / 'debug' mode from the Node.
+
+
+## Part 10. Wrapping Up
+And that’s it!
+I hope you enjoyed the tutorial, and can use it as the basis for launching a multiplayer game of your own.
