@@ -1181,7 +1181,8 @@ function (_Phaser$State) {
       clientSocket.on('show bomb', this.onShowBomb.bind(this));
       clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
       clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
-      clientSocket.on('show bones', this.onShowBones.bind(this)); // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+      clientSocket.on('show bones', this.onShowBones.bind(this));
+      clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
     }
   }, {
     key: "onPlayerVsSpoil",
@@ -1384,13 +1385,21 @@ function (_Phaser$State) {
   }, {
     key: "onPlayerWin",
     value: function onPlayerWin(winner_skin) {
+      clientSocket.emit('leave game');
       this.state.start('Win', true, false, winner_skin);
-    } // onPlayerDisconnect({ player_id }) {
-    //   findAndDestroyFrom(player_id, this.enemies);
-    //   if (this.enemies.children.length >= 1) { return }
-    //   this.onPlayerWin()
-    // }
+    }
+  }, {
+    key: "onPlayerDisconnect",
+    value: function onPlayerDisconnect(_ref6) {
+      var player_id = _ref6.player_id;
+      (0, _utils.findAndDestroyFrom)(player_id, this.enemies);
 
+      if (this.enemies.children.length >= 1) {
+        return;
+      }
+
+      this.onPlayerWin();
+    }
   }]);
 
   return Play;

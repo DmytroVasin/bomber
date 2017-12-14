@@ -39,4 +39,21 @@ serverSocket.sockets.on('connection', function(client) {
   client.on('pick up spoil', Play.onPickUpSpoil);
 
   client.on('player died', Play.onPlayerDied);
+
+  client.on('disconnect', onClientDisconnect);
 });
+
+function onClientDisconnect() {
+  if (this.socket_game_id == null) {
+    console.log('Player was not be inside any game...');
+    return
+  }
+  console.log('Player was inside game...');
+
+  // If game is pending then use Lobby.
+  Lobby.onLeavePendingGame.call(this)
+
+  // If game is non-pending then use Play.
+  Play.onDisconnectFromGame.call(this)
+}
+

@@ -75,7 +75,7 @@ class Play extends Phaser.State {
     clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
     clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
     clientSocket.on('show bones', this.onShowBones.bind(this));
-    // clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+    clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
   }
 
   onPlayerVsSpoil(player, spoil) {
@@ -153,16 +153,18 @@ class Play extends Phaser.State {
   }
 
   onPlayerWin(winner_skin) {
+    clientSocket.emit('leave game');
+
     this.state.start('Win', true, false, winner_skin);
   }
 
-  // onPlayerDisconnect({ player_id }) {
-  //   findAndDestroyFrom(player_id, this.enemies);
+  onPlayerDisconnect({ player_id }) {
+    findAndDestroyFrom(player_id, this.enemies);
 
-  //   if (this.enemies.children.length >= 1) { return }
+    if (this.enemies.children.length >= 1) { return }
 
-  //   this.onPlayerWin()
-  // }
+    this.onPlayerWin()
+  }
 }
 
 export default Play;

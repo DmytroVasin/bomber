@@ -4,12 +4,12 @@ var { Game } = require('./entity/game');
 var runningGames = new Map();
 
 var Play = {
-  // onLeaveGame: function (data) {
-  //   runningGames.delete(this.socket_game_id);
+  onLeaveGame: function (data) {
+    runningGames.delete(this.socket_game_id);
 
-  //   this.leave(this.socket_game_id);
-  //   this.socket_game_id = null;
-  // },
+    this.leave(this.socket_game_id);
+    this.socket_game_id = null;
+  },
 
   onStartGame: function() {
     let game = Lobby.deletePendingGame(this.socket_game_id);
@@ -21,6 +21,14 @@ var Play = {
   updatePlayerPosition: function (coordinates) {
     // NOTE: We broadcast only for opponents.
     this.broadcast.to(this.socket_game_id).emit('move player', Object.assign({}, { player_id: this.id }, coordinates));
+  },
+
+  onDisconnectFromGame: function() {
+    let current_game = runningGames.get(this.socket_game_id);
+
+    if (current_game) {
+      serverSocket.sockets.in(this.socket_game_id).emit('player disconnect', {player_id: this.id } );
+    }
   },
 
   createBomb: function({ col, row }) {
