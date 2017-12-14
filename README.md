@@ -22,7 +22,7 @@ Within the game, players can upgrade skills like:
 * ![Power Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/power.png) Power: no limit
 
 ## Demo:
-You can find a tutorial on how to make Bomberman-style games here: [not-ready](https://not-ready)
+You can find a tutorial on how to make Bomberman-style games here: [Tutorial (need work)](https://github.com/DmytroVasin/bomber/blob/master/tutorial.md)
 
 A demo of this game can be found on Heroku: [Bomberman with multiplayer - Demo](https://bomb-attack.herokuapp.com/)
 
