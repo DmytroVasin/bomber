@@ -18,7 +18,9 @@ class Game {
 
     // NOTE: we can`t use new Map - because Socket.io do not support such format
     this.players     = {}
-    this.playerSkins = SKINS
+
+    // NOTE: Copy objct - not reference
+    this.playerSkins = SKINS.slice()
 
     // NOTE: Copy objct - not reference
     this.playerSpawns = this.layer_info.properties.spawns.slice()
