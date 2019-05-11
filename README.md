@@ -46,3 +46,8 @@ Steps:
 
 ## Notes:
 You can use my code as a boilerplate if you want, but I would suggest you change the tile sizes. I've picked tiles that are 35x35 pixels, but tiles that are 32x32 would be more ideal. All free templates are based on this tile size, and it is also handily divisible by 2.
+
+## To Debug Node process:
+1. Open: chrome://inspect/#devices
+2. Click 'Open dedicated DevTools for Node'
+3. "server": "webpack --mode development && node --inspect server/app.js",
