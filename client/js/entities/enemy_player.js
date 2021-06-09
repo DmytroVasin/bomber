@@ -14,6 +14,7 @@ export default class EnemyPlayer extends Phaser.GameObjects.Sprite {
     
     this.game.add.existing(this);
     this.game.physics.add.existing(this);
+    this.body.pushable = false;
     this.setSize(20, 20);
 
     const anims=game.anims;

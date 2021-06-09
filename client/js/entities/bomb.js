@@ -9,6 +9,7 @@ export default class Bomb extends Phaser.GameObjects.Sprite {
 
     this.game.add.existing(this);
     this.game.physics.add.existing(this);
+    this.body.pushable = false;
 
     this.tween = this.game.tweens.add({
       targets: this,
