@@ -1,4 +1,4 @@
-import { Text } from '../helpers/elements.js';
+import { Text,TextButton } from '../helpers/elements.js';
 
 class Win extends Phaser.Scene {
 
@@ -22,6 +22,23 @@ class Win extends Phaser.Scene {
       }
     })
 
+    this.button = new TextButton({
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 + 195,
+      asset:'buttons',
+      callback: this.returnToMenu,
+      callbackContext: this,
+      upFrame: 0,
+      overFrame:1,
+      downFrame:2,
+      outFrame:3,
+      label: 'Back to Menu',
+      style: {
+        font: '20px Areal',
+        fill: '#000000'
+      }
+    });
     this.cursorKeys  = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
   }
 
