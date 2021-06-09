@@ -16,3 +16,11 @@ html, body, #game-wrapper, #game-container {
   align-items: center;
   justify-content: center;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #222;
+  color: #eee;
+  font: caption;
+}

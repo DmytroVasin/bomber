@@ -1,28 +1,32 @@
-import Boot from './states/boot';
-import Preload from './states/preload';
-import Menu from './states/menu';
-import SelectMap from './states/select_map';
-import PendingGame from './states/pending_game';
-import Play from './states/play';
-import Win from './states/win';
+import Boot from './states/boot.js';
+import Preload from './states/preload.js';
+import Menu from './states/menu.js';
+import SelectMap from './states/select_map.js';
+import PendingGame from './states/pending_game.js';
+import Play from './states/play.js';
+import Win from './states/win.js';
 
-class Game extends Phaser.Game {
-  constructor() {
-    super(980, 630, Phaser.AUTO, 'game-container');
-
-    // Tell Phaser to use setTimeOut even if RAF(request animation frame) is available.
-    this.config['forceSetTimeOut'] = true
-
-    this.state.add('Boot',         Boot);
-    this.state.add('Preload',      Preload);
-    this.state.add('Menu',         Menu);
-    this.state.add('SelectMap',    SelectMap);
-    this.state.add('PendingGame',  PendingGame);
-    this.state.add('Play',         Play);
-    this.state.add('Win',          Win);
-
-    this.state.start('Boot');
+var config = {
+  type: Phaser.AUTO,
+  parent: 'phaser-example',
+  width: 980,
+  height: 630,
+  pixelArt: false,
+  audio: {
+    noAudio: true
+  },
+  scale: {
+    mode: Phaser.Scale.NONE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  scene: [Boot, Preload, Menu, SelectMap, PendingGame, Play, Win],
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 0 }
+    }
   }
-}
 
-new Game();
+};
+
+var game = new Phaser.Game(config);

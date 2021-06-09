@@ -1,39 +1,46 @@
-import { TILE_SIZE, PING } from '../utils/constants';
-import { Text } from '../helpers/elements';
+import { TILE_SIZE, PING } from '../utils/constants.js';
+import { Text } from '../helpers/elements.js';
 
-export default class EnemyPlayer extends Phaser.Sprite {
+export default class EnemyPlayer extends Phaser.GameObjects.Sprite {
 
   constructor({ game, id, spawn, skin }) {
-    super(game, spawn.x, spawn.y, 'bomberman_' + skin);
+    super(game, (spawn.x) + TILE_SIZE / 2, (spawn.y)  + TILE_SIZE / 2, 'bomberman_' + skin);
 
     this.game = game
     this.id = id;
 
     this.currentPosition = spawn;
     this.lastMoveAt = 0;
+    
+    this.game.add.existing(this);
+    this.game.physics.add.existing(this);
+    this.setSize(20, 20);
 
-    this.game.physics.arcade.enable(this);
-    this.body.setSize(20, 20, 6, 6);
-    this.body.immovable = true;
+    const anims=game.anims;
+    anims.create({key:'up', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 9, end: 11 }),  frameRate:15, repeat: -1});
+    anims.create({key:'down', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 0, end: 2 }),  frameRate:15, repeat: -1});
+    anims.create({key:'right', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 6, end: 8 }),  frameRate:15, repeat: -1});
+    anims.create({key:'left', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 3, end: 5 }),  frameRate:15, repeat: -1});
 
-    this.animations.add('up', [9, 10, 11], 15, true);
-    this.animations.add('down', [0, 1, 2], 15, true);
-    this.animations.add('right', [6, 7, 8], 15, true);
-    this.animations.add('left', [3, 4, 5], 15, true);
 
     this.defineSelf(skin)
   }
 
   update () {
-    // this.game.debug.body(this);
+
   }
 
   goTo(newPosition) {
-    this.lastMoveAt = this.game.time.now;
+    this.lastMoveAt =  this.game.time.now;
 
     this.animateFace(newPosition);
 
-    this.game.add.tween(this).to(newPosition, PING, Phaser.Easing.Linear.None, true);
+     this.tween = this.game.tweens.add({
+      targets: this,
+      x: newPosition.x,
+      y: newPosition.y,
+      duration: PING
+    });
   }
 
   animateFace(newPosition) {
@@ -51,7 +58,7 @@ export default class EnemyPlayer extends Phaser.Sprite {
       face = 'down'
     }
 
-    this.animations.play(face)
+    this.anims.play(face)
     this.currentPosition = newPosition;
   }
 
@@ -69,6 +76,6 @@ export default class EnemyPlayer extends Phaser.Sprite {
       }
     })
 
-    this.addChild(playerText);
+    this.game.add.existing(playerText);
   }
 }

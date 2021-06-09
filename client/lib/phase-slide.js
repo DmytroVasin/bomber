@@ -196,6 +196,7 @@ phaseSlider = function(game) {
         _timer.loop(Phaser.Timer.SECOND * _this.options.animationDelay, _this.goToNext, _this);
         _this.slider_timer = _timer;
     };
+
     _this.stopSlider = function() {
         if (_this.slider_timer !== null) {
             _this.slider_timer.stop(true);
@@ -273,6 +274,7 @@ phaseSlider = function(game) {
             _this.slideIndex = 0;
 
             _this.options = {
+                _scene: options.scene,
                 _mode: options.mode || "horizontal", // horizontal, vertical-from-top, vertical-from-bottom
                 _width: options.width || 500,
                 _height: options.height || 400,
@@ -281,7 +283,7 @@ phaseSlider = function(game) {
                 infiniteLoop: options.infiniteLoop || false,
                 animationDelay: options.animationDelay || 2,
                 animationDuration: options.animationDuration || 600,
-                animationEasing: options.animationEasing || Phaser.Easing.Cubic.Out, //Phaser.Easing.Linear.None,
+                animationEasing: options.animationEasing || Phaser.Math.Easing.Cubic.Out, //Phaser.Easing.Linear.None,
                 _x: options.x || 0,
                 _y: options.y || 0,
                 _objects: options.objects || [], // can take: single-sprite, single-image, group
@@ -369,8 +371,8 @@ phaseSlider = function(game) {
 
             //MASK
             var maskGraphics = game.add.graphics(0, 0);
-            maskGraphics.beginFill(0xffffff);
-            maskGraphics.drawRect(_this.options._x, _this.options._y, _this.options._width, _this.options._height);
+            maskGraphics.fillStyle(0xFFFFFF, 1.0);
+            maskGraphics.fillRect(_this.options._x, _this.options._y, _this.options._width, _this.options._height);
             _this.sliderMainGroup.mask = maskGraphics;
 
             /// create main bg
@@ -392,15 +394,17 @@ phaseSlider = function(game) {
                 var chevronLeft;
 
                 if (_this.options._customHandleNext === "") {
-                    chevronRight = game.add.image(0, 0, "slider_chevron_right");
-                    chevronRight.scale.setTo(0.6, 0.6);
+                    chevronRight = game.add.sprite(0, 0, "slider_chevron_right");
+                    chevronRight.setOrigin(0.6, 0.6);
                 } else {
-                    chevronRight = game.add.image(0, 0, _this.options._customHandleNext);
+                    chevronRight = game.add.sprite(0, 0, _this.options._customHandleNext);
+                    chevronRight.setOrigin(0.6, 0.6);
                 }
                 chevronRight.x = _this.options._width - (chevronRight.width + 10); //_this.options._x+_this.options._width - (chevronRight.width+10);
                 chevronRight.y = (_this.options._height / 2) - chevronRight.height / 2;
                 chevronRight.inputEnabled = true;
-                chevronRight.events.onInputDown.add(function(e, pointer) {
+                game.add.existing(chevronRight);
+                chevronRight.on('pointerdown',function(e, pointer) {
                     if (_this.options._onNextCallback) {
                         _this.options._onNextCallback();
                     }
@@ -415,14 +419,14 @@ phaseSlider = function(game) {
 
                 if (_this.options._customHandlePrev === "") {
                     chevronLeft = game.add.image(0, 0, "slider_chevron_left");
-                    chevronLeft.scale.setTo(0.6, 0.6);
+                    chevronLeft.setOrigin(0.6, 0.6);
                 } else {
                     chevronLeft = game.add.image(0, 0, _this.options._customHandlePrev);
                 }
                 chevronLeft.x = 10;
                 chevronLeft.y = (_this.options._height / 2) - chevronLeft.height / 2;
                 chevronLeft.inputEnabled = true;
-                chevronLeft.events.onInputDown.add(function(e, pointer) {
+                chevronLeft.on('pointerdown',function(e, pointer) {
                     if (_this.options._onPrevCallback) {
                         _this.options._onPrevCallback();
                     }
@@ -464,7 +468,7 @@ phaseSlider = function(game) {
                     _this.sliderMainGroup.add(objArr[i]);
                 }
                 _this.options._objects = _this.sliderMainGroup.children;
-                //window.console.log(_this.options._objects.length, _this.options._objects,  _this.sliderMainGroup.children.length);
+                window.console.log(_this.options._objects.length, _this.options._objects,  _this.sliderMainGroup.children.length);
             }
 
 

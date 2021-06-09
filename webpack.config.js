@@ -2,6 +2,7 @@ const path = require('path')
 
 const config = {
   devtool: 'source-map',
+  mode: 'development',
 
   entry: './client/js/app.js',
 

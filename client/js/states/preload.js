@@ -1,37 +1,43 @@
-class Preload extends Phaser.State {
+export class Preload extends Phaser.Scene {
+
+  constructor () {
+      super('Preload');
+  }
 
   preload() {
     // Menu:
     this.load.image('main_menu',     'images/menu/main_menu.png');
     this.load.image('slot_backdrop', 'images/menu/slot_backdrop.png');
 
-    this.load.spritesheet('buttons',    'images/menu/buttons.png', 200, 75);
-    this.load.spritesheet('check_icon', 'images/menu/accepts.png', 75, 75);
-    this.load.spritesheet('list_icon',  'images/menu/game_enter.png', 75, 75);
+    this.load.spritesheet('buttons',    'images/menu/buttons.png',{ frameWidth: 200, frameHeight: 75 });
+    this.load.spritesheet('check_icon', 'images/menu/accepts.png', { frameWidth: 75, frameHeight: 75 });
+    this.load.spritesheet('list_icon',  'images/menu/game_enter.png', { frameWidth: 75, frameHeight: 75 });
 
     this.load.image('hot_map_preview',  'images/menu/hot_map_preview.png');
     this.load.image('cold_map_preview', 'images/menu/cold_map_preview.png');
+    this.load.image('hot_map_preview_mini',  'images/menu/hot_map_preview_mini.png');
+    this.load.image('cold_map_preview_mini', 'images/menu/cold_map_preview_mini.png');
     this.load.image('prev',             'images/menu/left_arrow.png');
     this.load.image('next',             'images/menu/right_arrow.png');
 
     // Map:
     this.load.image('tiles',      'maps/tileset.png');
-    this.load.tilemap('hot_map',  'maps/hot_map.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.tilemap('cold_map', 'maps/cold_map.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemapTiledJSON('hot_map',  'maps/hot_map.json');
+    this.load.tilemapTiledJSON('cold_map', 'maps/cold_map.json');
 
 
     // Game:
-    this.load.spritesheet('explosion_center',     'images/game/explosion_center.png',     35, 35);
-    this.load.spritesheet('explosion_horizontal', 'images/game/explosion_horizontal.png', 35, 35);
-    this.load.spritesheet('explosion_vertical',   'images/game/explosion_vertical.png',   35, 35);
-    this.load.spritesheet('explosion_up',         'images/game/explosion_up.png',         35, 35);
-    this.load.spritesheet('explosion_right',      'images/game/explosion_right.png',      35, 35);
-    this.load.spritesheet('explosion_down',       'images/game/explosion_down.png',       35, 35);
-    this.load.spritesheet('explosion_left',       'images/game/explosion_left.png',       35, 35);
+    this.load.spritesheet('explosion_center',     'images/game/explosion_center.png',     { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('explosion_horizontal', 'images/game/explosion_horizontal.png', { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('explosion_vertical',   'images/game/explosion_vertical.png',   { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('explosion_up',         'images/game/explosion_up.png',         { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('explosion_right',      'images/game/explosion_right.png',      { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('explosion_down',       'images/game/explosion_down.png',       { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('explosion_left',       'images/game/explosion_left.png',       { frameWidth: 35, frameHeight: 35});
 
-    this.load.spritesheet('spoil_tileset', 'images/game/spoil_tileset.png', 35, 35);
-    this.load.spritesheet('bone_tileset',  'images/game/bone_tileset.png', 35, 35);
-    this.load.spritesheet('bomb_tileset',  'images/game/bombs.png', 35, 35);
+    this.load.spritesheet('spoil_tileset', 'images/game/spoil_tileset.png', { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('bone_tileset',  'images/game/bone_tileset.png', { frameWidth: 35, frameHeight: 35});
+    this.load.spritesheet('bomb_tileset',  'images/game/bombs.png', { frameWidth: 35, frameHeight: 35});
 
     this.load.image('speed_up_bonus',    'images/game/speed_up_bonus.png');
     this.load.image('speed_up_no_bonus', 'images/game/speed_up_no_bonus.png');
@@ -58,21 +64,28 @@ class Preload extends Phaser.State {
     this.load.image('bomberman_head_Raviel',    'images/game/chars/10-face.png');
     this.load.image('bomberman_head_Valpo',     'images/game/chars/11-face.png');
 
-    this.load.spritesheet('bomberman_Theodora',  'images/game/chars/1-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Ringo',     'images/game/chars/2-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Jeniffer',  'images/game/chars/3-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Godard',    'images/game/chars/4-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Biarid',    'images/game/chars/5-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Solia',     'images/game/chars/6-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Kedan',     'images/game/chars/7-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Nigob',     'images/game/chars/8-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Baradir',   'images/game/chars/9-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Raviel',    'images/game/chars/10-preview.png', 32, 32);
-    this.load.spritesheet('bomberman_Valpo',     'images/game/chars/11-preview.png', 32, 32);
+    this.load.spritesheet('bomberman_Theodora',  'images/game/chars/1-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Ringo',     'images/game/chars/2-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Jeniffer',  'images/game/chars/3-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Godard',    'images/game/chars/4-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Biarid',    'images/game/chars/5-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Solia',     'images/game/chars/6-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Kedan',     'images/game/chars/7-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Nigob',     'images/game/chars/8-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Baradir',   'images/game/chars/9-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Raviel',    'images/game/chars/10-preview.png', { frameWidth: 32, frameHeight: 32});
+    this.load.spritesheet('bomberman_Valpo',     'images/game/chars/11-preview.png', { frameWidth: 32, frameHeight: 32});
+
+    this.load.scenePlugin({
+      key: 'rexuiplugin',
+      url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+      sceneKey: 'rexUI'
+    });   
+    
   }
 
   create() {
-    this.state.start('Menu');
+    this.scene.start('Menu');
   }
 }
 

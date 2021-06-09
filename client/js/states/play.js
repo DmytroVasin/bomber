@@ -1,15 +1,21 @@
-import { findFrom, findAndDestroyFrom } from '../utils/utils';
-import { TILESET, LAYER } from '../utils/constants';
+import { findFrom, findAndDestroyFrom } from '../utils/utils.js';
+import { TILESET, LAYER } from '../utils/constants.js';
 
-import Player from '../entities/player';
-import EnemyPlayer from '../entities/enemy_player';
-import Bomb from '../entities/bomb';
-import Spoil from '../entities/spoil';
-import FireBlast from '../entities/fire_blast';
-import Bone from '../entities/bone';
+import Player from '../entities/player.js';
+import EnemyPlayer from '../entities/enemy_player.js';
+import Bomb from '../entities/bomb.js';
+import Spoil from '../entities/spoil.js';
+import FireBlast from '../entities/fire_blast.js';
+import Bone from '../entities/bone.js';
 
-class Play extends Phaser.State {
+class Play extends Phaser.Scene {
+
+  constructor () {
+    super('Play');
+  }
+
   init(game) {
+    this.socket=this.registry.get('socketIO');
     this.currentGame = game
   }
 
@@ -17,49 +23,46 @@ class Play extends Phaser.State {
     this.createMap();
     this.createPlayers();
     this.setEventHandlers();
-
-    this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
+    //this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.blockLayer);
-    this.game.physics.arcade.collide(this.player, this.enemies);
-    this.game.physics.arcade.collide(this.player, this.bombs);
+    this.physics.add.collider(this.player, this.blockLayer);
+    this.physics.add.collider(this.player, this.enemies);
+    this.physics.add.collider(this.player, this.bombs);
 
-    this.game.physics.arcade.overlap(this.player, this.spoils, this.onPlayerVsSpoil, null, this);
-    this.game.physics.arcade.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
+    this.physics.overlap(this.player, this.spoils, this.onPlayerVsSpoil, null, this);
+    this.physics.overlap(this.player, this.blasts, this.onPlayerVsBlast, null, this);
+    this.player.update();
+    this.stopAnimationLoop();
   }
 
   createMap() {
-    this.map = this.add.tilemap(this.currentGame.map_name);
+    this.map = this.add.tilemap('hot_map');
 
-    this.map.addTilesetImage(TILESET);
-
-    this.blockLayer = this.map.createLayer(LAYER);
-    this.blockLayer.resizeWorld();
+    const tileset=this.map.addTilesetImage(TILESET,null, 35, 35, 0, 0);
+    this.blockLayer = this.map.createLayer(LAYER, tileset);
 
     this.map.setCollision(this.blockLayer.layer.properties.collisionTiles)
 
     this.player  = null;
-    this.bones   = this.game.add.group();
-    this.bombs   = this.game.add.group();
-    this.spoils  = this.game.add.group();
-    this.blasts  = this.game.add.group();
-    this.enemies = this.game.add.group();
-
-    this.game.physics.arcade.enable(this.blockLayer);
+    this.bones   = this.add.group({key: 'bones'});
+    this.bombs   = this.add.group({key: 'bombs'});
+    this.spoils  = this.add.group({key: 'spoils'});
+    this.blasts  = this.add.group({key: 'blasts'});
+    this.enemies = this.add.group({key: 'enemies'});
   }
 
   createPlayers() {
     for (let player of Object.values(this.currentGame.players)) {
       let setup = {
-        game:   this.game,
+        game:   this,
         id:     player.id,
         spawn:  player.spawn,
         skin:   player.skin
       }
 
-      if (player.id === clientSocket.id) {
+      if (player.id === this.socket.id) {
         this.player = new Player(setup);
       } else {
         this.enemies.add(new EnemyPlayer(setup))
@@ -68,23 +71,23 @@ class Play extends Phaser.State {
   }
 
   setEventHandlers() {
-    clientSocket.on('move player', this.onMovePlayer.bind(this));
-    clientSocket.on('player win', this.onPlayerWin.bind(this));
-    clientSocket.on('show bomb', this.onShowBomb.bind(this));
-    clientSocket.on('detonate bomb', this.onDetonateBomb.bind(this));
-    clientSocket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
-    clientSocket.on('show bones', this.onShowBones.bind(this));
-    clientSocket.on('player disconnect', this.onPlayerDisconnect.bind(this));
+    this.socket.on('move player', this.onMovePlayer.bind(this));
+    this.socket.on('player win', this.onPlayerWin.bind(this));
+    this.socket.on('show bomb', this.onShowBomb.bind(this));
+    this.socket.on('detonate bomb', this.onDetonateBomb.bind(this));
+    this.socket.on('spoil was picked', this.onSpoilWasPicked.bind(this));
+    this.socket.on('show bones', this.onShowBones.bind(this));
+    this.socket.on('player disconnect', this.onPlayerDisconnect.bind(this));
   }
 
   onPlayerVsSpoil(player, spoil) {
-    clientSocket.emit('pick up spoil', { spoil_id: spoil.id });
-    spoil.kill();
+    this.socket.emit('pick up spoil', { spoil_id: spoil.id });
+    this.spoils.remove(spoil,true,true);
   }
 
   onPlayerVsBlast(player, blast) {
     if (player.alive) {
-      clientSocket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
+      this.socket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
       player.becomesDead()
     }
   }
@@ -97,15 +100,15 @@ class Play extends Phaser.State {
   }
 
   stopAnimationLoop() {
-    for (let enemy of this.enemies.children) {
-      if (enemy.lastMoveAt < this.game.time.now - 200) {
-        enemy.animations.stop();
+    for (let enemy of this.enemies.getChildren()) {
+      if (!(typeof enemy.lastMoveAt === "undefined") && enemy.lastMoveAt < this.game.getTime() - 200) {
+        enemy.anims.stop();
       }
     }
   }
 
   onShowBomb({ bomb_id, col, row }) {
-    this.bombs.add(new Bomb(this.game, bomb_id, col, row));
+    this.bombs.add(new Bomb(this, bomb_id, col, row));
   }
 
   onDetonateBomb({ bomb_id, blastedCells }) {
@@ -114,14 +117,14 @@ class Play extends Phaser.State {
 
     // Render Blast:
     for (let cell of blastedCells) {
-      this.blasts.add(new FireBlast(this.game, cell));
+        this.blasts.add(new FireBlast(this, cell));
     };
 
     // Destroy Tiles:
     for (let cell of blastedCells) {
       if (!cell.destroyed) { continue }
 
-      this.map.putTile(this.blockLayer.layer.properties.empty, cell.col, cell.row, this.blockLayer);
+      this.blockLayer.putTileAt(this.blockLayer.layer.properties.empty, cell.col, cell.row);
     };
 
     // Add Spoils:
@@ -129,7 +132,7 @@ class Play extends Phaser.State {
       if (!cell.destroyed) { continue }
       if (!cell.spoil) { continue }
 
-      this.spoils.add(new Spoil(this.game, cell.spoil));
+      this.spoils.add(new Spoil(this, cell.spoil));
     };
   }
 
@@ -142,15 +145,16 @@ class Play extends Phaser.State {
   }
 
   onShowBones({ player_id, col, row }) {
-    this.bones.add(new Bone(this.game, col, row));
+    this.bones.add(new Bone(this, col, row));
 
     findAndDestroyFrom(player_id, this.enemies)
   }
 
   onPlayerWin(winner_skin) {
-    clientSocket.emit('leave game');
+    this.socket.emit('leave game');
 
-    this.state.start('Win', true, false, winner_skin);
+    this.scene.start('Win',winner_skin);
+    console.log('ToDo: this.state.start Win: '+winner_skin);
   }
 
   onPlayerDisconnect({ player_id }) {

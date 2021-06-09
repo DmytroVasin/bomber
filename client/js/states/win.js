@@ -1,6 +1,10 @@
-import { Text } from '../helpers/elements';
+import { Text } from '../helpers/elements.js';
 
-class Win extends Phaser.State {
+class Win extends Phaser.Scene {
+
+  constructor () {
+    super('Win');
+  }
 
   init(winner_skin) {
     this.skin = winner_skin
@@ -8,32 +12,33 @@ class Win extends Phaser.State {
 
   create() {
     new Text({
-      game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY,
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2,
       text: this.winnerText(),
       style: {
         font: '30px Areal',
         fill: '#FFFFFF'
       }
     })
+
+    this.cursorKeys  = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
   }
 
   update() {
-    if( this.game.input.keyboard.isDown(Phaser.Keyboard.ENTER) ) {
+    if( this.cursorKeys.isDown ) {
       this.returnToMenu();
     }
   }
 
   returnToMenu() {
-    this.state.start('Menu');
+    this.scene.start('Menu');
   }
 
   winnerText() {
     if (this.skin) {
-      return `Player: "${this.skin}" won! Press Enter to return to main menu.`
+      return 'Player: "'+this.skin+'" won! Press Enter to return to main menu.';
     }
-
     return 'Opponent left! Press Enter to return to main menu.'
   }
 }

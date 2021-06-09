@@ -12,9 +12,11 @@ var Play = {
   },
 
   onStartGame: function() {
+    console.log('==>#start game# [User:'+this.id+'][Game:'+this.socket_game_id+'] Player requesting start the game');
     let game = Lobby.deletePendingGame(this.socket_game_id);
     runningGames.set(game.id, game)
 
+    console.log('##>launch game [User:ALL][Game:'+game.id+'] Send to ALL users in the game the game start notification');
     serverSocket.sockets.in(game.id).emit('launch game', game);
   },
 
@@ -24,16 +26,23 @@ var Play = {
   },
 
   onDisconnectFromGame: function() {
+    console.log('==>#disconnect# [User:'+this.id+'][Game:'+this.socket_game_id+'] Recived player diconnected');
     let current_game = runningGames.get(this.socket_game_id);
 
     if (current_game) {
+      console.log('##>player disconnect [User:ALL][Game:'+this.socket_game_id+'] Send to ALL users, the player [User:'+this.id+'] is disconnected');
       serverSocket.sockets.in(this.socket_game_id).emit('player disconnect', {player_id: this.id } );
     }
   },
 
   createBomb: function({ col, row }) {
     let game_id = this.socket_game_id;
+    console.log('DEBUG createBomb: game_id='+game_id);
     let current_game = runningGames.get(game_id);
+    if (!typeof current_game.players === 'undefined') {
+      console.log('WARNING createBomb: Current game no more available');
+      return
+    }
     let current_player = current_game.players[this.id];
 
     let bomb = current_game.addBomb({ col: col, row: row, power: current_player.power })
@@ -53,6 +62,10 @@ var Play = {
   onPickUpSpoil: function({ spoil_id }) {
     let game_id = this.socket_game_id;
     let current_game = runningGames.get(game_id);
+    if (!typeof current_game.players === 'undefined') {
+      console.log('WARNING onPickUpSpoil: Current game no more available');
+      return
+    }
     let current_player = current_game.players[this.id];
 
     let spoil = current_game.findSpoil(spoil_id)
@@ -67,11 +80,15 @@ var Play = {
   },
 
   onPlayerDied: function(coordinates) {
-    serverSocket.sockets.to(this.socket_game_id).emit('show bones', Object.assign({}, { player_id: this.id }, coordinates));
-
     let game_id = this.socket_game_id;
     let current_game = runningGames.get(game_id);
+    if (!typeof current_game.players === 'undefined') {
+      console.log('WARNING onPlayerDied: Current game no more available');
+      return
+    }
     let current_player = current_game.players[this.id]
+    console.log('==>#leave game# [User:'+this.id+'][Game:'+this.socket_game_id+'] Recived player ('+current_player.skin+') leave game');
+    serverSocket.sockets.to(this.socket_game_id).emit('show bones', Object.assign({}, { player_id: this.id }, coordinates));
 
     current_player.dead()
 
@@ -89,6 +106,7 @@ var Play = {
     }
 
     setTimeout(function() {
+      console.log('##>player win [User:ALL][Game:'+game_id+'] Player ['+alivePlayerSkin+'] won');
       serverSocket.sockets.to(game_id).emit('player win', alivePlayerSkin);
     }, 3000);
   }

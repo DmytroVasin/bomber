@@ -1,22 +1,27 @@
-import { Text, TextButton, GameSlots } from '../helpers/elements';
+import { Text, TextButton, GameSlots } from '../helpers/elements.js';
 
-class Menu extends Phaser.State {
+class Menu extends Phaser.Scene {
 
-  init() {
+  constructor () {
+      super('Menu');
+  }
+
+  init(data) {
     this.slotsWithGame = null;
+    this.socket=this.registry.get('socketIO');
 
-    clientSocket.on('display pending games', this.displayPendingGames.bind(this));
+    this.socket.on('display pending games', this.displayPendingGames.bind(this));
   }
 
   create() {
-    let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
-    background.anchor.setTo(0.5);
+    let background = this.add.image(this.sys.canvas.clientWidth/2, this.sys.canvas.clientHeight/2, 'main_menu');
+    background.setOrigin(0.5,0.5);
 
 
     new Text({
-      game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY - 215,
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 - 215,
       text: 'Main Menu',
       style: {
         font: '35px Areal',
@@ -26,33 +31,36 @@ class Menu extends Phaser.State {
       }
     })
 
-    new TextButton({
-      game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY + 195,
-      asset: 'buttons',
+    var button = new TextButton({
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 + 195,
+      asset:'buttons',
       callback: this.hostGameAction,
       callbackContext: this,
-      overFrame: 1,
-      outFrame: 0,
-      downFrame: 2,
       upFrame: 0,
+      overFrame:1,
+      downFrame:2,
+      outFrame:3,
       label: 'New Game',
       style: {
         font: '20px Areal',
         fill: '#000000'
       }
     });
+    this.socket.emit('enter lobby', this.displayPendingGames.bind(this));
 
-    clientSocket.emit('enter lobby', this.displayPendingGames.bind(this));
   }
 
   update() {
+
+
+  
   }
 
   hostGameAction() {
-    clientSocket.emit('leave lobby');
-    this.state.start('SelectMap');
+    this.socket.emit('leave lobby');
+    this.scene.start('SelectMap');
   }
 
   displayPendingGames(availableGames) {
@@ -65,25 +73,25 @@ class Menu extends Phaser.State {
     }
 
     this.slotsWithGame = new GameSlots({
-      game: this.game,
+      game: this,
       availableGames: availableGames,
       callback: this.joinGameAction,
       callbackContext: this,
-      x: this.game.world.centerX - 220,
-      y: 160,
+      x: this.sys.canvas.clientWidth/2 - 220,
+      y: this.sys.canvas.clientHeight/2 -100,
       style: {
         font: '35px Areal',
         fill: '#efefef',
         stroke: '#ae743a',
         strokeThickness: 3
       }
-    })
+    });
   }
 
   joinGameAction(game_id) {
-    clientSocket.emit('leave lobby');
-    // https://phaser.io/docs/2.6.2/Phaser.StateManager.html#start
-    this.state.start('PendingGame', true, false, game_id);
+    this.socket.emit('leave lobby');
+    console.log('Selected game: '+game_id.game_id);
+    this.scene.start('PendingGame', game_id);
   }
 }
 

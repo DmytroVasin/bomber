@@ -1,20 +1,43 @@
-import { AVAILABLE_MAPS } from '../utils/constants';
-import { Text, Button } from '../helpers/elements';
+import { AVAILABLE_MAPS } from '../utils/constants.js';
+import { Text, TextButton, MapSlider } from '../helpers/elements.js';
 
-class SelectMap extends Phaser.State {
+const COLOR_PRIMARY = 0x4e342e;
+const COLOR_LIGHT = 0x7b5e57;
+const COLOR_DARK = 0x260e04;
+
+class SelectMap extends Phaser.Scene {
+
+  constructor () {
+    super('SelectMap');
+  }
+
+  preload() { 
+    this.load.scenePlugin({
+        key: 'rexuiplugin',
+        url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        sceneKey: 'rexUI',
+        visible: false
+    });     
+  }
 
   init() {
-    this.slider = new phaseSlider(this);
+    this.socket=this.registry.get('socketIO');
   }
 
   create() {
-    let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
-    background.anchor.setTo(0.5);
 
-    new Text({
-      game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY - 215,
+
+    this.container = this.add.container(0, 0);
+    
+    var img= this.add.image(this.sys.canvas.clientWidth/2, this.sys.canvas.clientHeight/2, 'main_menu')
+      .setOrigin(0.5,0.5);
+
+    this.container.add(img);
+
+    var txt= new Text({
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 - 215,
       text: 'Select Map',
       style: {
         font: '35px Areal',
@@ -24,44 +47,49 @@ class SelectMap extends Phaser.State {
       }
     });
 
+    this.container.add(txt);
 
-    // WARN: https://github.com/netgfx/PhaseSlider/issues/1
-    let hotMapImage = new Phaser.Image(this.game, 0, 0, 'hot_map_preview');
-    let coldMapImage = new Phaser.Image(this.game, 0, 0, 'cold_map_preview');
+    this.selectedMap='hot_map';
 
-    this.slider.createSlider({
-      x: this.game.world.centerX - hotMapImage.width / 2,
-      y: this.game.world.centerY - coldMapImage.height / 2,
-      width: hotMapImage.width,
-      height: hotMapImage.height,
-      customHandlePrev: 'prev',
-      customHandleNext: 'next',
-      objects: [hotMapImage, coldMapImage]
-    });
-
-    new Button({
-      game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY + 195,
-      asset: 'check_icon',
+    var button = new TextButton({
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 + 195,
+      asset:'check_icon',
       callback: this.confirmStageSelection,
       callbackContext: this,
-      overFrame: 1,
-      outFrame: 0,
-      downFrame: 2,
       upFrame: 0,
-    })
-  }
+      overFrame:1,
+      downFrame:2,
+      outFrame:3,
+      label: '',
+      style: {
+        font: '20px Areal',
+        fill: '#000000'
+      }
+    });
+ 
+    this.container.add(button);
+    
+    this.mapSlider = new MapSlider({
+      scene: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2
+    });
+
+  }  
 
   confirmStageSelection() {
-    let map_name = AVAILABLE_MAPS[this.slider.getCurrentIndex()]
-
-    clientSocket.emit('create game', map_name, this.joinToNewGame.bind(this));
-  }
+    this.socket.emit('create game', this.selectedMap, this.joinToNewGame.bind(this));
+  };
 
   joinToNewGame(game_id) {
-    this.state.start('PendingGame', true, false, game_id);
-  }
+    this.mapSlider.destroy();
+    this.scene.start('PendingGame', game_id);
+  };
+
+  update() {}
+
 }
 
 export default SelectMap;

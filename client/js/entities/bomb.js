@@ -1,30 +1,36 @@
-import { TILE_SIZE, EXPLOSION_TIME } from '../utils/constants';
+import { TILE_SIZE, EXPLOSION_TIME } from '../utils/constants.js';
 
-export default class Bomb extends Phaser.Sprite {
+export default class Bomb extends Phaser.GameObjects.Sprite {
 
   constructor(game, id, col, row) {
-    let centerCol = (col * TILE_SIZE) + TILE_SIZE / 2
-    let centerRow = (row * TILE_SIZE) + TILE_SIZE / 2
-
-    super(game, centerCol, centerRow, 'bomb_tileset');
-    this.scale.setTo(0.7);
-    this.anchor.setTo(0.5);
-
+    super(game, (col * TILE_SIZE) + TILE_SIZE / 2, (row * TILE_SIZE) + TILE_SIZE / 2, 'bomb_tileset');
     this.game = game
     this.id = id;
 
-    this.game.physics.arcade.enable(this);
+    this.game.add.existing(this);
+    this.game.physics.add.existing(this);
 
-    this.game.add.tween(this.scale).to({ x: 1.2, y: 1.2 }, EXPLOSION_TIME, Phaser.Easing.Linear.None, true);
+    this.tween = this.game.tweens.add({
+      targets: this,
+      scale: { to: { x: 1.2, y: 1.2 } },
+      alpha: { value: 0, duration: 5000, ease: 'Power1', delay: 600 },
+      ease: 'Sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      repeatDelay: 1000,
+      hold: 1000,
+      duraton: EXPLOSION_TIME
+    });
 
-    this.body.immovable = true;
-    // TODO: https://phaser.io/docs/2.4.4/Phaser.AnimationManager.html#add
-    this.animations.add('bomb', [0,1,2,3,4,5,6,7,8,9,10,11,12,13], 6, true);
-    this.animations.play('bomb');
+    const anims=game.anims;
+    anims.create({key:'bomb', frames: anims.generateFrameNumbers('bomb_tileset', { start: 0, end: 13 }),  frameRate:6, repeat: -1});
+
+    this.anims.play('bomb');
+    this.tween.play();
   }
 
   update() {
-    // this.game.debug.body(this);
+
   }
 
 }

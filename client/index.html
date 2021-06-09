@@ -3,22 +3,12 @@
 <head>
   <title>Bomb Attack</title>
   <link rel='stylesheet' href='css/base.css'/>
-
-  <script src='lib/phase-slide.js'></script>
-  <script src='lib/phaser.min.js'></script>
-  <script src='/socket.io/socket.io.js'></script>
-
-  <script src='bundle.js'></script>
-
-  <script>
-    window.clientSocket = io.connect();
-  </script>
 </head>
 <body>
-  <div id='game-wrapper'>
-    <div id='game-container'>
+  <script src='lib/phase-slide.js'></script>
+  <script src='//cdn.jsdelivr.net/npm/phaser@3.55.0/dist/phaser.min.js'></script>
+  <script src='/socket.io/socket.io.js'></script>
 
-    </div>
-  </div>
+  <script src='js/app.js' type="module"></script>
 </body>
 </html>
