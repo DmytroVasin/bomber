@@ -26,9 +26,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.body.pushable = false;
 
     this.setSize(20, 20);
-
-
-      this.game.time.addEvent({
+    this.game.time.addEvent({
       delay: PING,                // ms
       callback: this.positionUpdaterLoop.bind(this),
       callbackScope: this,
