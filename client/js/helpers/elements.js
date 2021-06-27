@@ -246,6 +246,8 @@ export class MapSlider extends Phaser.GameObjects.Group {
   constructor({ scene, x, y }) {
     super(scene)
 
+    this.selected=null;
+
     this.config = {
       name: 'Options',
       maps: [
@@ -262,8 +264,8 @@ export class MapSlider extends Phaser.GameObjects.Group {
       scrollMode: 1,
       background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 10, COLOR_PRIMARY),
       panel: {
-        child: this.createPanel(scene, this.config),
-        mask: { padding: 1 },
+        child: this.createPanel(scene, this.config,this),
+        mask: { padding: 1},
       },
       slider: {
         track: scene.rexUI.add.roundRectangle(0, 0, 20, 10, 10, COLOR_DARK),
@@ -271,14 +273,17 @@ export class MapSlider extends Phaser.GameObjects.Group {
       },
       space: { left: 10, right: 10, top: 10, bottom: 10, panel: 10 }
     }).layout();
+    //.layout().drawBounds(scene.add.graphics(), 0xff0000);
 
     var labels = [];
+    scene.input.topOnly = false;
     labels.push(...(this.scrollablePanel).getElement('#maps.items', true));
     labels.forEach(function (label) {
       if (!label) {return; }
-      scene.rexUI.setChildrenInteractive(label); 
-      var click = label.on('click', function () {
-        console.log("hello");
+      var click = scene.rexUI.add.click(label,{  }).on('click', function () {
+        label.getElement('text').setColor('red');
+        console.log("Map selected: "+label.getElement('icon').name);
+        label.slider.selected=label.getElement('icon').name
       });
     })
 
@@ -291,19 +296,27 @@ export class MapSlider extends Phaser.GameObjects.Group {
    * @return 
    * @memberof MapSlider
    */
-  createPanel(scene, data) {
+  createPanel(scene, data,slider) {
     var sizer = scene.rexUI.add.sizer({ orientation: 'x', space: { item: 10 } ,name:'maps'});
-    scene.rexUI.setChildrenInteractive(sizer);
+    //scene.rexUI.setChildrenInteractive(sizer);
     for (var i = 0; i < (data['maps']).length; i++) {
       var map= scene.rexUI.add.circleMaskImage(0, 0, (data['maps'])[i].component, { maskType: 'roundRectangle', radius: 10  })
+      const COLOR_LIGHT = 0x7b5e57;
       map.name=(data['maps'])[i].map;
-      sizer.add(map,{key :map.map});
+      var label = scene.rexUI.add.label({
+        orientation: 'y',
+        icon: map,
+        text: scene.add.text(0, 0, map.name),
+        space: { icon: 3 }
+      });
+      label.slider=slider;
+      sizer.add(label,{key :map.name});
     }
     return sizer;
   }
 
   onDown() {
-    console.log("hello");
+    console.log("MapSlider: onDown");
   }
 
   destroy(){

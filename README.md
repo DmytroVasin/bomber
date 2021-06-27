@@ -1,10 +1,10 @@
 ## A Bomberman-style game with multiplayer option.
 
-A Bomberman-style game with multiplayer option made with [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
+A Bomberman-style game with multiplayer option made with [Phaser.js v3](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
 
 ### Game description:
 
-The game is designed for up to three players.
+The game is designed for up to Six players.
 
 Games can be played on one of two maps.
 
