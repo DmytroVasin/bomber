@@ -30,7 +30,7 @@ var Play = {
     let current_game = runningGames.get(this.socket_game_id);
 
     if (current_game) {
-      console.log('##>player disconnect [User:ALL][Game:'+this.socket_game_id+'] Send to ALL users, the player [User:'+this.id+'] is disconnected');
+      console.log(' ##>player disconnect [User:ALL][Game:'+this.socket_game_id+'] Send to ALL users, the player [User:'+this.id+'] is disconnected');
       serverSocket.sockets.in(this.socket_game_id).emit('player disconnect', {player_id: this.id } );
     }
   },
@@ -91,6 +91,7 @@ var Play = {
     }
     let current_player = current_game.players[this.id]
     console.log('==>#leave game# [User:'+this.id+'][Game:'+this.socket_game_id+'] Recived player ('+current_player.skin+') leave game');
+    console.log(' ##>show bones [User:ALL][Game:'+game_id+'] Display Player ['+this.id+'] bones at col='+coordinates.col);
     serverSocket.sockets.to(this.socket_game_id).emit('show bones', Object.assign({}, { player_id: this.id }, coordinates));
 
     current_player.dead()
@@ -109,7 +110,7 @@ var Play = {
     }
 
     setTimeout(function() {
-      console.log('##>player win [User:ALL][Game:'+game_id+'] Player ['+alivePlayerSkin+'] won');
+      console.log(' ##>player win [User:ALL][Game:'+game_id+'] Player ['+alivePlayerSkin+'] won');
       serverSocket.sockets.to(game_id).emit('player win', alivePlayerSkin);
     }, 3000);
   }
