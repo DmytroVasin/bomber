@@ -186,6 +186,7 @@ function (_Phaser$GameObjects$S) {
 
     _this.game.physics.add.existing(_this);
 
+    _this.body.pushable = false;
     _this.tween = _this.game.tweens.add({
       targets: _this,
       scale: {
@@ -268,9 +269,16 @@ function (_Phaser$GameObjects$S) {
   _inherits(Bone, _Phaser$GameObjects$S);
 
   function Bone(game, col, row) {
+    var _this;
+
     _classCallCheck(this, Bone);
 
-    return _possibleConstructorReturn(this, (Bone.__proto__ || Object.getPrototypeOf(Bone)).call(this, game, col * _constants.TILE_SIZE, row * _constants.TILE_SIZE, 'bone_tileset'));
+    _this = _possibleConstructorReturn(this, (Bone.__proto__ || Object.getPrototypeOf(Bone)).call(this, game, col + _constants.TILE_SIZE / 2, row + _constants.TILE_SIZE / 2, 'bone_tileset'));
+    _this.game = game;
+
+    _this.game.add.existing(_this);
+
+    return _this;
   }
 
   return Bone;
@@ -335,6 +343,8 @@ function (_Phaser$GameObjects$S) {
     _this.game.add.existing(_this);
 
     _this.game.physics.add.existing(_this);
+
+    _this.body.pushable = false;
 
     _this.setSize(20, 20);
 
@@ -678,6 +688,8 @@ function (_Phaser$GameObjects$S) {
     _this.game.add.existing(_this);
 
     _this.game.physics.add.existing(_this);
+
+    _this.body.pushable = false;
 
     _this.setSize(20, 20);
 
@@ -1449,6 +1461,8 @@ function (_Phaser$GameObjects$G2) {
     _classCallCheck(this, MapSlider);
 
     _this7 = _possibleConstructorReturn(this, (MapSlider.__proto__ || Object.getPrototypeOf(MapSlider)).call(this, scene));
+    _this7.selected = null;
+    _this7.selectedLabel = null;
     _this7.config = {
       name: 'Options',
       maps: [{
@@ -1485,17 +1499,25 @@ function (_Phaser$GameObjects$G2) {
         bottom: 10,
         panel: 10
       }
-    }).layout();
+    }).layout(); //.layout().drawBounds(scene.add.graphics(), 0xff0000);
+
     var labels = [];
+    scene.input.topOnly = false;
     labels.push.apply(labels, _toConsumableArray(_this7.scrollablePanel.getElement('#maps.items', true)));
     labels.forEach(function (label) {
       if (!label) {
         return;
       }
 
-      scene.rexUI.setChildrenInteractive(label);
-      var click = label.on('click', function () {
-        console.log("hello");
+      var click = scene.rexUI.add.click(label, {}).on('click', function () {
+        if (this.selectedLabel != null && !this.selectedLabel) {
+          this.selectedLabel.getElement('text').setColor('#ffffff');
+        }
+
+        label.getElement('text').setColor('red');
+        console.log("hello: " + label.getElement('icon').name);
+        this.selectedLabel = label;
+        this.selected = label.getElement('icon').name;
       });
     });
     return _this7;
@@ -1518,17 +1540,25 @@ function (_Phaser$GameObjects$G2) {
           item: 10
         },
         name: 'maps'
-      });
-      scene.rexUI.setChildrenInteractive(sizer);
+      }); //scene.rexUI.setChildrenInteractive(sizer);
 
       for (var i = 0; i < data['maps'].length; i++) {
         var map = scene.rexUI.add.circleMaskImage(0, 0, data['maps'][i].component, {
           maskType: 'roundRectangle',
           radius: 10
         });
+        var _COLOR_LIGHT = 0x7b5e57;
         map.name = data['maps'][i].map;
-        sizer.add(map, {
-          key: map.map
+        var label = scene.rexUI.add.label({
+          orientation: 'y',
+          icon: map,
+          text: scene.add.text(0, 0, map.name),
+          space: {
+            icon: 3
+          }
+        });
+        sizer.add(label, {
+          key: map.name
         });
       }
 
@@ -2601,6 +2631,7 @@ function (_Phaser$Scene) {
   }, {
     key: "confirmStageSelection",
     value: function confirmStageSelection() {
+      if (!this.mapSlider.selected != null) this.selectedMap = this.mapSlider.selected;
       this.socket.emit('create game', this.selectedMap, this.joinToNewGame.bind(this));
     }
   }, {
@@ -2680,7 +2711,7 @@ function (_Phaser$Scene) {
           fill: '#FFFFFF'
         }
       });
-      var button = new TextButton({
+      this.button = new _elements.TextButton({
         game: this,
         x: this.sys.canvas.clientWidth / 2,
         y: this.sys.canvas.clientHeight / 2 + 195,
@@ -2691,7 +2722,7 @@ function (_Phaser$Scene) {
         overFrame: 1,
         downFrame: 2,
         outFrame: 3,
-        label: 'New Game',
+        label: 'Back to Menu',
         style: {
           font: '20px Areal',
           fill: '#000000'
