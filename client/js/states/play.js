@@ -24,6 +24,21 @@ class Play extends Phaser.Scene {
     this.createPlayers();
     this.setEventHandlers();
     //this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
+
+    this.model = this.registry.get('Model');
+
+    if (!this.model.bgMusicPlaying === false){
+      this.sound.stopAll();
+      this.model.bgMusicPlaying = false;
+      this.registry.set('Model', this.bgMusic);
+    }
+    if (this.model.musicOn === true) {
+      this.bgMusic = this.sound.add('bgMusic03', { volume: 0.5, loop: true });
+      this.bgMusic.play();
+      this.model.bgMusicPlaying = true;
+      this.model.bgMusic='bgMusic03';
+      this.registry.set('Model', this.model);
+    }
   }
 
   update() {
@@ -83,12 +98,20 @@ class Play extends Phaser.Scene {
   onPlayerVsSpoil(player, spoil) {
     this.socket.emit('pick up spoil', { spoil_id: spoil.id });
     this.spoils.remove(spoil,true,true);
+    if (this.model.soundOn === true) {
+      let FxPickItem01 = this.sound.add('FxPickItem01', { volume: 0.8, loop: false });
+      FxPickItem01.play();
+    }
   }
 
   onPlayerVsBlast(player, blast) {
     if (player.alive) {
       this.socket.emit('player died', { col: player.currentCol(), row: player.currentRow() });
       player.becomesDead()
+      if (this.model.soundOn === true) {
+        let FxDeath01 = this.sound.add('FxDeath01', { volume: 0.8, loop: false });
+        FxDeath01.play();
+      }
     }
   }
 
@@ -114,6 +137,11 @@ class Play extends Phaser.Scene {
   onDetonateBomb({ bomb_id, blastedCells }) {
     // Remove Bomb:
     findAndDestroyFrom(bomb_id, this.bombs)
+
+    if (this.model.soundOn === true) {
+      let FxExplosion01 = this.sound.add('FxExplosion01', { volume: 0.8, loop: false });
+      FxExplosion01.play();
+    }
 
     // Render Blast:
     for (let cell of blastedCells) {
@@ -148,6 +176,10 @@ class Play extends Phaser.Scene {
     this.bones.add(new Bone(this, col, row));
 
     findAndDestroyFrom(player_id, this.enemies)
+    if (this.model.soundOn === true) {
+      let FxDeath01 = this.sound.add('FxDeath01', { volume: 0.8, loop: false });
+      FxDeath01.play();
+    }
   }
 
   onPlayerWin(winner_skin) {

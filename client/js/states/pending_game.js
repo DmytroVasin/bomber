@@ -9,10 +9,12 @@ class PendingGame extends Phaser.Scene {
   init({ game_id }) {
     this.socket=this.registry.get('socketIO');
     this.slotsWithPlayer = null;
+    this.playerCount=0;
 
     this.game_id = game_id;
 
     this.socket.emit('enter pending game', { game_id: this.game_id });
+    this.model = this.registry.get('Model');
   }
 
   create() {
@@ -90,18 +92,23 @@ class PendingGame extends Phaser.Scene {
   displayGameInfo({ current_game }) {
     let players = Object.values(current_game.players);
 
-    this.gameTitle.text = current_game.name
+    this.gameTitle.text = current_game.name;
 
+    if (players.length > this.playerCount){
+      console.log('New player detected');
+      if (this.model.soundOn === true) {
+        let FxPickItem01 = this.sound.add('FxPickItem01', { volume: 0.8, loop: false });
+        FxPickItem01.play();
+      }
+    }
+    this.playerCount=players.length;
+
+    //Destroy PlayerSlots if already existing
     if (this.slotsWithPlayer) {
-      this.slotsWithPlayer.destroy()
+      this.slotsWithPlayer.destroy();
     }
 
-    if(players.length > 1) {
-      this.startGameButton.activate();
-    } else {
-      this.startGameButton.disactivate();
-    }
-
+    //Create the PlayerSlots to display players
     this.slotsWithPlayer = new PlayerSlots({
       game: this,
       max_players: current_game.max_players,
@@ -114,8 +121,14 @@ class PendingGame extends Phaser.Scene {
         font: '20px Areal',
         fill: '#48291c'
       }
-    })
+    });
 
+    //Activate the Start button if more than one user in the PlayerSlots
+    if(players.length > 1) {
+      this.startGameButton.activate();
+    } else {
+      this.startGameButton.disactivate();
+    }
   }
 
   leaveGameAction() {

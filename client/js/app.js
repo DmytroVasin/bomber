@@ -13,7 +13,7 @@ var config = {
   height: 630,
   pixelArt: false,
   audio: {
-    noAudio: true
+    noAudio: false
   },
   scale: {
     mode: Phaser.Scale.NONE,

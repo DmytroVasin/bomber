@@ -50,6 +50,19 @@ class Menu extends Phaser.Scene {
     });
     this.socket.emit('enter lobby', this.displayPendingGames.bind(this));
 
+    this.model = this.registry.get('Model');
+    if (!this.model.bgMusicPlaying === false && !(this.model.bgMusic=='bgMusic02')){
+      this.sound.stopByKey(this.model.bgMusic);
+      this.model.bgMusicPlaying = false;
+      this.registry.set('Model', this.bgMusic);
+    }
+    if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
+      this.bgMusic = this.sound.add('bgMusic02', { volume: 0.5, loop: true });
+      this.bgMusic.play();
+      this.model.bgMusicPlaying = true;
+      this.model.bgMusic='bgMusic02';
+      this.registry.set('Model', this.model);
+    }
   }
 
   update() {

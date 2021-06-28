@@ -119,7 +119,7 @@ var config = {
   height: 630,
   pixelArt: false,
   audio: {
-    noAudio: true
+    noAudio: false
   },
   scale: {
     mode: Phaser.Scale.NONE,
@@ -994,6 +994,71 @@ exports.default = Spoil;
 
 /***/ }),
 
+/***/ "./client/js/helpers/Model.js":
+/*!************************************!*\
+  !*** ./client/js/helpers/Model.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Model = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Model =
+/*#__PURE__*/
+function () {
+  function Model() {
+    _classCallCheck(this, Model);
+
+    this._soundOn = true;
+    this._musicOn = true;
+    this._bgMusicPlaying = false;
+  }
+
+  _createClass(Model, [{
+    key: "musicOn",
+    set: function set(value) {
+      this._musicOn = value;
+    },
+    get: function get() {
+      return this._musicOn;
+    }
+  }, {
+    key: "soundOn",
+    set: function set(value) {
+      this._soundOn = value;
+    },
+    get: function get() {
+      return this._soundOn;
+    }
+  }, {
+    key: "bgMusicPlaying",
+    set: function set(value) {
+      this._bgMusicPlaying = value;
+    },
+    get: function get() {
+      return this._bgMusicPlaying;
+    }
+  }]);
+
+  return Model;
+}();
+
+exports.Model = Model;
+
+/***/ }),
+
 /***/ "./client/js/helpers/elements.js":
 /*!***************************************!*\
   !*** ./client/js/helpers/elements.js ***!
@@ -1139,7 +1204,8 @@ function (_Phaser$GameObjects$S) {
     //in parameter
 
 
-    _this3 = _possibleConstructorReturn(this, (TextButton.__proto__ || Object.getPrototypeOf(TextButton)).call(this, game, 0, 0, asset, upFrame)); //make a class level reference to the config
+    _this3 = _possibleConstructorReturn(this, (TextButton.__proto__ || Object.getPrototypeOf(TextButton)).call(this, game, 0, 0, asset, upFrame));
+    _this3.model = game.registry.get('Model'); //make a class level reference to the config
 
     _this3.scene = game;
     _this3.asset = asset;
@@ -1202,6 +1268,15 @@ function (_Phaser$GameObjects$S) {
     key: "onDown",
     value: function onDown() {
       if (this.enable == false) return;
+
+      if (this.model.soundOn === true) {
+        var FxDeath01 = this.scene.sound.add('FxClick01', {
+          volume: 0.8,
+          loop: false
+        });
+        FxDeath01.play();
+      }
+
       this.setFrame(this.downFrame);
       var mycallbackFunction = this.callback.bind(this.callbackContext);
       mycallbackFunction();
@@ -1462,7 +1537,6 @@ function (_Phaser$GameObjects$G2) {
 
     _this7 = _possibleConstructorReturn(this, (MapSlider.__proto__ || Object.getPrototypeOf(MapSlider)).call(this, scene));
     _this7.selected = null;
-    _this7.selectedLabel = null;
     _this7.config = {
       name: 'Options',
       maps: [{
@@ -1483,7 +1557,7 @@ function (_Phaser$GameObjects$G2) {
       scrollMode: 1,
       background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 10, COLOR_PRIMARY),
       panel: {
-        child: _this7.createPanel(scene, _this7.config),
+        child: _this7.createPanel(scene, _this7.config, _this7),
         mask: {
           padding: 1
         }
@@ -1510,14 +1584,18 @@ function (_Phaser$GameObjects$G2) {
       }
 
       var click = scene.rexUI.add.click(label, {}).on('click', function () {
-        if (this.selectedLabel != null && !this.selectedLabel) {
-          this.selectedLabel.getElement('text').setColor('#ffffff');
-        }
-
         label.getElement('text').setColor('red');
-        console.log("hello: " + label.getElement('icon').name);
-        this.selectedLabel = label;
-        this.selected = label.getElement('icon').name;
+        console.log("Map selected: " + label.getElement('icon').name);
+        label.slider.selected = label.getElement('icon').name;
+        this.model = label.slider.scene.registry.get('Model');
+
+        if (this.model.soundOn === true) {
+          var FxDeath01 = label.slider.scene.sound.add('FxClick01', {
+            volume: 0.8,
+            loop: false
+          });
+          FxDeath01.play();
+        }
       });
     });
     return _this7;
@@ -1533,7 +1611,7 @@ function (_Phaser$GameObjects$G2) {
 
   _createClass(MapSlider, [{
     key: "createPanel",
-    value: function createPanel(scene, data) {
+    value: function createPanel(scene, data, slider) {
       var sizer = scene.rexUI.add.sizer({
         orientation: 'x',
         space: {
@@ -1557,6 +1635,7 @@ function (_Phaser$GameObjects$G2) {
             icon: 3
           }
         });
+        label.slider = slider;
         sizer.add(label, {
           key: map.name
         });
@@ -1567,7 +1646,7 @@ function (_Phaser$GameObjects$G2) {
   }, {
     key: "onDown",
     value: function onDown() {
-      console.log("hello");
+      console.log("MapSlider: onDown");
     }
   }, {
     key: "destroy",
@@ -1599,6 +1678,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = exports.Boot = void 0;
 
 var _elements = __webpack_require__(/*! ../helpers/elements.js */ "./client/js/helpers/elements.js");
+
+var _Model = __webpack_require__(/*! ../helpers/Model.js */ "./client/js/helpers/Model.js");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1644,6 +1725,7 @@ function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       console.log('Start Boot.create');
+      this.registry.set('Model', new _Model.Model());
       this.registry.set('socketIO', io());
       this.scene.start('Preload');
       console.log('End  Boot.create');
@@ -1741,6 +1823,24 @@ function (_Phaser$Scene) {
         }
       });
       this.socket.emit('enter lobby', this.displayPendingGames.bind(this));
+      this.model = this.registry.get('Model');
+
+      if (!this.model.bgMusicPlaying === false && !this.model.bgMusic == 'bgMusic02') {
+        this.sound.stopByKey(this.model.bgMusic);
+        this.model.bgMusicPlaying = false;
+        this.registry.set('Model', this.bgMusic);
+      }
+
+      if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
+        this.bgMusic = this.sound.add('bgMusic02', {
+          volume: 0.5,
+          loop: true
+        });
+        this.bgMusic.play();
+        this.model.bgMusicPlaying = true;
+        this.model.bgMusic = 'bgMusic02';
+        this.registry.set('Model', this.model);
+      }
     }
   }, {
     key: "update",
@@ -2036,6 +2136,25 @@ function (_Phaser$Scene) {
       this.createMap();
       this.createPlayers();
       this.setEventHandlers(); //this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
+
+      this.model = this.registry.get('Model');
+
+      if (!this.model.bgMusicPlaying === false) {
+        this.sound.stopAll();
+        this.model.bgMusicPlaying = false;
+        this.registry.set('Model', this.bgMusic);
+      }
+
+      if (this.model.musicOn === true) {
+        this.bgMusic = this.sound.add('bgMusic03', {
+          volume: 0.5,
+          loop: true
+        });
+        this.bgMusic.play();
+        this.model.bgMusicPlaying = true;
+        this.model.bgMusic = 'bgMusic03';
+        this.registry.set('Model', this.model);
+      }
     }
   }, {
     key: "update",
@@ -2111,6 +2230,14 @@ function (_Phaser$Scene) {
         spoil_id: spoil.id
       });
       this.spoils.remove(spoil, true, true);
+
+      if (this.model.soundOn === true) {
+        var FxPickItem01 = this.sound.add('FxPickItem01', {
+          volume: 0.8,
+          loop: false
+        });
+        FxPickItem01.play();
+      }
     }
   }, {
     key: "onPlayerVsBlast",
@@ -2121,6 +2248,14 @@ function (_Phaser$Scene) {
           row: player.currentRow()
         });
         player.becomesDead();
+
+        if (this.model.soundOn === true) {
+          var FxDeath01 = this.sound.add('FxDeath01', {
+            volume: 0.8,
+            loop: false
+          });
+          FxDeath01.play();
+        }
       }
     }
   }, {
@@ -2184,7 +2319,16 @@ function (_Phaser$Scene) {
       var bomb_id = _ref3.bomb_id,
           blastedCells = _ref3.blastedCells;
       // Remove Bomb:
-      (0, _utils.findAndDestroyFrom)(bomb_id, this.bombs); // Render Blast:
+      (0, _utils.findAndDestroyFrom)(bomb_id, this.bombs);
+
+      if (this.model.soundOn === true) {
+        var FxExplosion01 = this.sound.add('FxExplosion01', {
+          volume: 0.8,
+          loop: false
+        });
+        FxExplosion01.play();
+      } // Render Blast:
+
 
       var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
@@ -2299,6 +2443,14 @@ function (_Phaser$Scene) {
           row = _ref5.row;
       this.bones.add(new _bone.default(this, col, row));
       (0, _utils.findAndDestroyFrom)(player_id, this.enemies);
+
+      if (this.model.soundOn === true) {
+        var FxDeath01 = this.sound.add('FxDeath01', {
+          volume: 0.8,
+          loop: false
+        });
+        FxDeath01.play();
+      }
     }
   }, {
     key: "onPlayerWin",
@@ -2501,11 +2653,18 @@ function (_Phaser$Scene) {
         frameWidth: 32,
         frameHeight: 32
       });
-      this.load.scenePlugin({
-        key: 'rexuiplugin',
-        url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
-        sceneKey: 'rexUI'
-      });
+      this.load.audio('bgMusic01', ['sound/Musics/TownTheme.mp3']);
+      this.load.audio('bgMusic02', ['sound/Musics/Techno-Randomness_Looping.mp3']); // https://soundimage.org/dance-techno/
+
+      this.load.audio('bgMusic03', ['sound/Musics/Happy-Trancin.mp3']); // https://soundimage.org/dance-techno/
+
+      this.load.audio('bgMusic04', ['sound/Musics/Electric-Rain_Looping.mp3']); // https://soundimage.org/dance-techno/
+
+      this.load.audio('FxExplosion01', ['sound/Effects/Explosion3.mp3']);
+      this.load.audio('FxPickItem01', ['sound/Effects/SynthChime1.mp3']);
+      this.load.audio('FxDeath01', ['sound/Effects/VOXEfrt_Cry of pain (ID 2361)_BSB.mp3']); // https://bigsoundbank.com/detail-2361-cry-of-pain.html
+
+      this.load.audio('FxClick01', ['sound/Effects/UI_Quirky21.mp3']);
     }
   }, {
     key: "create",
@@ -2631,7 +2790,7 @@ function (_Phaser$Scene) {
   }, {
     key: "confirmStageSelection",
     value: function confirmStageSelection() {
-      if (!this.mapSlider.selected != null) this.selectedMap = this.mapSlider.selected;
+      if (this.mapSlider.selected != null) this.selectedMap = this.mapSlider.selected;
       this.socket.emit('create game', this.selectedMap, this.joinToNewGame.bind(this));
     }
   }, {
@@ -2729,6 +2888,24 @@ function (_Phaser$Scene) {
         }
       });
       this.cursorKeys = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+      this.model = this.registry.get('Model');
+
+      if (!this.model.bgMusicPlaying === false) {
+        this.sound.stopAll();
+        this.model.bgMusicPlaying = false;
+        this.registry.set('Model', this.bgMusic);
+      }
+
+      if (this.model.musicOn === true) {
+        this.bgMusic = this.sound.add('bgMusic01', {
+          volume: 0.5,
+          loop: true
+        });
+        this.bgMusic.play();
+        this.model.bgMusicPlaying = true;
+        this.model.bgMusic = 'bgMusic01';
+        this.registry.set('Model', this.model);
+      }
     }
   }, {
     key: "update",

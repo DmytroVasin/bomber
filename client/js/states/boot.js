@@ -1,4 +1,5 @@
 import { Text } from '../helpers/elements.js';
+import {Model} from '../helpers/Model.js';
 
 export class Boot extends Phaser.Scene {
 
@@ -21,6 +22,7 @@ export class Boot extends Phaser.Scene {
 
   create() {
     console.log('Start Boot.create');
+    this.registry.set('Model', new Model());
     this.registry.set('socketIO', io());
     this.scene.start('Preload');
     console.log('End  Boot.create');
