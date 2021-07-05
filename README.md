@@ -44,6 +44,17 @@ Steps:
 4. Check out the game at [http://localhost:3000](http://localhost:3000)
 5. Enjoy!
 
+The game can be also deployed into docker environemnt (Docker should be installed).
+
+Steps:
+1. Clone the repository into your local path E.g: `c:\opt\` for windows or `\opt\` for unix
+2. Run `docker build --tag bomber:1.0 .` inside the newly created directory.
+3. Create and run the container 
+    * For Windows: `docker run -d -it --name bomber.server --restart=always -p 3000:3000 -v C:/opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0`
+    * For Linux: `docker run -d -it --name bomber.server --restart=always -p 3000:3000 -v /opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0`
+4. Check out the game at [http://localhost:3000](http://localhost:3000)
+5. Enjoy!
+
 ## Notes:
 You can use my code as a boilerplate if you want, but I would suggest you change the tile sizes. I've picked tiles that are 35x35 pixels, but tiles that are 32x32 would be more ideal. All free templates are based on this tile size, and it is also handily divisible by 2.
 
