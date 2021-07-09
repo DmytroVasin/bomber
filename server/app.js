@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, '..', 'client')));
 app.use(favicon(path.join(__dirname, '..', 'client', 'favicon.ico')));
 
+const nm_dependencies = ['phaser3-rex-plugins','phaser']; // keep adding required node_modules to this array.
+nm_dependencies.forEach(dep => {
+  app.use(`/${dep}`, express.static(path.resolve(`node_modules/${dep}`)));
+});
+
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'index'));
 });

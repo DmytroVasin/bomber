@@ -6,6 +6,8 @@ const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
 
 class SelectMap extends Phaser.Scene {
+  
+
 
   constructor () {
     super('SelectMap');
@@ -14,10 +16,11 @@ class SelectMap extends Phaser.Scene {
   preload() { 
     this.load.scenePlugin({
         key: 'rexuiplugin',
-        url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        url: '/phaser3-rex-plugins/dist/rexuiplugin.min.js',
+        //url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
         sceneKey: 'rexUI',
         visible: false
-    });     
+    });    
   }
 
   init() {
