@@ -14,7 +14,6 @@ class PendingGame extends Phaser.Scene {
     this.game_id = game_id;
 
     this.socket.emit('enter pending game', { game_id: this.game_id });
-    this.model = this.registry.get('Model');
   }
 
   create() {
@@ -96,10 +95,7 @@ class PendingGame extends Phaser.Scene {
 
     if (players.length > this.playerCount){
       console.log('New player detected');
-      if (this.model.soundOn === true) {
-        let FxPickItem01 = this.sound.add('FxPickItem01', { volume: 0.8, loop: false });
-        FxPickItem01.play();
-      }
+      this.registry.get('Sound').playSound(this,'FxPickItem01');
     }
     this.playerCount=players.length;
 

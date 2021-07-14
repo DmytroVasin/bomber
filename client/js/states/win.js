@@ -41,19 +41,7 @@ class Win extends Phaser.Scene {
     });
     this.cursorKeys  = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
-    this.model = this.registry.get('Model');
-    if (!this.model.bgMusicPlaying === false){
-      this.sound.stopAll();
-      this.model.bgMusicPlaying = false;
-      this.registry.set('Model', this.bgMusic);
-    }
-    if (this.model.musicOn === true) {
-      this.bgMusic = this.sound.add('bgMusic01', { volume: 0.5, loop: true });
-      this.bgMusic.play();
-      this.model.bgMusicPlaying = true;
-      this.model.bgMusic='bgMusic01';
-      this.registry.set('Model', this.model);
-    }
+    this.registry.get('Sound').playMusic(this,'bgMusic01');
   }
 
   update() {

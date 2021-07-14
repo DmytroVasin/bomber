@@ -112,20 +112,20 @@ var _win = _interopRequireDefault(__webpack_require__(/*! ./states/win.js */ "./
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-//import RexUIPlugin from '/phaser3-rex-plugins/templates/ui/ui-plugin.js';
+//import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 //rexUI: RexUIPlugin;  // Declare scene property 'rexUI' as RexUIPlugin type
 var config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
+  width: 980,
+  height: 630,
   pixelArt: false,
   audio: {
     noAudio: false
   },
   scale: {
     mode: Phaser.Scale.NONE,
-    autoCenter: Phaser.Scale.CENTER_BOTH //zoom: 1/(window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio),
-    //zoom: 1.2,
-
+    autoCenter: Phaser.Scale.CENTER_BOTH
   },
   scene: [_boot["default"], _preload["default"], _menu["default"], _select_map["default"], _pending_game["default"], _play["default"], _win["default"]],
   physics: {
@@ -2283,6 +2283,36 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
         this.model.bgMusic = 'bgMusic03';
         this.registry.set('Model', this.model);
       }
+
+      this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+        x: 400,
+        y: 300,
+        radius: 100,
+        base: this.add.circle(0, 0, 100, 0x888888),
+        thumb: this.add.circle(0, 0, 50, 0xcccccc) // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+        // forceMin: 16,
+        // enable: true
+
+      }).on('update', this.dumpJoyStickState, this);
+      this.text = this.add.text(0, 0);
+      this.dumpJoyStickState();
+    }
+  }, {
+    key: "dumpJoyStickState",
+    value: function dumpJoyStickState() {
+      var cursorKeys = this.joyStick.createCursorKeys();
+      var s = 'Key down: ';
+
+      for (var name in cursorKeys) {
+        if (cursorKeys[name].isDown) {
+          s += name + ' ';
+        }
+      }
+
+      s += '\n';
+      s += 'Force: ' + Math.floor(this.joyStick.force * 100) / 100 + '\n';
+      s += 'Angle: ' + Math.floor(this.joyStick.angle * 100) / 100 + '\n';
+      this.text.setText(s);
     }
   }, {
     key: "update",
@@ -2758,6 +2788,8 @@ var Preload = /*#__PURE__*/function (_Phaser$Scene) {
 
       this.load.audio('FxClick01', ['sound/Effects/UI_Quirky21.mp3']);
       this.load.audio('FxNewUser01', ['sound/Effects/PowerUp18.mp3']);
+      var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+      this.load.plugin('rexvirtualjoystickplugin', url, true);
     }
   }, {
     key: "create",
@@ -2836,7 +2868,7 @@ var SelectMap = /*#__PURE__*/function (_Phaser$Scene) {
     value: function preload() {
       this.load.scenePlugin({
         key: 'rexuiplugin',
-        url: 'lib/rexuiplugin.min.js',
+        url: '/phaser3-rex-plugins/dist/rexuiplugin.min.js',
         //url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
         sceneKey: 'rexUI',
         visible: false

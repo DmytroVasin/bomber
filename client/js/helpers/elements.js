@@ -50,8 +50,6 @@ export class TextButton extends Phaser.GameObjects.Sprite {
     //in parameter
     super(game, 0, 0, asset, upFrame);
 
-    this.model = game.registry.get('Model');
-
     //make a class level reference to the config
     this.scene = game;
     this.asset = asset;
@@ -104,10 +102,7 @@ export class TextButton extends Phaser.GameObjects.Sprite {
   onDown() {
     if (this.enable == false) return;
 
-    if (this.model.soundOn === true) {
-      let FxDeath01 = this.scene.sound.add('FxClick01', { volume: 0.8, loop: false });
-      FxDeath01.play();
-    }
+    this.scene.registry.get('Sound').playSound(this.scene,'FxClick01');
 
     this.setFrame(this.downFrame);
     let mycallbackFunction = this.callback.bind(this.callbackContext);
@@ -292,11 +287,7 @@ export class MapSlider extends Phaser.GameObjects.Group {
         console.log("Map selected: "+label.getElement('icon').name);
         label.slider.selected=label.getElement('icon').name
 
-        this.model = label.slider.scene.registry.get('Model');
-        if (this.model.soundOn === true) {
-          let FxDeath01 = label.slider.scene.sound.add('FxClick01', { volume: 0.8, loop: false });
-          FxDeath01.play();
-        }
+        label.slider.scene.registry.get('Sound').playSound(label.slider.scene,'FxClick01');
       });
     })
 

@@ -5,6 +5,7 @@ export class Preload extends Phaser.Scene {
   }
 
   preload() {
+
     // Menu:
     this.load.image('main_menu',     'images/menu/main_menu.png');
     this.load.image('slot_backdrop', 'images/menu/slot_backdrop.png');
@@ -76,16 +77,10 @@ export class Preload extends Phaser.Scene {
     this.load.spritesheet('bomberman_Raviel',    'images/game/chars/10-preview.png', { frameWidth: 32, frameHeight: 32});
     this.load.spritesheet('bomberman_Valpo',     'images/game/chars/11-preview.png', { frameWidth: 32, frameHeight: 32});
 
-    this.load.audio('bgMusic01', ['sound/Musics/TownTheme.mp3']);
-    this.load.audio('bgMusic02', ['sound/Musics/Techno-Randomness_Looping.mp3']); // https://soundimage.org/dance-techno/
-    this.load.audio('bgMusic03', ['sound/Musics/Happy-Trancin.mp3']); // https://soundimage.org/dance-techno/
-    this.load.audio('bgMusic04', ['sound/Musics/Electric-Rain_Looping.mp3']); // https://soundimage.org/dance-techno/
+    this.registry.get('Sound').preload(this);
 
-    this.load.audio('FxExplosion01', ['sound/Effects/Explosion3.mp3']);
-    this.load.audio('FxPickItem01', ['sound/Effects/PowerUp18.mp3']);
-    this.load.audio('FxDeath01', ['sound/Effects/VOXEfrt_Cry of pain (ID 2361)_BSB.mp3']); // https://bigsoundbank.com/detail-2361-cry-of-pain.html
-    this.load.audio('FxClick01', ['sound/Effects/UI_Quirky21.mp3']);
-    this.load.audio('FxNewUser01', ['sound/Effects/PowerUp18.mp3']);
+    var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+    this.load.plugin('rexvirtualjoystickplugin', url, true);
   }
 
   create() {
