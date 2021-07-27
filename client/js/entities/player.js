@@ -42,6 +42,7 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.info = new Info({ game: this.game, player: this });
 
     this.defineKeyboard()
+    this.defineJoyStick()
     this.defineSelf(skin)
     this.socket=this.game.registry.get('socketIO');
     this.alive=true;
@@ -59,22 +60,26 @@ export default class Player extends Phaser.GameObjects.Sprite {
     this.cursorKeys  = this.game.input.keyboard.createCursorKeys();
   }
 
+  defineJoyStick() {
+    this.joystickKey  = this.game.joystickKey;
+  }
+
   handleMoves() {
     this.body.velocity.set(0);
     let animationsArray = []
 
-    if (this.cursorKeys.left.isDown){
+    if (this.cursorKeys.left.isDown|| this.game.joystickKey.includes('left')){
       this.body.velocity.x = -this.speed;
       animationsArray.push('left')
-    } else if (this.cursorKeys.right.isDown) {
+    } else if (this.cursorKeys.right.isDown|| this.game.joystickKey.includes('right')) {
       this.body.velocity.x = this.speed;
       animationsArray.push('right')
     }
 
-    if (this.cursorKeys.up.isDown) {
+    if (this.cursorKeys.up.isDown|| this.game.joystickKey.includes('up')) {
       this.body.velocity.y = -this.speed;
       animationsArray.push('up')
-    } else if (this.cursorKeys.down.isDown) {
+    } else if (this.cursorKeys.down.isDown|| this.game.joystickKey.includes('down')) {
       this.body.velocity.y = this.speed;
       animationsArray.push('down')
     }
@@ -89,13 +94,14 @@ export default class Player extends Phaser.GameObjects.Sprite {
   }
 
   handleBombs() {
-    if (this.cursorKeys.space.isDown) {
+    if (this.cursorKeys.space.isDown ||this.game.joystickButton01Key.includes('down')) {
       let now = this.game.time.now;
 
       if (now > this._lastBombTime) {
         this._lastBombTime = now + this.delay;
 
         this.socket.emit('create bomb', { col: this.currentCol(), row: this.currentRow() });
+        this.game.joystickButton01Key='';
       }
     }
   }

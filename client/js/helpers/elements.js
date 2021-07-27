@@ -328,3 +328,126 @@ export class MapSlider extends Phaser.GameObjects.Group {
   }
 
 }
+
+/**
+ * Create a virtual Joystick
+ * @export
+ * @class MapSlider
+ * @extends Phaser.GameObjects.Group
+ */
+ export class Virtualjoystick extends Phaser.GameObjects.Group {
+
+  /**
+   * Creates an instance of MapSlider.
+   * @param  {any} { scene, x, y } 
+   * @memberof MapSlider
+   */
+  constructor({ scene, x, y,xx,yy }) {
+    super(scene)
+
+    this.scene=scene;
+
+    var graphic1 = this.scene.add.graphics({
+      x: 0,
+      y: 0,
+  
+      lineStyle: {
+           width: 3,
+           color: 0xffffff,
+           alpha: 1
+       },
+       fillStyle: {
+           color: 0x888888,
+           alpha: 0.2
+       },
+  
+      add: true
+    });
+    var graphic2 = this.scene.add.graphics({
+      x: 0,
+      y: 0,
+  
+      lineStyle: {
+           width: 3,
+           color: 0xffffff,
+           alpha: 1
+       },
+       fillStyle: {
+           color: 0xcccccc,
+           alpha: 0.5
+       },
+  
+      add: true
+    });
+
+    var graphic3 = this.scene.add.graphics({
+      x: xx,
+      y: yy,
+  
+      lineStyle: {
+           width: 3,
+           color: 0xffffff,
+           alpha: 1
+       },
+       fillStyle: {
+           color: 0xcccccc,
+           alpha: 1
+       },
+  
+      add: true
+    });
+
+    var graphics = this.scene.add.graphics({ fillStyle: { color: 0x888888,alpha: 0.2 } });
+    var circle = new Phaser.Geom.Circle(xx,yy, 100, 0x888888);
+    this.button01=graphics.fillCircleShape(circle);
+    this.button01.setInteractive(new Phaser.Geom.Circle(
+      xx, // center x
+      yy, // center y
+      100 // radius
+    ),
+    Phaser.Geom.Circle.Contains);
+    this.button01.on('pointerdown', this.onButton01Pointerdown, this);
+    this.scene.add.existing(this.button01);
+
+    this.joyStick = this.scene.plugins.get('rexvirtualjoystickplugin').add(this.scene, {
+      x: x,
+      y: y,
+      radius: 100,
+      base: graphic1.fillCircleShape(this.scene.add.circle(0,0, 100, 0x888888)),
+      thumb: graphic2.fillCircleShape(this.scene.add.circle(0,0, 50, 0xcccccc)),
+      // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+      forceMin: 0
+      // enable: true
+    }).on('update', this.dumpJoyStickState, this);
+
+    this.scene.joystickKey='';
+    this.scene.joystickButton01Key='';
+
+    this.scene.add.existing(this.joyStick);
+
+    this.scene.text = this.scene.add.text(0, 0);
+    this.dumpJoyStickState();
+  }
+
+  onButton01Pointerdown() {
+    console.log("Button01 pressed");
+    this.scene.joystickButton01Key='down';
+  }
+
+  dumpJoyStickState() {
+    var joystickKeys = this.joyStick.createCursorKeys();
+    var s = 'Key down: ';
+    this.scene.joystickKey='';
+    for (var name in joystickKeys) {
+        if (joystickKeys[name].isDown) {
+          this.scene.joystickKey+=name;
+            s += name + ' ';
+        }
+    }
+    s += '\n';
+    s += ('Force: ' + Math.floor(this.joyStick.force * 100) / 100 + '\n');
+    s += ('Angle: ' + Math.floor(this.joyStick.angle * 100) / 100 + '\n');
+    this.scene.text.setText(s);
+  
+  }
+ }

@@ -1,3 +1,4 @@
+import { Virtualjoystick } from '../helpers/elements.js';
 import { findFrom, findAndDestroyFrom } from '../utils/utils.js';
 import { TILESET, LAYER } from '../utils/constants.js';
 
@@ -19,6 +20,14 @@ class Play extends Phaser.Scene {
     this.currentGame = game
   }
 
+  preload() {
+    var url;
+
+    //url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+    var url = '/phaser3-rex-plugins/dist/rexvirtualjoystickplugin.min.js';    
+    this.load.plugin('rexvirtualjoystickplugin', url, false);
+  }
+
   create() {
     this.createMap();
     this.createPlayers();
@@ -26,8 +35,9 @@ class Play extends Phaser.Scene {
     //this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
 
     this.registry.get('Sound').playMusic(this,'bgMusic03');
+    this.virtualJoyStick = new Virtualjoystick({scene:this,x:800,y:400,xx:180,yy:400});
   }
-  
+
   update() {
     this.physics.add.collider(this.player, this.blockLayer);
     this.physics.add.collider(this.player, this.enemies);
@@ -143,7 +153,8 @@ class Play extends Phaser.Scene {
 
   onSpoilWasPicked({ player_id, spoil_id, spoil_type }){
     if (player_id === this.player.id){
-      this.player.pickSpoil(spoil_type)
+      this.player.pickSpoil(spoil_type);
+      this.registry.get('Sound').playSound(this,'FxPickItem01');
     }
 
     findAndDestroyFrom(spoil_id, this.spoils)

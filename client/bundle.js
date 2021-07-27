@@ -1065,69 +1065,6 @@ exports["default"] = Spoil;
 
 /***/ }),
 
-/***/ "./client/js/helpers/Model.js":
-/*!************************************!*\
-  !*** ./client/js/helpers/Model.js ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Model = void 0;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var Model = /*#__PURE__*/function () {
-  function Model() {
-    _classCallCheck(this, Model);
-
-    this._soundOn = true;
-    this._musicOn = true;
-    this._bgMusicPlaying = false;
-  }
-
-  _createClass(Model, [{
-    key: "musicOn",
-    get: function get() {
-      return this._musicOn;
-    },
-    set: function set(value) {
-      this._musicOn = value;
-    }
-  }, {
-    key: "soundOn",
-    get: function get() {
-      return this._soundOn;
-    },
-    set: function set(value) {
-      this._soundOn = value;
-    }
-  }, {
-    key: "bgMusicPlaying",
-    get: function get() {
-      return this._bgMusicPlaying;
-    },
-    set: function set(value) {
-      this._bgMusicPlaying = value;
-    }
-  }]);
-
-  return Model;
-}();
-
-exports.Model = Model;
-
-/***/ }),
-
 /***/ "./client/js/helpers/elements.js":
 /*!***************************************!*\
   !*** ./client/js/helpers/elements.js ***!
@@ -1295,8 +1232,7 @@ var TextButton = /*#__PURE__*/function (_Phaser$GameObjects$S) {
     //in parameter
 
 
-    _this3 = _super3.call(this, game, 0, 0, asset, upFrame);
-    _this3.model = game.registry.get('Model'); //make a class level reference to the config
+    _this3 = _super3.call(this, game, 0, 0, asset, upFrame); //make a class level reference to the config
 
     _this3.scene = game;
     _this3.asset = asset;
@@ -1359,15 +1295,7 @@ var TextButton = /*#__PURE__*/function (_Phaser$GameObjects$S) {
     key: "onDown",
     value: function onDown() {
       if (this.enable == false) return;
-
-      if (this.model.soundOn === true) {
-        var FxDeath01 = this.scene.sound.add('FxClick01', {
-          volume: 0.8,
-          loop: false
-        });
-        FxDeath01.play();
-      }
-
+      this.scene.registry.get('Sound').playSound(this.scene, 'FxClick01');
       this.setFrame(this.downFrame);
       var mycallbackFunction = this.callback.bind(this.callbackContext);
       mycallbackFunction();
@@ -1669,15 +1597,7 @@ var MapSlider = /*#__PURE__*/function (_Phaser$GameObjects$G2) {
         label.getElement('text').setColor('red');
         console.log("Map selected: " + label.getElement('icon').name);
         label.slider.selected = label.getElement('icon').name;
-        this.model = label.slider.scene.registry.get('Model');
-
-        if (this.model.soundOn === true) {
-          var FxDeath01 = label.slider.scene.sound.add('FxClick01', {
-            volume: 0.8,
-            loop: false
-          });
-          FxDeath01.play();
-        }
+        label.slider.scene.registry.get('Sound').playSound(label.slider.scene, 'FxClick01');
       });
     });
     return _this7;
@@ -1744,6 +1664,136 @@ exports.MapSlider = MapSlider;
 
 /***/ }),
 
+/***/ "./client/js/helpers/sound.js":
+/*!************************************!*\
+  !*** ./client/js/helpers/sound.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Sound = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Sound = /*#__PURE__*/function () {
+  function Sound() {
+    _classCallCheck(this, Sound);
+
+    this._soundOn = true;
+    this._musicOn = true;
+    this._bgMusicPlaying = false;
+    this._bgSoundPlaying = false;
+    this._currentMusic = null;
+    this._currentSound = null;
+  }
+
+  _createClass(Sound, [{
+    key: "preload",
+    value: function preload(scene) {
+      scene.load.audio('bgMusic01', ['sound/Musics/TownTheme.mp3']);
+      scene.load.audio('bgMusic02', ['sound/Musics/Techno-Randomness_Looping.mp3']); // https://soundimage.org/dance-techno/
+
+      scene.load.audio('bgMusic03', ['sound/Musics/Happy-Trancin.mp3']); // https://soundimage.org/dance-techno/
+
+      scene.load.audio('bgMusic04', ['sound/Musics/Electric-Rain_Looping.mp3']); // https://soundimage.org/dance-techno/
+
+      scene.load.audio('FxExplosion01', ['sound/Effects/Explosion3.mp3']);
+      scene.load.audio('FxPickItem01', ['sound/Effects/PowerUp18.mp3']);
+      scene.load.audio('FxDeath01', ['sound/Effects/VOXEfrt_Cry of pain (ID 2361)_BSB.mp3']); // https://bigsoundbank.com/detail-2361-cry-of-pain.html
+
+      scene.load.audio('FxClick01', ['sound/Effects/UI_Quirky21.mp3']);
+      scene.load.audio('FxNewUser01', ['sound/Effects/PowerUp18.mp3']);
+    }
+  }, {
+    key: "playMusic",
+    value: function playMusic(scene, soundId) {
+      if (this.bgMusicPlaying === true && !(this._currentMusic == soundId)) {
+        scene.sound.stopByKey(this._currentMusic); //scene.sound.stopAll();
+
+        this.bgMusicPlaying = false;
+        scene.registry.set('Sound', this);
+      }
+
+      if (this.musicOn === true && this.bgMusicPlaying === false) {
+        scene.sound.add(soundId, {
+          volume: 0.5,
+          loop: true
+        }).play();
+        this.bgMusicPlaying = true;
+        this._currentMusic = soundId;
+        scene.registry.set('Sound', this);
+      }
+    }
+  }, {
+    key: "playSound",
+    value: function playSound(scene, soundId) {
+      if (this.bgSoundPlaying === true && !(this._currentMusic == soundId)) {
+        scene.sound.stopByKey(this._currentSound);
+        this.bgSoundPlaying = false;
+        scene.registry.set('Sound', this);
+      }
+
+      if (this.soundOn === true && this.bgSoundPlaying === false) {
+        scene.sound.add(soundId, {
+          volume: 0.8,
+          loop: false
+        }).play();
+        this.bgSoundPlaying = true;
+        this._currentSound = soundId;
+        scene.registry.set('Sound', this);
+      }
+    }
+  }, {
+    key: "musicOn",
+    get: function get() {
+      return this._musicOn;
+    },
+    set: function set(value) {
+      this._musicOn = value;
+    }
+  }, {
+    key: "soundOn",
+    get: function get() {
+      return this._soundOn;
+    },
+    set: function set(value) {
+      this._soundOn = value;
+    }
+  }, {
+    key: "bgMusicPlaying",
+    get: function get() {
+      return this._bgMusicPlaying;
+    },
+    set: function set(value) {
+      this._bgMusicPlaying = value;
+    }
+  }, {
+    key: "bgSoundPlaying",
+    get: function get() {
+      return this._bgSoundPlaying;
+    },
+    set: function set(value) {
+      this._bgSoundPlaying = value;
+    }
+  }]);
+
+  return Sound;
+}();
+
+exports.Sound = Sound;
+
+/***/ }),
+
 /***/ "./client/js/states/boot.js":
 /*!**********************************!*\
   !*** ./client/js/states/boot.js ***!
@@ -1763,7 +1813,7 @@ exports["default"] = exports.Boot = void 0;
 
 var _elements = __webpack_require__(/*! ../helpers/elements.js */ "./client/js/helpers/elements.js");
 
-var _Model = __webpack_require__(/*! ../helpers/Model.js */ "./client/js/helpers/Model.js");
+var _sound = __webpack_require__(/*! ../helpers/sound.js */ "./client/js/helpers/sound.js");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1800,7 +1850,7 @@ var Boot = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       console.log('Start Boot.create');
-      this.registry.set('Model', new _Model.Model());
+      this.registry.set('Sound', new _sound.Sound());
       this.registry.set('socketIO', io());
       this.scene.start('Preload');
       console.log('End  Boot.create');
@@ -1908,24 +1958,7 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         }
       });
       this.socket.emit('enter lobby', this.displayPendingGames.bind(this));
-      this.model = this.registry.get('Model');
-
-      if (!this.model.bgMusicPlaying === false && !(this.model.bgMusic == 'bgMusic02')) {
-        this.sound.stopByKey(this.model.bgMusic);
-        this.model.bgMusicPlaying = false;
-        this.registry.set('Model', this.bgMusic);
-      }
-
-      if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
-        this.bgMusic = this.sound.add('bgMusic02', {
-          volume: 0.5,
-          loop: true
-        });
-        this.bgMusic.play();
-        this.model.bgMusicPlaying = true;
-        this.model.bgMusic = 'bgMusic02';
-        this.registry.set('Model', this.model);
-      }
+      this.registry.get('Sound').playMusic(this, 'bgMusic02');
     }
   }, {
     key: "update",
@@ -2039,7 +2072,6 @@ var PendingGame = /*#__PURE__*/function (_Phaser$Scene) {
       this.socket.emit('enter pending game', {
         game_id: this.game_id
       });
-      this.model = this.registry.get('Model');
     }
   }, {
     key: "create",
@@ -2117,14 +2149,7 @@ var PendingGame = /*#__PURE__*/function (_Phaser$Scene) {
 
       if (players.length > this.playerCount) {
         console.log('New player detected');
-
-        if (this.model.soundOn === true) {
-          var FxPickItem01 = this.sound.add('FxPickItem01', {
-            volume: 0.8,
-            loop: false
-          });
-          FxPickItem01.play();
-        }
+        this.registry.get('Sound').playSound(this, 'FxPickItem01');
       }
 
       this.playerCount = players.length; //Destroy PlayerSlots if already existing
@@ -2259,41 +2284,38 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
       this.currentGame = game;
     }
   }, {
+    key: "preload",
+    value: function preload() {
+      var url; //url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+
+      url = '/phaser3-rex-plugins/dist/rexvirtualjoystickplugin.min.js';
+      this.load.plugin('rexvirtualjoystickplugin', url, true);
+      /*this.load.scenePlugin({
+        key: 'rexvirtualjoystickplugin',
+        url: '/phaser3-rex-plugins/dist/rexvirtualjoystickplugin.min.js',
+        sceneKey: 'rexvirtualjoystickplugin',
+        visible: false
+      });*/
+    }
+  }, {
     key: "create",
     value: function create() {
       this.createMap();
       this.createPlayers();
       this.setEventHandlers(); //this.game.time.events.loop(400 , this.stopAnimationLoop.bind(this));
 
-      this.model = this.registry.get('Model');
-
-      if (!this.model.bgMusicPlaying === false) {
-        this.sound.stopAll();
-        this.model.bgMusicPlaying = false;
-        this.registry.set('Model', this.bgMusic);
-      }
-
-      if (this.model.musicOn === true) {
-        this.bgMusic = this.sound.add('bgMusic03', {
-          volume: 0.5,
-          loop: true
-        });
-        this.bgMusic.play();
-        this.model.bgMusicPlaying = true;
-        this.model.bgMusic = 'bgMusic03';
-        this.registry.set('Model', this.model);
-      }
-
+      this.registry.get('Sound').playMusic(this, 'bgMusic03');
       this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-        x: 400,
-        y: 300,
-        radius: 100,
+        x: 100,
+        y: 100,
+        radius: 10,
         base: this.add.circle(0, 0, 100, 0x888888),
-        thumb: this.add.circle(0, 0, 50, 0xcccccc) // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+        thumb: this.add.circle(0, 0, 50, 0xcccccc),
+        // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
         // forceMin: 16,
-        // enable: true
-
+        enable: true
       }).on('update', this.dumpJoyStickState, this);
+      this.cursorKeys = this.joyStick.createCursorKeys();
       this.text = this.add.text(0, 0);
       this.dumpJoyStickState();
     }
@@ -2386,10 +2408,6 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
         spoil_id: spoil.id
       });
       this.spoils.remove(spoil, true, true);
-      /*if (this.model.soundOn === true) {
-        let FxPickItem01 = this.sound.add('FxPickItem01', { volume: 0.8, loop: false });
-        FxPickItem01.play();
-      }*/
     }
   }, {
     key: "onPlayerVsBlast",
@@ -2400,14 +2418,7 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
           row: player.currentRow()
         });
         player.becomesDead();
-
-        if (this.model.soundOn === true) {
-          var FxDeath01 = this.sound.add('FxDeath01', {
-            volume: 0.8,
-            loop: false
-          });
-          FxDeath01.play();
-        }
+        this.registry.get('Sound').playSound(this, 'FxDeath01');
       }
     }
   }, {
@@ -2462,15 +2473,7 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
           blastedCells = _ref3.blastedCells;
       // Remove Bomb:
       (0, _utils.findAndDestroyFrom)(bomb_id, this.bombs);
-
-      if (this.model.soundOn === true) {
-        var FxExplosion01 = this.sound.add('FxExplosion01', {
-          volume: 0.8,
-          loop: false
-        });
-        FxExplosion01.play();
-      } // Render Blast:
-
+      this.registry.get('Sound').playSound(this, 'FxExplosion01'); // Render Blast:
 
       var _iterator2 = _createForOfIteratorHelper(blastedCells),
           _step2;
@@ -2543,6 +2546,7 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
 
       if (player_id === this.player.id) {
         this.player.pickSpoil(spoil_type);
+        this.registry.get('Sound').playSound(this, 'FxPickItem01');
       }
 
       (0, _utils.findAndDestroyFrom)(spoil_id, this.spoils);
@@ -2555,14 +2559,7 @@ var Play = /*#__PURE__*/function (_Phaser$Scene) {
           row = _ref5.row;
       this.bones.add(new _bone["default"](this, col, row));
       (0, _utils.findAndDestroyFrom)(player_id, this.enemies);
-
-      if (this.model.soundOn === true) {
-        var FxDeath01 = this.sound.add('FxDeath01', {
-          volume: 0.8,
-          loop: false
-        });
-        FxDeath01.play();
-      }
+      this.registry.get('Sound').playSound(this, 'FxDeath01');
     }
   }, {
     key: "onPlayerWin",
@@ -2775,21 +2772,7 @@ var Preload = /*#__PURE__*/function (_Phaser$Scene) {
         frameWidth: 32,
         frameHeight: 32
       });
-      this.load.audio('bgMusic01', ['sound/Musics/TownTheme.mp3']);
-      this.load.audio('bgMusic02', ['sound/Musics/Techno-Randomness_Looping.mp3']); // https://soundimage.org/dance-techno/
-
-      this.load.audio('bgMusic03', ['sound/Musics/Happy-Trancin.mp3']); // https://soundimage.org/dance-techno/
-
-      this.load.audio('bgMusic04', ['sound/Musics/Electric-Rain_Looping.mp3']); // https://soundimage.org/dance-techno/
-
-      this.load.audio('FxExplosion01', ['sound/Effects/Explosion3.mp3']);
-      this.load.audio('FxPickItem01', ['sound/Effects/PowerUp18.mp3']);
-      this.load.audio('FxDeath01', ['sound/Effects/VOXEfrt_Cry of pain (ID 2361)_BSB.mp3']); // https://bigsoundbank.com/detail-2361-cry-of-pain.html
-
-      this.load.audio('FxClick01', ['sound/Effects/UI_Quirky21.mp3']);
-      this.load.audio('FxNewUser01', ['sound/Effects/PowerUp18.mp3']);
-      var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
-      this.load.plugin('rexvirtualjoystickplugin', url, true);
+      this.registry.get('Sound').preload(this);
     }
   }, {
     key: "create",
@@ -3034,24 +3017,7 @@ var Win = /*#__PURE__*/function (_Phaser$Scene) {
         }
       });
       this.cursorKeys = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-      this.model = this.registry.get('Model');
-
-      if (!this.model.bgMusicPlaying === false) {
-        this.sound.stopAll();
-        this.model.bgMusicPlaying = false;
-        this.registry.set('Model', this.bgMusic);
-      }
-
-      if (this.model.musicOn === true) {
-        this.bgMusic = this.sound.add('bgMusic01', {
-          volume: 0.5,
-          loop: true
-        });
-        this.bgMusic.play();
-        this.model.bgMusicPlaying = true;
-        this.model.bgMusic = 'bgMusic01';
-        this.registry.set('Model', this.model);
-      }
+      this.registry.get('Sound').playMusic(this, 'bgMusic01');
     }
   }, {
     key: "update",

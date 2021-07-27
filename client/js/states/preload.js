@@ -78,9 +78,6 @@ export class Preload extends Phaser.Scene {
     this.load.spritesheet('bomberman_Valpo',     'images/game/chars/11-preview.png', { frameWidth: 32, frameHeight: 32});
 
     this.registry.get('Sound').preload(this);
-
-    var url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
-    this.load.plugin('rexvirtualjoystickplugin', url, true);
   }
 
   create() {
