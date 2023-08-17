@@ -83,8 +83,10 @@ class SelectMap extends Phaser.Scene {
   } 
 
   confirmStageSelection() {
-    if (this.mapSlider.selected!=null)
+    if (this.mapSlider.selected!=null){
       this.selectedMap=this.mapSlider.selected;
+      console.log('Selected Map: '+this.selectedMap);
+    }
     this.socket.emit('create game', this.selectedMap, this.joinToNewGame.bind(this));
   };
 

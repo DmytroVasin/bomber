@@ -50,7 +50,7 @@ class Play extends Phaser.Scene {
   }
 
   createMap() {
-    this.map = this.add.tilemap('hot_map');
+    this.map = this.add.tilemap(this.currentGame.map_name);
 
     const tileset=this.map.addTilesetImage(TILESET,null, 35, 35, 0, 0);
     this.blockLayer = this.map.createLayer(LAYER, tileset);
