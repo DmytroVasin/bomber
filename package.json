@@ -25,12 +25,12 @@
     "faker": "^4.1.0",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
+    "phaser": "3.60.0",
+    "phaser3-rex-plugins": "^1.60.4",
     "serve-favicon": "^2.4.5",
     "socket.io": "^4.1.2",
     "uuid": "^3.1.0",
-    "yarn": "^1.16.0",
-    "phaser": "3.55.0",
-    "phaser3-rex-plugins": "^1.1.56"
+    "yarn": "^1.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.31",
