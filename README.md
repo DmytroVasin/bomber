@@ -21,10 +21,16 @@ Within the game, players can upgrade skills like:
 * ![Bomb setting time](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/time.png) Bomb setting time: can be reduced to 0.5 seconds
 * ![Power Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/power.png) Power: no limit
 
+This is a fork of the [git DmytroVasin/bomber](https://github.com/DmytroVasin/bomber). 
+Change log:
+* Evo: Migration from Phaser2 to phaser3.
+* Evo: Docker installation
+* Evo: Add musics and sound effects 
+* Evo: Add Slider for map selection
+* Evo: Add VirtualJoystick
+
 ## Demo:
 You can find a tutorial on how to make Bomberman-style games here: [Tutorial (need work)](https://github.com/DmytroVasin/bomber/blob/master/tutorial.md)
-
-A demo of this game can be found on Heroku: [Bomberman with multiplayer - Demo](https://bomb-attack.herokuapp.com/)
 
 Note: To play the game, you should open the browser in two separate windows. The game pauses when You open a new tab in the same window. Open game in different windows.
 
@@ -53,7 +59,7 @@ Steps:
 4. Check out the game at [http://localhost:3000](http://localhost:3000)
 5. Enjoy!
 
-Used for developement docker container could be configured to use external folders.
+Used for developement, docker container could be configured to use external folders.
 Steps:
 1. Clone the repository into your local path E.g: `c:\opt\` for windows or `/opt` for unix
 2. Run `docker build --tag bomber:1.0.dev -f Dockerfile_dev .` inside the newly created directory.
@@ -61,6 +67,7 @@ Steps:
     * For Windows: `docker run -d -it --name bomber_dev.server --restart=always -p 3001:3000 -v C:/opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0.dev`
     * For Linux: `docker run -d -it --name bomber_dev.server --restart=always -p 3001:3000 -v /opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0.dev`
 4. Check out the game at [http://localhost:3001](http://localhost:3001)
+5. On any changes in the code, you have to restart the docker container to test yours updates.
 5. Enjoy!
 
 ## Notes:
