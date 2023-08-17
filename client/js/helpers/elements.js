@@ -380,23 +380,7 @@ export class MapSlider extends Phaser.GameObjects.Group {
       add: true
     });
 
-    var graphic3 = this.scene.add.graphics({
-      x: xx,
-      y: yy,
-  
-      lineStyle: {
-           width: 3,
-           color: 0xffffff,
-           alpha: 1
-       },
-       fillStyle: {
-           color: 0xcccccc,
-           alpha: 1
-       },
-  
-      add: true
-    });
-
+    //Add Fire button
     var graphics = this.scene.add.graphics({ fillStyle: { color: 0x888888,alpha: 0.2 } });
     var circle = new Phaser.Geom.Circle(xx,yy, 100, 0x888888);
     this.button01=graphics.fillCircleShape(circle);
@@ -404,25 +388,23 @@ export class MapSlider extends Phaser.GameObjects.Group {
       xx, // center x
       yy, // center y
       100 // radius
-    ),
-    Phaser.Geom.Circle.Contains);
+    ), Phaser.Geom.Circle.Contains);
     this.button01.on('pointerdown', this.onButton01Pointerdown, this);
+    this.scene.joystickButton01Key='';
     this.scene.add.existing(this.button01);
 
+    //Add JoyStick
     this.joyStick = this.scene.plugins.get('rexvirtualjoystickplugin').add(this.scene, {
       x: x,
       y: y,
       radius: 100,
-      base: graphic1.fillCircleShape(this.scene.add.circle(0,0, 100, 0x888888)),
-      thumb: graphic2.fillCircleShape(this.scene.add.circle(0,0, 50, 0xcccccc)),
+      base: graphic1.fillCircleShape(this.scene.add.circle(0,0, 100, 0x888888,0)),
+      thumb: graphic2.fillCircleShape(this.scene.add.circle(0,0, 50, 0xcccccc,0)),
       // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
       forceMin: 0
       // enable: true
     }).on('update', this.dumpJoyStickState, this);
-
     this.scene.joystickKey='';
-    this.scene.joystickButton01Key='';
-
     this.scene.add.existing(this.joyStick);
 
     this.scene.text = this.scene.add.text(0, 0);
@@ -434,6 +416,7 @@ export class MapSlider extends Phaser.GameObjects.Group {
     this.scene.joystickButton01Key='down';
   }
 
+  //Display Joystick debug informations
   dumpJoyStickState() {
     var joystickKeys = this.joyStick.createCursorKeys();
     var s = 'Key down: ';
@@ -444,10 +427,11 @@ export class MapSlider extends Phaser.GameObjects.Group {
             s += name + ' ';
         }
     }
+    //Display Joystick debug informations
+    return;
     s += '\n';
     s += ('Force: ' + Math.floor(this.joyStick.force * 100) / 100 + '\n');
     s += ('Angle: ' + Math.floor(this.joyStick.angle * 100) / 100 + '\n');
     this.scene.text.setText(s);
-  
   }
  }
