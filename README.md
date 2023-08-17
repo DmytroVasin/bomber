@@ -46,16 +46,17 @@ Steps:
 
 The game can be also deployed into docker environemnt (Docker should be installed).
 Steps:
-1. Run `docker build --tag bomber:1.0 .` inside the newly created directory.
-2. Create and run the container 
+1. Clone the repository.
+2. Run `docker build --tag bomber:1.0 .` inside the newly created directory.
+3. Create and run the container 
     * `docker run -d -it --name bomber.server --restart=always  -p 3000:3000 bomber:1.0`
-3. Check out the game at [http://localhost:3000](http://localhost:3000)
-4. Enjoy!
+4. Check out the game at [http://localhost:3000](http://localhost:3000)
+5. Enjoy!
 
 Used for developement docker container could be configured to use external folders.
 Steps:
 1. Clone the repository into your local path E.g: `c:\opt\` for windows or `/opt` for unix
-2. Run `docker build --tag bomber:1.0.dev .` inside the newly created directory.
+2. Run `docker build --tag bomber:1.0.dev -f Dockerfile_dev .` inside the newly created directory.
 3. Create and run the container 
     * For Windows: `docker run -d -it --name bomber_dev.server --restart=always -p 3001:3000 -v C:/opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0.dev`
     * For Linux: `docker run -d -it --name bomber_dev.server --restart=always -p 3001:3000 -v /opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0.dev`
