@@ -8,6 +8,7 @@ export default class EnemyPlayer extends Phaser.GameObjects.Sprite {
 
     this.game = game
     this.id = id;
+    this.skin=skin;
 
     this.currentPosition = spawn;
     this.lastMoveAt = 0;
@@ -17,12 +18,12 @@ export default class EnemyPlayer extends Phaser.GameObjects.Sprite {
     this.body.pushable = false;
     this.setSize(20, 20);
 
-    const anims=game.anims;
-    anims.create({key:'up', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 9, end: 11 }),  frameRate:15, repeat: -1});
-    anims.create({key:'down', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 0, end: 2 }),  frameRate:15, repeat: -1});
-    anims.create({key:'right', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 6, end: 8 }),  frameRate:15, repeat: -1});
-    anims.create({key:'left', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 3, end: 5 }),  frameRate:15, repeat: -1});
-
+    //const anims=game.anims;
+    this.anims.create({key:'up', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 9, end: 11 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'down', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 0, end: 2 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'right', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 6, end: 8 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'left', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 3, end: 5 }),  frameRate:15, repeat: -1});
+    //this.anims=anims;
 
     this.defineSelf(skin)
   }

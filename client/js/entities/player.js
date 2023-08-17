@@ -33,11 +33,13 @@ export default class Player extends Phaser.GameObjects.Sprite {
       loop: true
     });
 
-    const anims=game.anims;
-    anims.create({key:'up', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 9, end: 11 }),  frameRate:15, repeat: -1});
-    anims.create({key:'down', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 0, end: 2 }),  frameRate:15, repeat: -1});
-    anims.create({key:'right', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 6, end: 8 }),  frameRate:15, repeat: -1});
-    anims.create({key:'left', frames: anims.generateFrameNumbers('bomberman_' + skin, { start: 3, end: 5 }),  frameRate:15, repeat: -1});
+    //const anims=game.anims;
+    console.log("Creating player "+skin+" ...");
+    this.anims.create({key:'up', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 9, end: 11 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'down', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 0, end: 2 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'right', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 6, end: 8 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'left', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 3, end: 5 }),  frameRate:15, repeat: -1});
+    //this.anims=anims;
 
     this.info = new Info({ game: this.game, player: this });
 
