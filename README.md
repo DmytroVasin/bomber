@@ -25,7 +25,10 @@ This is a fork of the [git DmytroVasin/bomber](https://github.com/DmytroVasin/bo
 Change log:
 * Evo: Migration from Phaser2 to phaser3.
 * Evo: Docker installation
-* Evo: Add musics and sound effects 
+* Evo: Add musics and sound effects
+  - Techno-Randomness_Looping, Happy-Trancin and Electric-Rain_Looping musics as Licence Publique Internationale Soundimage by Eric Matyas (www.soundimage.org)
+  - TownTheme Licence CC0 1.0 from (https://opengameart.org/content/town-theme-rpg)
+  - Sound effects as Licence Publique Internationale Soundimage by Eric Matyas (www.soundimage.org)
 * Evo: Add Slider for map selection
 * Evo: Add VirtualJoystick
 

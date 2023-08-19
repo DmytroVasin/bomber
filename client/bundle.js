@@ -397,15 +397,14 @@ var EnemyPlayer = /*#__PURE__*/function (_Phaser$GameObjects$S) {
       }
       this.anims.play(face);
       this.currentPosition = newPosition;
-      this.playerText.setPosition(this.body.x + _constants.TILE_SIZE / 2, this.body.y - 10);
     }
   }, {
     key: "defineSelf",
     value: function defineSelf(name) {
-      this.playerText = new _elements.Text({
+      var playerText = new _elements.Text({
         game: this.game,
-        x: this.body.x + _constants.TILE_SIZE / 2,
-        y: this.body.y - 10,
+        x: _constants.TILE_SIZE / 2,
+        y: -10,
         text: name,
         style: {
           font: '14px Areal',
@@ -414,7 +413,7 @@ var EnemyPlayer = /*#__PURE__*/function (_Phaser$GameObjects$S) {
           strokeThickness: 3
         }
       });
-      this.game.add.existing(this.playerText);
+      this.game.add.existing(playerText);
     }
   }]);
   return EnemyPlayer;
@@ -1456,21 +1455,6 @@ var Virtualjoystick = /*#__PURE__*/function (_Phaser$GameObjects$G3) {
       },
       add: true
     });
-    /*
-    var graphic3 = this.scene.add.graphics({
-      x: xx,
-      y: yy,
-         lineStyle: {
-           width: 3,
-           color: 0xffffff,
-           alpha: 1
-       },
-       fillStyle: {
-           color: 0xcccccc,
-           alpha: 1
-       },
-         add: true
-    });*/
 
     //Add Fire button
     var graphics = _this8.scene.add.graphics({
