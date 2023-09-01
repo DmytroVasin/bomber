@@ -1,15 +1,15 @@
 import {
   PING, TILE_SIZE, MAX_SPEED, STEP_SPEED, INITIAL_SPEED, SPEED, POWER, DELAY,
   MIN_DELAY, STEP_DELAY, INITIAL_DELAY, INITIAL_POWER, STEP_POWER
-} from '../utils/constants';
+} from '../utils/constants.js';
 
-import Info from './info';
-import { SpoilNotification, Text } from '../helpers/elements';
+import Info from './info.js';
+import { SpoilNotification, Text } from '../helpers/elements.js';
 
-export default class Player extends Phaser.Sprite {
+export default class Player extends Phaser.GameObjects.Sprite {
 
   constructor({ game, id, spawn, skin }) {
-    super(game, spawn.x, spawn.y, 'bomberman_' + skin);
+    super(game, (spawn.x) + TILE_SIZE / 2, (spawn.y)  + TILE_SIZE / 2, 'bomberman_' + skin);
 
     this.game = game;
     this.id = id;
@@ -22,20 +22,32 @@ export default class Player extends Phaser.Sprite {
     this._lastBombTime = 0;
 
     this.game.add.existing(this);
-    this.game.physics.arcade.enable(this);
-    this.body.setSize(20, 20, 6, 6);
+    this.game.physics.add.existing(this);
+    this.body.pushable = false;
 
-    game.time.events.loop(PING , this.positionUpdaterLoop.bind(this));
+    this.setSize(20, 20);
+    this.game.time.addEvent({
+      delay: PING,                // ms
+      callback: this.positionUpdaterLoop.bind(this),
+      callbackScope: this,
+      loop: true
+    });
 
-    this.animations.add('up', [9, 10, 11], 15, true);
-    this.animations.add('down', [0, 1, 2], 15, true);
-    this.animations.add('right', [6, 7, 8], 15, true);
-    this.animations.add('left', [3, 4, 5], 15, true);
+    //const anims=game.anims;
+    console.log("Creating player "+skin+" ...");
+    this.anims.create({key:'up', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 9, end: 11 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'down', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 0, end: 2 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'right', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 6, end: 8 }),  frameRate:15, repeat: -1});
+    this.anims.create({key:'left', frames: this.anims.generateFrameNumbers('bomberman_' + skin, { start: 3, end: 5 }),  frameRate:15, repeat: -1});
+    //this.anims=anims;
 
     this.info = new Info({ game: this.game, player: this });
 
     this.defineKeyboard()
+    this.defineJoyStick()
     this.defineSelf(skin)
+    this.socket=this.game.registry.get('socketIO');
+    this.alive=true;
   }
 
   update() {
@@ -44,79 +56,79 @@ export default class Player extends Phaser.Sprite {
       this.handleBombs()
     }
 
-    // this.game.debug.body(this);
-    // this.game.debug.spriteInfo(this, 32, 32);
   }
 
   defineKeyboard() {
-    this.upKey    = this.game.input.keyboard.addKey(Phaser.Keyboard.UP)
-    this.downKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN)
-    this.leftKey  = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT)
-    this.rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT)
-    this.spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    this.cursorKeys  = this.game.input.keyboard.createCursorKeys();
+  }
+
+  defineJoyStick() {
+    this.joystickKey  = this.game.joystickKey;
   }
 
   handleMoves() {
     this.body.velocity.set(0);
     let animationsArray = []
 
-    if (this.leftKey.isDown){
+    if (this.cursorKeys.left.isDown|| this.game.joystickKey.includes('left')){
       this.body.velocity.x = -this.speed;
       animationsArray.push('left')
-    } else if (this.rightKey.isDown) {
+    } else if (this.cursorKeys.right.isDown|| this.game.joystickKey.includes('right')) {
       this.body.velocity.x = this.speed;
       animationsArray.push('right')
     }
 
-    if (this.upKey.isDown) {
+    if (this.cursorKeys.up.isDown|| this.game.joystickKey.includes('up')) {
       this.body.velocity.y = -this.speed;
       animationsArray.push('up')
-    } else if (this.downKey.isDown) {
+    } else if (this.cursorKeys.down.isDown|| this.game.joystickKey.includes('down')) {
       this.body.velocity.y = this.speed;
       animationsArray.push('down')
     }
 
     let currentAnimation = animationsArray[0]
     if (currentAnimation){
-      this.animations.play(currentAnimation)
+      this.anims.play(currentAnimation)
       return
     }
 
-    this.animations.stop();
+    this.anims.stop();
   }
 
   handleBombs() {
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+    if (this.cursorKeys.space.isDown ||this.game.joystickButton01Key.includes('down')) {
       let now = this.game.time.now;
 
       if (now > this._lastBombTime) {
         this._lastBombTime = now + this.delay;
 
-        clientSocket.emit('create bomb', { col: this.currentCol(), row: this.currentRow() });
+        this.socket.emit('create bomb', { col: this.currentCol(), row: this.currentRow() });
+        this.game.joystickButton01Key='';
       }
     }
   }
 
   currentCol() {
-    return Math.floor(this.body.position.x / TILE_SIZE)
+    return Math.floor(this.body.x / TILE_SIZE)
   }
 
   currentRow() {
-    return Math.floor(this.body.position.y / TILE_SIZE)
+    return Math.floor(this.body.y / TILE_SIZE)
   }
 
   positionUpdaterLoop() {
-    let newPosition = { x: this.position.x, y: this.position.y }
+    let newPosition = { x: this.x, y: this.y }
 
     if (this.prevPosition.x !== newPosition.x || this.prevPosition.y !== newPosition.y) {
-      clientSocket.emit('update player position', newPosition);
+      this.socket.emit('update player position', newPosition);
       this.prevPosition = newPosition;
     }
   }
 
   becomesDead() {
+    this.alive=false;
     this.info.showDeadInfo()
-    this.kill();
+    this.destroy();
   }
 
   pickSpoil( spoil_type ){
@@ -134,7 +146,7 @@ export default class Player extends Phaser.Sprite {
       asset = 'speed_up_bonus'
     }
 
-    new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
+    new SpoilNotification({ game: this.game, asset: asset, x: this.x, y: this.y })
   }
 
   increaseDelay(){
@@ -146,7 +158,7 @@ export default class Player extends Phaser.Sprite {
       asset = 'delay_up_bonus'
     }
 
-    new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
+    new SpoilNotification({ game: this.game, asset: asset, x: this.x, y: this.y })
   }
 
   increasePower(){
@@ -155,7 +167,7 @@ export default class Player extends Phaser.Sprite {
     this.power += STEP_POWER;
     this.info.refreshStatistic();
 
-    new SpoilNotification({ game: this.game, asset: asset, x: this.position.x, y: this.position.y })
+    new SpoilNotification({ game: this.game, asset: asset, x: this.x, y: this.y })
   }
 
   defineSelf(name) {
@@ -172,6 +184,6 @@ export default class Player extends Phaser.Sprite {
       }
     })
 
-    this.addChild(playerText);
+    this.game.add.existing(playerText);
   }
 }

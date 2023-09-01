@@ -1,10 +1,10 @@
 ## A Bomberman-style game with multiplayer option.
 
-A Bomberman-style game with multiplayer option made with [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
+A Bomberman-style game with multiplayer option made with [Phaser.js v3](https://phaser.io/), [Node.js](https://nodejs.org/uk/), [Express.js](http://expressjs.com/), [Socket.io](https://socket.io/).
 
 ### Game description:
 
-The game is designed for up to three players.
+The game is designed for up to Six players.
 
 Games can be played on one of two maps.
 
@@ -21,10 +21,19 @@ Within the game, players can upgrade skills like:
 * ![Bomb setting time](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/time.png) Bomb setting time: can be reduced to 0.5 seconds
 * ![Power Up](https://raw.githubusercontent.com/DmytroVasin/bomber/master/_readme/power.png) Power: no limit
 
+This is a fork of the [git DmytroVasin/bomber](https://github.com/DmytroVasin/bomber). 
+Change log:
+* Evo: Migration from Phaser2 to phaser3.
+* Evo: Docker installation
+* Evo: Add musics and sound effects
+  - Techno-Randomness_Looping, Happy-Trancin and Electric-Rain_Looping musics as Licence Publique Internationale Soundimage by Eric Matyas (www.soundimage.org)
+  - TownTheme Licence CC0 1.0 from (https://opengameart.org/content/town-theme-rpg)
+  - Sound effects as Licence Publique Internationale Soundimage by Eric Matyas (www.soundimage.org)
+* Evo: Add Slider for map selection
+* Evo: Add VirtualJoystick
+
 ## Demo:
 You can find a tutorial on how to make Bomberman-style games here: [Tutorial (need work)](https://github.com/DmytroVasin/bomber/blob/master/tutorial.md)
-
-A demo of this game can be found on Heroku: [Bomberman with multiplayer - Demo](https://bomb-attack.herokuapp.com/)
 
 Note: To play the game, you should open the browser in two separate windows. The game pauses when You open a new tab in the same window. Open game in different windows.
 
@@ -42,6 +51,26 @@ Steps:
 2. Run `yarn install` inside a newly created directory.
 3. Start the server with the command `yarn run server` ( defined in the `package.json` file ). This will launch `webpack` in your development environment and then start the `node` server.
 4. Check out the game at [http://localhost:3000](http://localhost:3000)
+5. Enjoy!
+
+The game can be also deployed into docker environemnt (Docker should be installed).
+Steps:
+1. Clone the repository.
+2. Run `docker build --tag bomber:1.0 .` inside the newly created directory.
+3. Create and run the container 
+    * `docker run -d -it --name bomber.server --restart=always  -p 3000:3000 bomber:1.0`
+4. Check out the game at [http://localhost:3000](http://localhost:3000)
+5. Enjoy!
+
+Used for developement, docker container could be configured to use external folders.
+Steps:
+1. Clone the repository into your local path E.g: `c:\opt\` for windows or `/opt` for unix
+2. Run `docker build --tag bomber:1.0.dev -f Dockerfile_dev .` inside the newly created directory.
+3. Create and run the container 
+    * For Windows: `docker run -d -it --name bomber_dev.server --restart=always -p 3001:3000 -v C:/opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0.dev`
+    * For Linux: `docker run -d -it --name bomber_dev.server --restart=always -p 3001:3000 -v /opt/bomber:/mnt/bomber -w /mnt/bomber bomber:1.0.dev`
+4. Check out the game at [http://localhost:3001](http://localhost:3001)
+5. On any changes in the code, you have to restart the docker container to test yours updates.
 5. Enjoy!
 
 ## Notes:

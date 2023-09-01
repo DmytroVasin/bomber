@@ -8,12 +8,18 @@ var pendingGames = new Map();
 var Lobby = {
   onEnterLobby: function (callback) {
     // this == socket
+    if (!this.lobbymessage){
+      console.log('==>#enter lobby# [User:'+this.id+'][lobby:] Player requesting joining the Lobby [lobby:'+lobbyId+']. Server is sending availablePendingGames [NbGames:'+Lobby.availablePendingGames().length+']');
+      this.lobbymessage=true;
+    }
     this.join(lobbyId);
 
     callback( Lobby.availablePendingGames() )
   },
 
   onLeaveLobby: function () {
+    console.log('==>#leave lobby# [User:'+this.id+'][lobby:'+lobbyId+'] Player notifing leaving the Lobby');
+    this.lobbymessage=null;
     this.leave(lobbyId);
   },
 
@@ -23,10 +29,13 @@ var Lobby = {
 
     Lobby.updateLobbyGames()
 
+    console.log('==>#create game# [User:'+this.id+'][lobby:] Player request create a new Game. Response is the New Game created [Game:'+newGame.id+']');
+
     callback({ game_id: newGame.id });
   },
 
   onEnterPendingGame: function ({ game_id }) {
+    console.log('==>#enter pending game# [User:'+this.id+'][Game:] Player requesting enter in the Game [Game:'+game_id+'].');
     let current_game = pendingGames.get(game_id);
 
     this.join(current_game.id);
@@ -45,6 +54,7 @@ var Lobby = {
   },
 
   onLeavePendingGame: function() {
+    console.log('==>#leave pending game# [User:'+this.id+'][Game:'+this.socket_game_id+'] Player requesting leaving the Game');
     let current_game = pendingGames.get(this.socket_game_id);
 
     if (current_game) {

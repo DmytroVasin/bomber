@@ -1,5 +1,5 @@
 export const findFrom = function(id, entities) {
-  for (let entity of entities.children) {
+  for (let entity of entities.getChildren()) {
     if (entity.id !== id) { continue }
 
     return entity

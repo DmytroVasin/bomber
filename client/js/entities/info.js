@@ -1,3 +1,5 @@
+import { TILE_SIZE } from '../utils/constants.js';
+
 export default class Info {
 
   constructor({ game, player }) {
@@ -7,23 +9,23 @@ export default class Info {
     this.style    = { font: '14px Arial', fill: '#ffffff', align: 'left' }
     this.redStyle = { font: '30px Arial', fill: '#ff0044', align: 'center' };
 
-    let bootsIcon  = new Phaser.Image(this.game, 5, 2, 'placeholder_speed');
-    this.speedText = new Phaser.Text(this.game, 35, 7, this.speedLabel(), this.style);
-    bootsIcon.addChild(this.speedText)
+    let bootsIcon  = this.game.add.image(TILE_SIZE*2, TILE_SIZE / 2, 'placeholder_speed');
+    this.speedText = this.game.add.text(TILE_SIZE*2, TILE_SIZE / 4, this.speedLabel(), this.style);
     this.game.add.existing(bootsIcon);
+    this.game.add.existing(this.speedText);
 
-    let powerIcon  = new Phaser.Image(this.game, 110, 2, 'placeholder_power');
-    this.powerText = new Phaser.Text(this.game, 35, 7, this.powerLabel(), this.style);
-    powerIcon.addChild(this.powerText)
+    let powerIcon  = this.game.add.image(TILE_SIZE*5, TILE_SIZE / 2, 'placeholder_power');
+    this.powerText = this.game.add.text(TILE_SIZE*5, TILE_SIZE / 4, this.powerLabel(), this.style);
     this.game.add.existing(powerIcon);
+    this.game.add.existing(this.powerText);
 
-    let delayIcon  = new Phaser.Image(this.game, 215, 2, 'placeholder_time');
-    this.delayText = new Phaser.Text(this.game, 35, 7, this.delayLabel(), this.style);
-    delayIcon.addChild(this.delayText)
+    let delayIcon  = this.game.add.image(TILE_SIZE*8, TILE_SIZE / 2, 'placeholder_time');
+    this.delayText = this.game.add.text(TILE_SIZE*8, TILE_SIZE / 4, this.delayLabel(), this.style);
     this.game.add.existing(delayIcon);
+    this.game.add.existing(this.delayText);
 
-    this.deadText = this.game.add.text(this.game.world.centerX, this.game.world.height - 30, 'You died :(', this.redStyle);
-    this.deadText.anchor.set(0.5);
+    this.deadText = this.game.add.text(this.game.sys.canvas.clientWidth/2, this.game.sys.canvas.clientWidth/2 - 30, 'You died :(', this.redStyle);
+    this.deadText.setOrigin(0.5,0.5);
     this.deadText.visible = false
   }
 

@@ -1,6 +1,6 @@
-import { SPEED, POWER, DELAY, TILE_SIZE } from '../utils/constants';
+import { SPEED, POWER, DELAY, TILE_SIZE } from '../utils/constants.js';
 
-export default class Spoil extends Phaser.Sprite {
+export default class Spoil extends Phaser.GameObjects.Sprite {
 
   constructor(game, spoil) {
 
@@ -15,11 +15,12 @@ export default class Spoil extends Phaser.Sprite {
       spoil_type = 2
     }
 
-    super(game, (spoil.col * TILE_SIZE), (spoil.row * TILE_SIZE), 'spoil_tileset', spoil_type);
+    super(game, (spoil.col * TILE_SIZE)+ TILE_SIZE / 2, (spoil.row * TILE_SIZE)+ TILE_SIZE / 2, 'spoil_tileset', spoil_type);
 
     this.id = spoil.id
 
-    this.game.physics.arcade.enable(this);
+    game.add.existing(this);
+    game.physics.add.existing(this);
   }
 
 }

@@ -1,39 +1,42 @@
-import { Text, Button, TextButton, PlayerSlots } from '../helpers/elements';
+import { Text, TextButton, PlayerSlots } from '../helpers/elements.js';
 
-class PendingGame extends Phaser.State {
+class PendingGame extends Phaser.Scene {
+
+  constructor () {
+    super('PendingGame');
+  }
 
   init({ game_id }) {
+    this.socket=this.registry.get('socketIO');
     this.slotsWithPlayer = null;
+    this.playerCount=0;
 
     this.game_id = game_id;
 
-    clientSocket.on('update game', this.displayGameInfo.bind(this));
-    clientSocket.on('launch game', this.launchGame.bind(this));
-
-    clientSocket.emit('enter pending game', { game_id: this.game_id });
+    this.socket.emit('enter pending game', { game_id: this.game_id });
   }
 
   create() {
-    let background = this.add.image(this.game.world.centerX, this.game.world.centerY, 'main_menu');
-    background.anchor.setTo(0.5);
+    let background = this.add.image(this.sys.canvas.clientWidth/2, this.sys.canvas.clientHeight/2, 'main_menu');
+    background.setOrigin(0.5,0.5);
 
-    this.gameTitle = new Text({
-      game: this.game,
-      x: this.game.world.centerX,
-      y: this.game.world.centerY - 215,
+    new Text({
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 - 215,
       text: '',
       style: {
         font: '35px Areal',
         fill: '#9ec0ba',
-        stroke: '#6f7975',
+        stroke: '#7f9995',
         strokeThickness: 3
       }
     })
 
     this.startGameButton = new TextButton({
-      game: this.game,
-      x: this.game.world.centerX + 105,
-      y: this.game.world.centerY + 195,
+      game: this,
+      x: this.sys.canvas.clientWidth/2 + 105,
+      y: this.sys.canvas.clientHeight/2 + 195,
       asset: 'buttons',
       callback: this.startGameAction,
       callbackContext: this,
@@ -47,13 +50,12 @@ class PendingGame extends Phaser.State {
         fill: '#000000'
       }
     });
-
-    this.startGameButton.disable()
+    this.startGameButton.disactivate();
 
     new TextButton({
-      game: this.game,
-      x: this.game.world.centerX - 105,
-      y: this.game.world.centerY + 195,
+      game: this,
+      x: this.sys.canvas.clientWidth/2 - 105,
+      y: this.sys.canvas.clientHeight/2 + 195,
       asset: 'buttons',
       callback: this.leaveGameAction,
       callbackContext: this,
@@ -68,50 +70,75 @@ class PendingGame extends Phaser.State {
       }
     });
 
+    this.gameTitle = new Text({
+      game: this,
+      x: this.sys.canvas.clientWidth/2,
+      y: this.sys.canvas.clientHeight/2 - 215,
+      text: '',
+      style: {
+        font: '35px Areal',
+        fill: '#9ec0ba',
+        stroke: '#6f7975',
+        strokeThickness: 3
+      }
+    })
+
+    this.socket.on('update game', this.displayGameInfo.bind(this));
+    this.socket.on('launch game', this.launchGame.bind(this));
+
   }
 
   displayGameInfo({ current_game }) {
     let players = Object.values(current_game.players);
 
-    this.gameTitle.text = current_game.name
+    this.gameTitle.text = current_game.name;
 
+    if (players.length > this.playerCount){
+      console.log('New player detected');
+      this.registry.get('Sound').playSound(this,'FxPickItem01');
+    }
+    this.playerCount=players.length;
+
+    //Destroy PlayerSlots if already existing
     if (this.slotsWithPlayer) {
-      this.slotsWithPlayer.destroy()
+      this.slotsWithPlayer.destroy();
     }
 
+    //Create the PlayerSlots to display players
     this.slotsWithPlayer = new PlayerSlots({
-      game: this.game,
+      game: this,
       max_players: current_game.max_players,
       players: players,
-      x: this.game.world.centerX - 245,
-      y: this.game.world.centerY - 80,
+      x: this.sys.canvas.clientWidth/2 - 174,
+      y: this.sys.canvas.clientHeight/2 - 81,
       asset_empty: 'bomberman_head_blank',
       asset_player: 'bomberman_head_',
       style: {
         font: '20px Areal',
         fill: '#48291c'
       }
-    })
+    });
 
+    //Activate the Start button if more than one user in the PlayerSlots
     if(players.length > 1) {
-      this.startGameButton.enable();
+      this.startGameButton.activate();
     } else {
-      this.startGameButton.disable();
+      this.startGameButton.disactivate();
     }
   }
 
   leaveGameAction() {
-    clientSocket.emit('leave pending game');
+    this.socket.emit('leave pending game');
 
-    this.state.start('Menu');
+    this.scene.start('Menu');
   }
 
   startGameAction() {
-    clientSocket.emit('start game');
+    this.socket.emit('start game');
   }
 
   launchGame(game) {
-    this.state.start('Play', true, false, game);
+    this.scene.start('Play', game);
   }
 }
 

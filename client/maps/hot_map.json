@@ -34,7 +34,7 @@
       "type": "tilelayer",
       "visible": true,
       "properties": {
-        "max_players": 3,
+        "max_players": 6,
         "collisionTiles": [4, 5],
         "empty": 6,
         "balk": 5,
@@ -43,7 +43,9 @@
           { "col": 6,  "row": 4  },
           { "col": 7,  "row": 15 },
           { "col": 22, "row": 3  },
-          { "col": 23, "row": 13 }
+          { "col": 23, "row": 13 },
+          { "col": 16, "row": 5 },
+          { "col": 12, "row": 6 }
         ]
       }
     }

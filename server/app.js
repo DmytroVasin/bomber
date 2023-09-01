@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static(path.join(__dirname, '..', 'client')));
 app.use(favicon(path.join(__dirname, '..', 'client', 'favicon.ico')));
 
+const nm_dependencies = ['phaser3-rex-plugins','phaser']; // keep adding required node_modules to this array.
+nm_dependencies.forEach(dep => {
+  app.use(`/${dep}`, express.static(path.resolve(`node_modules/${dep}`)));
+});
+
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'index'));
 });
@@ -26,7 +31,7 @@ const Play     = require('./play');
 serverSocket = socketIO(server);
 
 serverSocket.sockets.on('connection', function(client) {
-  console.log('New player has connected: ' + client.id);
+  console.log('==>#connection# [User:'+client.id+'] New player is connected');
 
   client.on('enter lobby', Lobby.onEnterLobby);
   client.on('leave lobby', Lobby.onLeaveLobby);
@@ -49,10 +54,11 @@ serverSocket.sockets.on('connection', function(client) {
 
 function onClientDisconnect() {
   if (this.socket_game_id == null) {
-    console.log('Player was not be inside any game...');
+    console.log('==>#disconnect# [User:'+this.id+'][Game:] Player is disconnected');
     return
   }
-  console.log('Player was inside game...');
+  console.log('==>#disconnect# [User:'+this.id+'][Game:'+this.socket_game_id+'] Player is disconnected');
+  
 
   // If game is pending then use Lobby.
   Lobby.onLeavePendingGame.call(this)

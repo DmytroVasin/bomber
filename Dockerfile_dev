@@ -1,0 +1,15 @@
+FROM node:12.18.3
+USER root
+RUN cd /root
+#Fix apt-get update failed to fetch debian amd64 packages
+#cf https://unix.stackexchange.com/questions/743839/apt-get-update-failed-to-fetch-debian-amd64-packages-while-building-dockerfile-f
+RUN echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
+RUN apt-get update
+RUN yarn set version 1.22.10
+WORKDIR /mnt/bomber
+RUN cd /mnt/bomber
+COPY ./package.json .
+RUN yarn install
+COPY ./start_dev.sh /mnt/bomber
+#CMD [ "yarn","add","&&","yarn", "run","server" ]
+ENTRYPOINT ["/mnt/bomber/start_dev.sh"]
